@@ -1,0 +1,611 @@
+<template>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-6 min-h-[calc(100vh-10rem)] flex flex-col justify-between">
+    <!-- Top Stepper Bar -->
+    <div class="flex items-center justify-between mb-6 border-b border-surface-800 pb-4 gap-4">
+      <NuxtLink
+        to="/learn"
+        class="flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors py-2 px-2.5 rounded-xl hover:bg-surface-850"
+      >
+        <ArrowLeft :size="14" aria-hidden="true" />
+        <span>Thoát bài học</span>
+      </NuxtLink>
+
+      <!-- Step / Activity Tabs -->
+      <div class="flex items-center gap-1 bg-surface-900/90 border border-surface-750 p-1 rounded-2xl text-xs font-bold">
+        <button
+          type="button"
+          @click="currentActivity = 'flashcard'"
+          class="px-3.5 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5"
+          :class="currentActivity === 'flashcard' ? 'bg-brand-600 text-white shadow-glow-brand' : 'text-slate-400 hover:text-white'"
+        >
+          <Layers :size="14" aria-hidden="true" />
+          <span class="hidden sm:inline">1.</span> Thẻ từ
+        </button>
+        <button
+          type="button"
+          @click="currentActivity = 'matching'"
+          class="px-3.5 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5"
+          :class="currentActivity === 'matching' ? 'bg-brand-600 text-white shadow-glow-brand' : 'text-slate-400 hover:text-white'"
+        >
+          <Sparkles :size="14" aria-hidden="true" />
+          <span class="hidden sm:inline">2.</span> Nối từ
+        </button>
+        <button
+          type="button"
+          @click="currentActivity = 'quiz'"
+          class="px-3.5 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5"
+          :class="currentActivity === 'quiz' ? 'bg-brand-600 text-white shadow-glow-brand' : 'text-slate-400 hover:text-white'"
+        >
+          <HelpCircle :size="14" aria-hidden="true" />
+          <span class="hidden sm:inline">3.</span> Trắc nghiệm
+        </button>
+      </div>
+
+      <div class="text-xs font-bold text-slate-400 hidden sm:block">
+        {{ vocabulary.length }} từ vựng
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div v-if="pending" class="flex-1 flex flex-col items-center justify-center py-20">
+      <div class="w-12 h-12 rounded-2xl bg-surface-850 border border-surface-750 flex items-center justify-center animate-bounce mb-3 text-gold-400">
+        <BookOpen :size="24" aria-hidden="true" />
+      </div>
+      <p class="text-slate-400 text-sm font-medium">Đang chuẩn bị nội dung bài học...</p>
+    </div>
+
+    <!-- Main Activity Area -->
+    <div v-else-if="lesson" class="flex-1 flex flex-col justify-between">
+      <!-- 1. FLASHCARDS ACTIVITY -->
+      <div v-if="currentActivity === 'flashcard'" class="flex-1 flex flex-col items-center justify-center py-4">
+        <!-- Progress Bar & Card Counter -->
+        <div class="w-full max-w-md mb-4 flex items-center justify-between text-xs font-semibold text-slate-400">
+          <span>Thẻ {{ currentCardIndex + 1 }} / {{ vocabulary.length }}</span>
+          <div class="w-36 h-2 bg-surface-850 rounded-full overflow-hidden border border-surface-750">
+            <div
+              class="h-full bg-gradient-to-r from-brand-500 to-gold-400 transition-all duration-300"
+              :style="{ width: `${((currentCardIndex + 1) / vocabulary.length) * 100}%` }"
+            />
+          </div>
+        </div>
+
+        <!-- 3D Flip Card -->
+        <div
+          @click="isFlipped = !isFlipped"
+          class="w-full max-w-md min-h-[300px] rounded-3xl bg-surface-900 border border-surface-750 hover:border-gold-500/40 shadow-card-elevated p-8 flex flex-col items-center justify-center cursor-pointer select-none transition-all duration-300 hover:scale-[1.01] text-center relative group"
+        >
+          <div class="absolute top-4 right-4 text-xs font-semibold text-slate-500 flex items-center gap-1.5 group-hover:text-gold-400 transition-colors">
+            <RotateCcw :size="13" aria-hidden="true" />
+            <span>Bấm để lật</span>
+          </div>
+
+          <!-- Front Face -->
+          <div v-if="!isFlipped" class="flex flex-col items-center justify-center animate-fade-in">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="text-7xl font-bold font-hanzi text-white tracking-wider">
+                {{ currentCard.simplified }}
+              </div>
+              <SpeakerButton :text="currentCard.simplified" :audio-url="currentCard.audioUrl" size="md" />
+            </div>
+            <div class="text-xs text-slate-400 uppercase tracking-widest font-bold bg-surface-800 px-3 py-1 rounded-full border border-surface-750">
+              {{ currentCard.partOfSpeech }}
+            </div>
+          </div>
+
+          <!-- Back Face -->
+          <div v-else class="flex flex-col items-center justify-center animate-fade-in w-full">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="text-2xl font-extrabold font-heading text-gold-400 tracking-wide">
+                {{ currentCard.pinyin }}
+              </div>
+              <SpeakerButton :text="currentCard.simplified" :audio-url="currentCard.audioUrl" size="sm" />
+            </div>
+            <div class="text-xl font-bold text-white mb-5">
+              {{ currentCard.meaning }}
+            </div>
+
+            <!-- Example Sentence -->
+            <div v-if="currentCard.example" class="p-3.5 bg-surface-950/80 rounded-2xl text-left border border-surface-750 text-xs w-full">
+              <div class="flex items-start justify-between gap-2">
+                <div class="text-slate-200 font-bold font-hanzi text-sm">{{ currentCard.example.sentenceZh }}</div>
+                <SpeakerButton :text="currentCard.example.sentenceZh" size="sm" class="shrink-0" />
+              </div>
+              <div class="text-gold-400 text-xs mt-0.5">{{ currentCard.example.sentencePinyin }}</div>
+              <div class="text-slate-400 text-xs mt-0.5">{{ currentCard.example.translationVi }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Navigation Controls -->
+        <div class="flex items-center gap-3 mt-8">
+          <button
+            type="button"
+            @click="prevCard"
+            :disabled="currentCardIndex === 0"
+            class="min-h-[44px] px-4 py-2.5 rounded-xl bg-surface-850 hover:bg-surface-800 text-slate-300 disabled:opacity-40 text-xs font-bold border border-surface-750 transition-colors flex items-center gap-1 cursor-pointer"
+          >
+            <ChevronLeft :size="16" aria-hidden="true" />
+            <span>Trước</span>
+          </button>
+          <button
+            type="button"
+            @click="recordCardRecall(false)"
+            class="min-h-[44px] px-5 py-2.5 rounded-xl bg-surface-850 hover:bg-brand-950/60 text-brand-300 border border-surface-700 hover:border-brand-700 text-xs font-bold transition-all cursor-pointer"
+          >
+            Chưa nhớ (Again)
+          </button>
+          <button
+            type="button"
+            @click="recordCardRecall(true)"
+            class="min-h-[44px] px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-glow-jade transition-all flex items-center gap-1.5 cursor-pointer"
+          >
+            <Check :size="16" aria-hidden="true" />
+            <span>Đã nhớ (Good)</span>
+          </button>
+          <button
+            type="button"
+            @click="nextCard"
+            :disabled="currentCardIndex === vocabulary.length - 1"
+            class="min-h-[44px] px-4 py-2.5 rounded-xl bg-surface-850 hover:bg-surface-800 text-slate-300 disabled:opacity-40 text-xs font-bold border border-surface-750 transition-colors flex items-center gap-1 cursor-pointer"
+          >
+            <span>Tiếp</span>
+            <ChevronRight :size="16" aria-hidden="true" />
+          </button>
+        </div>
+
+        <!-- Hotkey hints -->
+        <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-4">
+          <span><kbd class="px-1 py-0.5 bg-surface-850 rounded border border-surface-700 font-mono">Space</kbd> Lật thẻ</span>
+          <span>•</span>
+          <span><kbd class="px-1 py-0.5 bg-surface-850 rounded border border-surface-700 font-mono">P</kbd> Phát âm</span>
+          <span>•</span>
+          <span><kbd class="px-1 py-0.5 bg-surface-850 rounded border border-surface-700 font-mono">← / →</kbd> Chuyển thẻ</span>
+        </div>
+      </div>
+
+      <!-- 2. WORD MATCHING ACTIVITY -->
+      <div v-else-if="currentActivity === 'matching'" class="flex-1 flex flex-col justify-center py-6">
+        <div class="text-center mb-6">
+          <h3 class="text-xl font-bold font-heading text-white">Nối Chữ Hán với Nghĩa & Pinyin</h3>
+          <p class="text-xs text-slate-400 mt-1">Chọn 1 ô chữ Hán (hệ thống sẽ phát âm) và 1 ô nghĩa tiếng Việt để ghép đôi.</p>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto w-full">
+          <button
+            v-for="tile in matchingTiles"
+            :key="tile.id"
+            type="button"
+            @click="selectTile(tile)"
+            :disabled="tile.matched"
+            class="h-24 p-3 rounded-2xl border text-sm font-bold flex flex-col items-center justify-center transition-all select-none cursor-pointer"
+            :class="[
+              tile.matched ? 'opacity-25 border-transparent bg-surface-950 cursor-not-allowed scale-95' :
+              selectedTile?.id === tile.id ? 'border-gold-400 bg-gold-500/20 text-gold-300 scale-105 shadow-glow-gold' :
+              'border-surface-750 bg-surface-900/90 hover:bg-surface-850 text-slate-200 hover:border-surface-600'
+            ]"
+          >
+            <span :class="tile.type === 'hanzi' ? 'text-3xl font-bold font-hanzi text-white' : 'text-xs text-slate-200 text-center font-medium'">
+              {{ tile.label }}
+            </span>
+            <span v-if="tile.type === 'hanzi'" class="text-[10px] text-slate-400 font-normal mt-1 flex items-center gap-1">
+              <Volume2 :size="10" aria-hidden="true" /> Nghe
+            </span>
+          </button>
+        </div>
+
+        <div v-if="matchingComplete" class="text-center mt-8 p-6 bg-surface-900 border border-emerald-500/40 rounded-3xl max-w-md mx-auto shadow-card-elevated">
+          <div class="flex items-center justify-center gap-2 text-emerald-400 font-bold mb-3">
+            <CheckCircle2 :size="20" aria-hidden="true" />
+            <span>Xuất sắc! Bạn đã nối đúng tất cả các từ.</span>
+          </div>
+          <button
+            type="button"
+            @click="currentActivity = 'quiz'"
+            class="min-h-[48px] px-7 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-sm shadow-glow-brand transition-all flex items-center gap-2 mx-auto cursor-pointer"
+          >
+            <span>Tiếp tục: Phần Trắc nghiệm</span>
+            <ArrowRight :size="16" aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. QUIZ ACTIVITY -->
+      <div v-else-if="currentActivity === 'quiz'" class="flex-1 flex flex-col items-center justify-center py-6">
+        <div class="text-xs font-semibold text-slate-400 mb-3">
+          Câu hỏi {{ currentQuizIndex + 1 }} / {{ quizQuestions.length }}
+        </div>
+
+        <div class="w-full max-w-md bg-surface-900/95 border border-surface-750 rounded-3xl p-7 shadow-card-elevated">
+          <div class="text-center mb-6">
+            <span class="text-[11px] uppercase text-gold-400 font-extrabold tracking-wider">Từ vựng cần chọn</span>
+            <div class="flex items-center justify-center gap-3 mt-3 mb-2">
+              <div class="text-6xl font-bold font-hanzi text-white">
+                {{ currentQuiz.question }}
+              </div>
+              <SpeakerButton :text="currentQuiz.question" :audio-url="currentQuiz.audioUrl" size="md" />
+            </div>
+            <div class="text-xs text-slate-400">Chọn nghĩa tiếng Việt chính xác nhất:</div>
+          </div>
+
+          <!-- Options -->
+          <div class="space-y-3">
+            <button
+              v-for="(option, idx) in currentQuiz.options"
+              :key="idx"
+              type="button"
+              @click="submitQuizOption(option)"
+              :disabled="quizSubmitted"
+              class="w-full min-h-[48px] p-4 rounded-xl border text-sm font-semibold text-left transition-all flex items-center justify-between cursor-pointer"
+              :class="getOptionClass(option)"
+            >
+              <span>{{ option }}</span>
+              <span v-if="quizSubmitted && option === currentQuiz.correctMeaning" class="text-emerald-400">
+                <Check :size="18" aria-hidden="true" />
+              </span>
+              <span v-else-if="quizSubmitted && selectedOption === option && !isQuizOptionCorrect" class="text-brand-400">
+                <X :size="18" aria-hidden="true" />
+              </span>
+            </button>
+          </div>
+
+          <!-- Next Button -->
+          <div v-if="quizSubmitted" class="mt-6 pt-4 border-t border-surface-750 flex justify-end">
+            <button
+              type="button"
+              @click="nextQuizQuestion"
+              class="min-h-[48px] px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-sm shadow-glow-brand transition-all flex items-center gap-2 cursor-pointer"
+            >
+              <span>{{ currentQuizIndex < quizQuestions.length - 1 ? 'Câu tiếp theo' : 'Hoàn thành bài học' }}</span>
+              <ArrowRight :size="16" aria-hidden="true" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. COMPLETION CELEBRATION MODAL -->
+    <div
+      v-if="showResultModal"
+      class="fixed inset-0 bg-surface-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fade-in"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="bg-surface-900 border border-surface-750 rounded-3xl max-w-md w-full p-8 text-center shadow-card-elevated relative overflow-hidden">
+        <div class="w-16 h-16 rounded-2xl bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-400 mx-auto mb-4">
+          <Trophy :size="32" aria-hidden="true" />
+        </div>
+        <h2 class="text-2xl font-black font-heading text-white mb-1">Hoàn Thành Bài Học!</h2>
+        <p class="text-xs text-slate-400 mb-6">{{ lesson?.title }}</p>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-2 gap-3 mb-6">
+          <div class="p-3.5 bg-surface-950/80 rounded-2xl border border-surface-750">
+            <div class="text-xs text-slate-400 font-medium">Độ chính xác</div>
+            <div class="text-2xl font-black text-emerald-400 font-heading">{{ Math.round((completionData?.accuracy || 1) * 100) }}%</div>
+          </div>
+          <div class="p-3.5 bg-surface-950/80 rounded-2xl border border-surface-750">
+            <div class="text-xs text-slate-400 font-medium">EXP nhận được</div>
+            <div class="text-2xl font-black text-purple-400 font-heading">+{{ completionData?.expEarned || 0 }}</div>
+          </div>
+          <div class="p-3.5 bg-surface-950/80 rounded-2xl border border-surface-750">
+            <div class="text-xs text-slate-400 font-medium">Gold nhận được</div>
+            <div class="text-2xl font-black text-gold-400 font-heading">+{{ completionData?.goldEarned || 0 }}</div>
+          </div>
+          <div class="p-3.5 bg-surface-950/80 rounded-2xl border border-surface-750">
+            <div class="text-xs text-slate-400 font-medium">Cấp nhân vật</div>
+            <div class="text-2xl font-black text-sky-400 font-heading">Lv.{{ completionData?.character?.level || 1 }}</div>
+          </div>
+        </div>
+
+        <div v-if="completionData?.leveledUp" class="p-3 bg-gold-500/20 border border-gold-500/40 rounded-xl text-gold-300 text-xs font-bold mb-6 flex items-center justify-center gap-2">
+          <Sparkles :size="16" aria-hidden="true" />
+          <span>CHÚC MỪNG: Nhân vật của bạn đã lên cấp!</span>
+        </div>
+
+        <div class="flex gap-3">
+          <NuxtLink
+            to="/learn"
+            class="flex-1 min-h-[48px] py-3 rounded-xl bg-surface-800 hover:bg-surface-750 text-slate-200 font-bold text-sm border border-surface-700 flex items-center justify-center"
+          >
+            Về danh sách bài
+          </NuxtLink>
+          <NuxtLink
+            to="/world"
+            class="flex-1 min-h-[48px] py-3 rounded-xl bg-gradient-to-r from-brand-600 to-amber-600 hover:from-brand-500 hover:to-amber-500 text-white font-bold text-sm shadow-glow-brand flex items-center justify-center gap-1.5"
+          >
+            <span>Vào thế giới 2D</span>
+            <ArrowRight :size="16" aria-hidden="true" />
+          </NuxtLink>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import {
+  ArrowLeft,
+  ArrowRight,
+  BookOpen,
+  Layers,
+  Sparkles,
+  HelpCircle,
+  RotateCcw,
+  ChevronLeft,
+  ChevronRight,
+  Check,
+  CheckCircle2,
+  X,
+  Volume2,
+  Trophy,
+} from 'lucide-vue-next';
+
+definePageMeta({
+  layout: 'default',
+});
+
+const route = useRoute();
+const lessonId = route.params.id as string;
+const { speak } = usePronunciation();
+
+// Fetch lesson data
+const { data, pending } = await useFetch<any>(`/api/learning/lessons/${lessonId}`);
+const lesson = computed(() => data.value?.data?.lesson);
+const vocabulary = computed(() => lesson.value?.vocabulary || []);
+
+// Active session state
+const sessionId = ref<string | null>(null);
+const currentActivity = ref<'flashcard' | 'matching' | 'quiz'>('flashcard');
+
+// Flashcard state
+const currentCardIndex = ref(0);
+const isFlipped = ref(false);
+const currentCard = computed(() => vocabulary.value[currentCardIndex.value] || {});
+
+function nextCard() {
+  if (currentCardIndex.value < vocabulary.value.length - 1) {
+    currentCardIndex.value++;
+    isFlipped.value = false;
+  }
+}
+
+function prevCard() {
+  if (currentCardIndex.value > 0) {
+    currentCardIndex.value--;
+    isFlipped.value = false;
+  }
+}
+
+async function recordCardRecall(remembered: boolean) {
+  if (sessionId.value && currentCard.value?.id) {
+    await $fetch(`/api/learning/sessions/${sessionId.value}/answers`, {
+      method: 'POST',
+      body: {
+        vocabularyId: currentCard.value.id,
+        activityType: 'flashcard',
+        userAnswer: remembered ? 'remembered' : 'again',
+      },
+    }).catch(() => {});
+  }
+  nextCard();
+}
+
+// Matching Activity State
+interface MatchingTile {
+  id: string;
+  vocabId: string;
+  type: 'hanzi' | 'meaning';
+  label: string;
+  matched: boolean;
+}
+
+const matchingTiles = ref<MatchingTile[]>([]);
+const selectedTile = ref<MatchingTile | null>(null);
+const matchingComplete = computed(() => matchingTiles.value.length > 0 && matchingTiles.value.every((t) => t.matched));
+
+function setupMatching() {
+  const sample = vocabulary.value.slice(0, 6);
+  const tiles: MatchingTile[] = [];
+
+  sample.forEach((v: any) => {
+    tiles.push({
+      id: `h_${v.id}`,
+      vocabId: v.id,
+      type: 'hanzi',
+      label: v.simplified,
+      matched: false,
+    });
+    tiles.push({
+      id: `m_${v.id}`,
+      vocabId: v.id,
+      type: 'meaning',
+      label: `${v.meaning} (${v.pinyin})`,
+      matched: false,
+    });
+  });
+
+  matchingTiles.value = tiles.sort(() => Math.random() - 0.5);
+}
+
+async function selectTile(tile: MatchingTile) {
+  if (tile.matched) return;
+
+  if (tile.type === 'hanzi') {
+    speak(tile.label);
+  }
+
+  if (!selectedTile.value) {
+    selectedTile.value = tile;
+    return;
+  }
+
+  if (selectedTile.value.id === tile.id) {
+    selectedTile.value = null;
+    return;
+  }
+
+  const first = selectedTile.value;
+  const isMatch = first.vocabId === tile.vocabId && first.type !== tile.type;
+
+  if (isMatch) {
+    first.matched = true;
+    tile.matched = true;
+    selectedTile.value = null;
+
+    if (sessionId.value) {
+      await $fetch(`/api/learning/sessions/${sessionId.value}/answers`, {
+        method: 'POST',
+        body: {
+          vocabularyId: tile.vocabId,
+          activityType: 'matching',
+          userAnswer: tile.label,
+        },
+      }).catch(() => {});
+    }
+  } else {
+    selectedTile.value = null;
+  }
+}
+
+// Quiz Activity State
+interface QuizItem {
+  vocabId: string;
+  question: string;
+  audioUrl?: string;
+  correctMeaning: string;
+  options: string[];
+}
+
+const quizQuestions = ref<QuizItem[]>([]);
+const currentQuizIndex = ref(0);
+const currentQuiz = computed(() => quizQuestions.value[currentQuizIndex.value] || { question: '', options: [], correctMeaning: '' });
+const quizSubmitted = ref(false);
+const selectedOption = ref<string | null>(null);
+const isQuizOptionCorrect = ref(false);
+
+function setupQuiz() {
+  const items: QuizItem[] = [];
+  const allMeanings = vocabulary.value.map((v: any) => v.meaning);
+
+  vocabulary.value.forEach((v: any) => {
+    const wrong = allMeanings.filter((m: string) => m !== v.meaning).sort(() => Math.random() - 0.5).slice(0, 3);
+    const options = [v.meaning, ...wrong].sort(() => Math.random() - 0.5);
+
+    items.push({
+      vocabId: v.id,
+      question: v.simplified,
+      audioUrl: v.audioUrl,
+      correctMeaning: v.meaning,
+      options,
+    });
+  });
+
+  quizQuestions.value = items;
+  currentQuizIndex.value = 0;
+  quizSubmitted.value = false;
+  selectedOption.value = null;
+}
+
+async function submitQuizOption(option: string) {
+  if (quizSubmitted.value) return;
+
+  selectedOption.value = option;
+  quizSubmitted.value = true;
+  isQuizOptionCorrect.value = option === currentQuiz.value.correctMeaning;
+
+  if (sessionId.value) {
+    await $fetch(`/api/learning/sessions/${sessionId.value}/answers`, {
+      method: 'POST',
+      body: {
+        vocabularyId: currentQuiz.value.vocabId,
+        activityType: 'quiz',
+        userAnswer: option,
+      },
+    }).catch(() => {});
+  }
+}
+
+function getOptionClass(option: string) {
+  if (!quizSubmitted.value) {
+    return 'border-surface-750 bg-surface-950/70 hover:bg-surface-850 text-slate-200';
+  }
+  if (option === currentQuiz.value.correctMeaning) {
+    return 'border-emerald-500 bg-emerald-500/20 text-emerald-300 font-bold';
+  }
+  if (selectedOption.value === option && !isQuizOptionCorrect.value) {
+    return 'border-brand-500 bg-brand-500/20 text-brand-300 font-bold';
+  }
+  return 'border-surface-800 bg-surface-950 text-slate-600';
+}
+
+async function nextQuizQuestion() {
+  if (currentQuizIndex.value < quizQuestions.value.length - 1) {
+    currentQuizIndex.value++;
+    quizSubmitted.value = false;
+    selectedOption.value = null;
+  } else {
+    await completeLessonSession();
+  }
+}
+
+// Completion Modal State
+const showResultModal = ref(false);
+const completionData = ref<any>(null);
+
+async function completeLessonSession() {
+  if (!sessionId.value) return;
+
+  try {
+    const res = await $fetch<any>(`/api/learning/sessions/${sessionId.value}/complete`, {
+      method: 'POST',
+    });
+    completionData.value = res.data;
+    showResultModal.value = true;
+  } catch (err) {
+    showResultModal.value = true;
+  }
+}
+
+function handleLessonKeydown(e: KeyboardEvent) {
+  if (currentActivity.value === 'flashcard') {
+    if (e.key === ' ' && !e.repeat) {
+      e.preventDefault();
+      isFlipped.value = !isFlipped.value;
+    } else if (e.key === 'ArrowRight') {
+      nextCard();
+    } else if (e.key === 'ArrowLeft') {
+      prevCard();
+    } else if ((e.key.toLowerCase() === 'p' || e.key.toLowerCase() === 'r') && currentCard.value?.simplified) {
+      speak(currentCard.value.simplified, { audioUrl: currentCard.value.audioUrl });
+    }
+  }
+}
+
+onMounted(async () => {
+  window.addEventListener('keydown', handleLessonKeydown);
+
+  try {
+    const sessionRes = await $fetch<any>('/api/learning/sessions', {
+      method: 'POST',
+      body: { lessonId, sessionType: 'lesson' },
+    });
+    sessionId.value = sessionRes?.data?.sessionId || null;
+  } catch (e) {}
+
+  if (vocabulary.value.length > 0) {
+    setupMatching();
+    setupQuiz();
+  }
+});
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleLessonKeydown);
+});
+
+watch(vocabulary, () => {
+  if (vocabulary.value.length > 0) {
+    setupMatching();
+    setupQuiz();
+  }
+});
+</script>

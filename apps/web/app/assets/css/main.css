@@ -3,7 +3,92 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-gray-50 text-gray-900 antialiased;
+    @apply bg-wood-950 text-slate-100 antialiased font-sans selection:bg-gold-500/30 selection:text-gold-200;
+    min-height: 100vh;
+  }
+
+  /* Accessible outline style for keyboard users */
+  :focus-visible {
+    @apply outline-none ring-2 ring-gold-400 ring-offset-2 ring-offset-wood-950;
+  }
+}
+
+/* Custom Cozy RPG Wood Scrollbar */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-track {
+  background: #120D0B;
+}
+::-webkit-scrollbar-thumb {
+  background: #2E231E;
+  border: 1px solid #3D2F29;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #523F36;
+}
+
+/* Tactile 3D RPG Game Button Bevels */
+.btn-3d-gold {
+  @apply bg-gold-500 text-wood-950 border-b-4 border-gold-700 active:border-b-0 active:translate-y-1 transition-all;
+}
+.btn-3d-gold:hover {
+  @apply bg-gold-400;
+}
+
+.btn-3d-dragon {
+  @apply bg-dragon-600 text-white border-b-4 border-dragon-800 active:border-b-0 active:translate-y-1 transition-all;
+}
+.btn-3d-dragon:hover {
+  @apply bg-dragon-500;
+}
+
+.btn-3d-jade {
+  @apply bg-jade-500 text-wood-950 border-b-4 border-jade-700 active:border-b-0 active:translate-y-1 transition-all;
+}
+.btn-3d-jade:hover {
+  @apply bg-jade-400;
+}
+
+.btn-3d-wood {
+  @apply bg-wood-800 text-slate-200 border border-wood-700 border-b-4 border-b-wood-950 active:border-b-0 active:translate-y-1 transition-all;
+}
+.btn-3d-wood:hover {
+  @apply bg-wood-750 text-white border-wood-600;
+}
+
+/* 3D Flip Card for Flashcards */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

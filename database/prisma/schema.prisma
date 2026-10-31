@@ -1,5 +1,5 @@
 // ============================================================================
-// LinguaWorld — Prisma Schema (Phase 0)
+// LinguaWorld — Prisma Schema (Phase 1: Learning Core)
 // ============================================================================
 
 generator client {
@@ -12,25 +12,29 @@ datasource db {
 }
 
 // ---------------------------------------------------------------------------
-// User — core account
+// 1. User & Authentication
 // ---------------------------------------------------------------------------
 model User {
-  id           String      @id @default(cuid())
-  email        String      @unique
-  username     String      @unique
-  passwordHash String      @map("password_hash")
-  createdAt    DateTime    @default(now()) @map("created_at")
-  updatedAt    DateTime    @updatedAt @map("updated_at")
+  id           String        @id @default(cuid())
+  email        String        @unique
+  username     String        @unique
+  passwordHash String        @map("password_hash")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
 
-  sessions     Session[]
-  characters   Character[]
+  sessions           Session[]
+  settings           UserSettings?
+  character          Character?
+  wallet             Wallet?
+  walletTransactions WalletTransaction[]
+  learningSessions   LearningSession[]
+  learningAnswers    LearningAnswer[]
+  vocabularyProgress VocabularyProgress[]
+  reviewHistory      ReviewHistory[]
 
   @@map("users")
 }
 
-// ---------------------------------------------------------------------------
-// Session — server-side session for HttpOnly cookie auth
-// ---------------------------------------------------------------------------
 model Session {
   id        String   @id @default(cuid())
   userId    String   @map("user_id")
@@ -45,15 +49,31 @@ model Session {
   @@map("sessions")
 }
 
+model UserSettings {
+  id                 String   @id @default(cuid())
+  userId             String   @unique @map("user_id")
+  targetDailyReviews Int      @default(20) @map("target_daily_reviews")
+  soundEnabled       Boolean  @default(true) @map("sound_enabled")
+  pinyinDisplay      Boolean  @default(true) @map("pinyin_display")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_settings")
+}
+
 // ---------------------------------------------------------------------------
-// Character — the player's in-game avatar (minimal for Phase 0 bootstrap)
+// 2. Character & Progression (Separate from language proficiency)
 // ---------------------------------------------------------------------------
 model Character {
   id        String   @id @default(cuid())
-  userId    String   @map("user_id")
+  userId    String   @unique @map("user_id")
   name      String
   level     Int      @default(1)
   exp       Int      @default(0)
+  hp        Int      @default(100)
+  maxHp     Int      @default(100) @map("max_hp")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -61,4 +81,280 @@ model Character {
 
   @@index([userId])
   @@map("characters")
+}
+
+// ---------------------------------------------------------------------------
+// 3. Curriculum & Structure (HSK 3.0 / HSK 2.0 versioned)
+// ---------------------------------------------------------------------------
+model Curriculum {
+  id                      String   @id @default(cuid())
+  code                    String   @unique // e.g. "hsk-3.0"
+  name                    String   // "HSK 3.0 Standard Course"
+  version                 String   // "3.0"
+  languageCode            String   @default("zh") @map("language_code")
+  translationLanguageCode String   @default("vi") @map("translation_language_code")
+  sourceUrl               String?  @map("source_url")
+  licenseName             String   @default("Open Attribution License") @map("license_name")
+  licenseUrl              String?  @map("license_url")
+  status                  String   @default("active")
+  createdAt               DateTime @default(now()) @map("created_at")
+
+  levels CurriculumLevel[]
+
+  @@map("curriculums")
+}
+
+model CurriculumLevel {
+  id             String @id @default(cuid())
+  curriculumId   String @map("curriculum_id")
+  code           String // e.g. "hsk-3.0-band-1"
+  name           String // "Band 1 (Elementary Level 1)"
+  sequenceNumber Int    @map("sequence_number")
+
+  curriculum Curriculum             @relation(fields: [curriculumId], references: [id], onDelete: Cascade)
+  courses    Course[]
+  vocabulary CurriculumVocabulary[]
+
+  @@unique([curriculumId, code])
+  @@map("curriculum_levels")
+}
+
+model Course {
+  id                String @id @default(cuid())
+  curriculumLevelId String @map("curriculum_level_id")
+  title             String
+  description       String
+  orderIndex        Int    @map("order_index")
+
+  curriculumLevel CurriculumLevel @relation(fields: [curriculumLevelId], references: [id], onDelete: Cascade)
+  units           Unit[]
+
+  @@map("courses")
+}
+
+model Unit {
+  id         String @id @default(cuid())
+  courseId   String @map("course_id")
+  title      String
+  orderIndex Int    @map("order_index")
+
+  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons Lesson[]
+
+  @@map("units")
+}
+
+model Lesson {
+  id          String   @id @default(cuid())
+  unitId      String   @map("unit_id")
+  title       String
+  description String
+  orderIndex  Int      @map("order_index")
+  expReward   Int      @default(50) @map("exp_reward")
+  goldReward  Int      @default(20) @map("gold_reward")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  unit             Unit                   @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  vocabulary       CurriculumVocabulary[]
+  learningSessions LearningSession[]
+
+  @@map("lessons")
+}
+
+// ---------------------------------------------------------------------------
+// 4. Vocabulary & Rich Linguistic Details
+// ---------------------------------------------------------------------------
+model Vocabulary {
+  id           String   @id @default(cuid())
+  simplified   String   // "你好"
+  traditional  String?  // "你好"
+  audioUrl     String?  @map("audio_url")
+  languageCode String   @default("zh") @map("language_code")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  readings           VocabularyReading[]
+  meanings           VocabularyMeaning[]
+  examples           VocabularyExample[]
+  curriculumEntries  CurriculumVocabulary[]
+  learningAnswers    LearningAnswer[]
+  vocabularyProgress VocabularyProgress[]
+  reviewHistory      ReviewHistory[]
+
+  @@index([simplified])
+  @@map("vocabulary")
+}
+
+model VocabularyReading {
+  id            String  @id @default(cuid())
+  vocabularyId  String  @map("vocabulary_id")
+  reading       String  // "nǐ hǎo"
+  readingSystem String  @default("pinyin") @map("reading_system")
+  isPrimary     Boolean @default(true) @map("is_primary")
+
+  vocabulary Vocabulary @relation(fields: [vocabularyId], references: [id], onDelete: Cascade)
+
+  @@index([vocabularyId])
+  @@map("vocabulary_readings")
+}
+
+model VocabularyMeaning {
+  id           String  @id @default(cuid())
+  vocabularyId String  @map("vocabulary_id")
+  languageCode String  @default("vi") @map("language_code")
+  meaning      String  // "chào bạn; xin chào"
+  partOfSpeech String? @map("part_of_speech") // "greeting", "noun", "verb"
+
+  vocabulary Vocabulary @relation(fields: [vocabularyId], references: [id], onDelete: Cascade)
+
+  @@index([vocabularyId])
+  @@map("vocabulary_meanings")
+}
+
+model VocabularyExample {
+  id            String @id @default(cuid())
+  vocabularyId  String @map("vocabulary_id")
+  sentenceZh    String @map("sentence_zh") // "你好！很高兴认识你。"
+  sentencePinyin String @map("sentence_pinyin") // "Nǐ hǎo! Hěn gāoxìng rènshí nǐ."
+  translationVi String @map("translation_vi") // "Xin chào! Rất vui được gặp bạn."
+
+  vocabulary Vocabulary @relation(fields: [vocabularyId], references: [id], onDelete: Cascade)
+
+  @@index([vocabularyId])
+  @@map("vocabulary_examples")
+}
+
+model CurriculumVocabulary {
+  id                String  @id @default(cuid())
+  curriculumLevelId String  @map("curriculum_level_id")
+  vocabularyId      String  @map("vocabulary_id")
+  lessonId          String? @map("lesson_id")
+  sequenceNumber    Int     @map("sequence_number")
+
+  curriculumLevel CurriculumLevel @relation(fields: [curriculumLevelId], references: [id], onDelete: Cascade)
+  vocabulary      Vocabulary      @relation(fields: [vocabularyId], references: [id], onDelete: Cascade)
+  lesson          Lesson?         @relation(fields: [lessonId], references: [id], onDelete: SetNull)
+
+  @@unique([curriculumLevelId, vocabularyId])
+  @@index([lessonId])
+  @@map("curriculum_vocabulary")
+}
+
+// ---------------------------------------------------------------------------
+// 5. Learning Sessions & Answer History
+// ---------------------------------------------------------------------------
+model LearningSession {
+  id             String    @id @default(cuid())
+  userId         String    @map("user_id")
+  lessonId       String?   @map("lesson_id")
+  sessionType    String    @map("session_type") // "lesson" | "review" | "practice"
+  status         String    @default("in_progress") // "in_progress" | "completed" | "abandoned"
+  totalQuestions Int       @default(0) @map("total_questions")
+  correctCount   Int       @default(0) @map("correct_count")
+  accuracy       Float     @default(0.0)
+  startedAt      DateTime  @default(now()) @map("started_at")
+  completedAt    DateTime? @map("completed_at")
+
+  user    User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson  Lesson?          @relation(fields: [lessonId], references: [id], onDelete: SetNull)
+  answers LearningAnswer[]
+
+  @@index([userId, status])
+  @@map("learning_sessions")
+}
+
+model LearningAnswer {
+  id             String   @id @default(cuid())
+  sessionId      String   @map("session_id")
+  userId         String   @map("user_id")
+  vocabularyId   String   @map("vocabulary_id")
+  activityType   String   @map("activity_type") // "flashcard" | "matching" | "quiz"
+  userAnswer     String   @map("user_answer")
+  isCorrect      Boolean  @map("is_correct")
+  responseTimeMs Int      @default(0) @map("response_time_ms")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  session    LearningSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vocabulary Vocabulary      @relation(fields: [vocabularyId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([userId, vocabularyId])
+  @@map("learning_answers")
+}
+
+// ---------------------------------------------------------------------------
+// 6. Spaced Repetition System (FSRS-aligned scheduler)
+// ---------------------------------------------------------------------------
+model VocabularyProgress {
+  id               String    @id @default(cuid())
+  userId           String    @map("user_id")
+  vocabularyId     String    @map("vocabulary_id")
+  state            String    @default("new") // "new" | "learning" | "review" | "mastered"
+  difficulty       Float     @default(5.0)
+  stability        Float     @default(1.0)
+  intervalDays     Int       @default(1) @map("interval_days")
+  dueAt            DateTime  @default(now()) @map("due_at")
+  lastReviewedAt   DateTime? @map("last_reviewed_at")
+  totalReviews     Int       @default(0) @map("total_reviews")
+  correctReviews   Int       @default(0) @map("correct_reviews")
+  incorrectReviews Int       @default(0) @map("incorrect_reviews")
+  algorithmVersion String    @default("fsrs-v1") @map("algorithm_version")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vocabulary Vocabulary @relation(fields: [vocabularyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, vocabularyId])
+  @@index([userId, dueAt])
+  @@map("vocabulary_progress")
+}
+
+model ReviewHistory {
+  id             String   @id @default(cuid())
+  userId         String   @map("user_id")
+  vocabularyId   String   @map("vocabulary_id")
+  rating         Int      // 1=Again, 2=Hard, 3=Good, 4=Easy
+  scheduledDays  Int      @default(1) @map("scheduled_days")
+  elapsedDays    Int      @default(0) @map("elapsed_days")
+  responseTimeMs Int      @default(0) @map("response_time_ms")
+  reviewedAt     DateTime @default(now()) @map("reviewed_at")
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vocabulary Vocabulary @relation(fields: [vocabularyId], references: [id], onDelete: Cascade)
+
+  @@index([userId, vocabularyId])
+  @@index([userId, reviewedAt])
+  @@map("review_history")
+}
+
+// ---------------------------------------------------------------------------
+// 7. Economy & Server-Authoritative Ledger
+// ---------------------------------------------------------------------------
+model Wallet {
+  id          String   @id @default(cuid())
+  userId      String   @unique @map("user_id")
+  balanceGold Int      @default(0) @map("balance_gold")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("wallets")
+}
+
+model WalletTransaction {
+  id              String   @id @default(cuid())
+  userId          String   @map("user_id")
+  currency        String   @default("gold")
+  amount          Int      // Positive = Credit, Negative = Debit
+  transactionType String   @map("transaction_type") // "reward_lesson" | "reward_review" | "purchase"
+  referenceType   String?  @map("reference_type")   // "lesson" | "session"
+  referenceId     String?  @map("reference_id")
+  idempotencyKey  String   @unique @map("idempotency_key")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("wallet_transactions")
 }

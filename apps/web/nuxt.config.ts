@@ -36,17 +36,23 @@ export default defineNuxtConfig({
   // ---------------------------------------------------------------------------
   app: {
     head: {
-      title: 'LinguaWorld — Learn Mandarin',
+      title: 'LinguaWorld — Học Tiếng Trung RPG HSK 3.0',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         {
           name: 'description',
-          content: 'An immersive Mandarin-learning platform with an embedded game world.',
+          content: 'Nền tảng học tiếng Trung HSK 3.0 kết hợp thế giới game nhập vai 2D RPG, Spaced Repetition FSRS và phát âm chuẩn Mandarin.',
         },
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Marcellus&family=Noto+Serif+SC:wght@600;700;900&family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap',
+        },
       ],
     },
   },

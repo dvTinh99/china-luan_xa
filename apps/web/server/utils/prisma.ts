@@ -1,5 +1,5 @@
 // ============================================================================
-// Prisma Client Singleton
+// Prisma Client Singleton (PostgreSQL)
 // ============================================================================
 // Creates a single PrismaClient instance per server process to avoid
 // exhausting database connections during development hot-reloads.
@@ -20,7 +20,7 @@ if (process.env.NODE_ENV === 'production') {
   // In development, attach to global to survive HMR
   if (!globalThis.__prisma) {
     globalThis.__prisma = new PrismaClient({
-      log: ['query', 'warn', 'error'],
+      log: ['warn', 'error'],
     });
   }
   prisma = globalThis.__prisma;

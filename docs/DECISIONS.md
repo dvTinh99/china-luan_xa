@@ -101,14 +101,86 @@ This document records architectural decisions, prototype findings, browser compa
 
 ---
 
-## Phase 0 Open Questions & Phase 1 Recommendations
+---
 
-1. **Authentication Strategy (Phase 1):**
-   - Phase 0 implements demo-mode middleware injecting `demo-user-001`.
-   - Phase 1 will implement full bcrypt password hashing, session tokens stored in PostgreSQL `sessions` table, and HttpOnly `Set-Cookie` with CSRF protection.
-2. **Audio Asset Pipeline:**
-   - Web interface uses HTML Audio API for pronunciation / vocabulary cards.
-   - Godot client will receive `SET_AUDIO` bridge events to mute background music when user enters a speaking or listening lesson.
-3. **HSK 3.0 Band 1 Data Seed:**
-   - Raw vocabulary data should be normalized into `curriculum_levels` and `vocabulary` tables with Vietnamese definitions, pinyin, and sample sentences before enabling SRS review.
+## ADR-005: Authentication Strategy & HttpOnly Session Management (Phase 1)
+
+- **Date:** 2026-10-31
+- **Status:** Approved & Implemented
+- **Context:**
+  Secure authentication is required without exposing tokens in client-side localStorage or URL query parameters.
+- **Decision:**
+  - Implemented bcryptjs password hashing (salt rounds: 10).
+  - Database-backed session tokens (32-byte crypto random hex) stored in `sessions` table with 7-day expiration.
+  - HttpOnly, SameSite=Lax session cookie (`lw_session`).
+  - Auth middleware automatically resolves user context from the session cookie.
+- **Consequences:**
+  - Complete protection against XSS token theft.
+
+---
+
+## ADR-006: Server-Authoritative Answer Evaluation & Atomic Reward Ledger (Phase 1)
+
+- **Date:** 2026-10-31
+- **Status:** Approved & Implemented
+- **Context:**
+  Non-negotiable Rules 2, 3, 4, and 5 state that client-submitted answer correctness, EXP, and Gold must never be trusted.
+- **Decision:**
+  - `POST /api/learning/sessions/:sessionId/answers` evaluates user answers against normalized database vocabulary records server-side.
+  - `POST /api/learning/sessions/:sessionId/complete` calculates EXP and Gold rewards proportionally to accuracy.
+  - Interactive database transaction (`prisma.$transaction`) atomically updates session status, character EXP/level, and wallet balance.
+  - Idempotency key `session_${sessionId}_reward` prevents replay attacks and duplicate reward claims.
+- **Consequences:**
+  - Tamper-proof progression and verifiable audit trail via `wallet_transactions`.
+
+---
+
+## ADR-007: Spaced Repetition Scheduling Engine (FSRS Algorithm) (Phase 1)
+
+- **Date:** 2026-10-31
+- **Status:** Approved & Implemented
+- **Context:**
+  Spaced repetition is a first-class feature that must calculate due reviews on the server based on recall performance rather than simple views.
+- **Decision:**
+  - Implemented FSRS scheduling engine in `apps/web/server/utils/srs.ts`.
+  - 4 rating levels: 1 (Again), 2 (Hard), 3 (Good), 4 (Easy).
+  - Maintains difficulty $D$, stability $S$, review counts, and next interval calculation.
+  - Words reaching 21+ days interval transition to `mastered`.
+  - Due cards query (`dueAt <= now`) prioritizes the most overdue vocabulary items.
+- **Consequences:**
+  - Optimal retention rate aligned with cognitive science standards.
+
+---
+
+## ADR-008: Separation of RPG Character Level and Language Proficiency (Phase 1)
+
+- **Date:** 2026-10-31
+- **Status:** Approved & Implemented
+- **Context:**
+  Non-negotiable Rule 6 mandates that character level (RPG stat) must never be treated as language proficiency.
+- **Decision:**
+  - `Character` model tracks RPG level (1-99), EXP, HP, and Max HP.
+  - Language proficiency is computed separately from `VocabularyProgress` and `LearningAnswer` records (total words enrolled, mastered words, accuracy rate, HSK level).
+  - Gold or cosmetics cannot artificially boost language proficiency metrics.
+- **Consequences:**
+  - Genuine educational progress is preserved while maintaining cozy RPG motivation.
+
+---
+
+## ADR-009: Docker Compose for PostgreSQL Database Infrastructure
+
+- **Date:** 2026-10-31
+- **Status:** Approved & Implemented
+- **Context:**
+  The baseline architecture specifies PostgreSQL as the authoritative database. The project requires a standardized local containerized database environment without relying on SQLite.
+- **Decision:**
+  - Created `docker-compose.yml` configuring `postgres:16-alpine` service (`linguaworld-postgres`) on port `5432:5432`.
+  - Configured healthcheck with `pg_isready` and persistent volume `postgres_data`.
+  - Updated `database/prisma/schema.prisma` datasource provider to `postgresql`.
+  - Updated `.env` and `.env.example` with `DATABASE_URL="postgresql://postgres:password@localhost:5432/linguaworld?schema=public"`.
+  - Removed all SQLite fallbacks; all data migrations, seeds, sessions, and transactions execute directly against PostgreSQL.
+- **Consequences:**
+  - 100% parity between local development and production PostgreSQL environment.
+
+
 

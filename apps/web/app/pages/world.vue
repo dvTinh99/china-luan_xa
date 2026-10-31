@@ -1,40 +1,47 @@
 <template>
-  <div class="relative w-full h-full">
+  <div class="relative w-full h-full bg-surface-950">
     <!-- Loading State -->
     <div
       v-if="bridge.status.value === 'loading'"
-      class="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 text-white z-20"
+      class="absolute inset-0 flex flex-col items-center justify-center bg-surface-950 text-white z-20"
     >
-      <div class="text-6xl mb-6 animate-bounce">🌏</div>
-      <h2 class="text-2xl font-bold mb-2">Loading LinguaWorld...</h2>
-      <p class="text-gray-400 mb-6">Preparing your adventure</p>
-      <div class="w-64 h-2 bg-gray-700 rounded-full overflow-hidden">
-        <div class="h-full bg-primary-500 rounded-full animate-pulse" style="width: 60%" />
+      <div class="w-16 h-16 rounded-3xl bg-brand-600/15 border border-brand-500/30 flex items-center justify-center text-brand-400 mb-6 animate-bounce shadow-glow-brand">
+        <Gamepad2 :size="32" aria-hidden="true" />
+      </div>
+      <h2 class="text-2xl font-black font-heading mb-2">Đang Khởi Tạo Thế Giới 2D...</h2>
+      <p class="text-slate-400 text-sm mb-6">Kết nối Godot 4.6 Web Assembly Canvas</p>
+      <div class="w-64 h-2.5 bg-surface-850 rounded-full overflow-hidden border border-surface-750">
+        <div class="h-full bg-gradient-to-r from-brand-500 to-gold-400 rounded-full animate-pulse" style="width: 75%" />
       </div>
     </div>
 
     <!-- Error State -->
     <div
       v-else-if="bridge.status.value === 'error'"
-      class="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 text-white z-20"
+      class="absolute inset-0 flex flex-col items-center justify-center bg-surface-950 text-white z-20 p-6 text-center"
     >
-      <div class="text-6xl mb-6">⚠️</div>
-      <h2 class="text-2xl font-bold mb-2">Failed to Load Game</h2>
-      <p class="text-gray-400 mb-6 max-w-md text-center">
-        {{ bridge.error.value || 'The game could not be loaded. Please try again.' }}
+      <div class="w-16 h-16 rounded-3xl bg-brand-950/80 border border-brand-800 flex items-center justify-center text-brand-400 mb-6">
+        <AlertTriangle :size="32" aria-hidden="true" />
+      </div>
+      <h2 class="text-2xl font-black font-heading mb-2">Không Thể Tải Thế Giới 2D</h2>
+      <p class="text-slate-400 text-sm mb-8 max-w-md">
+        {{ bridge.error.value || 'Gặp sự cố khi khởi tạo WebAssembly. Vui lòng thử lại.' }}
       </p>
-      <div class="flex gap-4">
+      <div class="flex flex-wrap gap-3.5 justify-center">
         <button
-          class="px-6 py-3 bg-primary-600 text-white rounded-xl font-semibold hover:bg-primary-700 transition-colors"
+          type="button"
+          class="min-h-[48px] px-6 py-3 bg-brand-600 text-white rounded-xl font-bold text-sm hover:bg-brand-500 shadow-glow-brand transition-all flex items-center gap-2 cursor-pointer"
           @click="handleRetry"
         >
-          🔄 Retry
+          <RotateCcw :size="16" aria-hidden="true" />
+          <span>Thử lại</span>
         </button>
         <NuxtLink
           to="/"
-          class="px-6 py-3 bg-gray-700 text-white rounded-xl font-semibold hover:bg-gray-600 transition-colors"
+          class="min-h-[48px] px-6 py-3 bg-surface-800 text-slate-200 border border-surface-700 rounded-xl font-bold text-sm hover:bg-surface-750 transition-colors flex items-center gap-2 cursor-pointer"
         >
-          🏠 Go Home
+          <Home :size="16" aria-hidden="true" />
+          <span>Về trang chủ</span>
         </NuxtLink>
       </div>
     </div>
@@ -57,24 +64,31 @@
       <!-- Back button -->
       <NuxtLink
         to="/"
-        class="pointer-events-auto px-3 py-1.5 bg-black/50 backdrop-blur-sm text-white rounded-lg text-sm font-medium hover:bg-black/70 transition-colors"
+        class="pointer-events-auto min-h-[40px] px-3.5 py-1.5 bg-surface-950/80 border border-surface-750 backdrop-blur-md text-white rounded-xl text-xs font-bold hover:bg-surface-900 transition-colors flex items-center gap-1.5 shadow-sm"
       >
-        ← Exit World
+        <ArrowLeft :size="14" aria-hidden="true" />
+        <span>Thoát thế giới</span>
       </NuxtLink>
 
       <!-- Status indicator -->
       <div
-        class="pointer-events-auto px-3 py-1.5 bg-black/50 backdrop-blur-sm text-green-400 rounded-lg text-sm font-medium flex items-center gap-2"
+        class="pointer-events-auto px-3.5 py-1.5 bg-surface-950/80 border border-surface-750 backdrop-blur-md text-emerald-400 rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm"
       >
-        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-        Connected
+        <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+        <span>Godot Bridge: Đã kết nối</span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { GodotToNuxtEvent } from '@linguaworld/shared-types';
+import {
+  Gamepad2,
+  AlertTriangle,
+  RotateCcw,
+  Home,
+  ArrowLeft,
+} from 'lucide-vue-next';
 
 definePageMeta({
   layout: 'game',
@@ -83,42 +97,14 @@ definePageMeta({
 const router = useRouter();
 const gameIframeRef = ref<HTMLIFrameElement | null>(null);
 
-// Game iframe source — served from public/game/
 const gameIframeSrc = '/game/index.html';
-
-// Initialize the game bridge composable
 const bridge = useGameBridge(gameIframeRef);
 
-// Handle iframe load event
 function handleIframeLoad() {
   console.log('[World] Game iframe loaded');
 }
 
-// Retry loading the game
 function handleRetry() {
   bridge.retry();
 }
-
-// Listen for game events
-bridge.on(GodotToNuxtEvent.INTERACT_NPC, (payload) => {
-  console.log('[World] NPC interaction:', payload);
-  // TODO Phase 1: Open NPC dialogue modal
-});
-
-bridge.on(GodotToNuxtEvent.ENTER_REGION, (payload) => {
-  console.log('[World] Entered region:', payload);
-  // TODO Phase 1: Update region display in HUD
-});
-
-bridge.on(GodotToNuxtEvent.START_COMBAT, (payload) => {
-  console.log('[World] Combat started:', payload);
-  // TODO Phase 1: Navigate to combat route or overlay
-});
-
-bridge.on(GodotToNuxtEvent.OPEN_APP_ROUTE, (payload) => {
-  console.log('[World] Game requested route:', payload);
-  if (payload?.route) {
-    router.push(payload.route);
-  }
-});
 </script>

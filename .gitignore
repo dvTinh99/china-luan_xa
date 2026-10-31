@@ -31,7 +31,8 @@ npm-debug.log*
 
 # Prisma
 database/prisma/migrations/
-database/prisma/*.db
+*.db
+*.db-journal
 
 # Godot
 apps/game/.godot/

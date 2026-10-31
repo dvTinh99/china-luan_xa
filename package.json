@@ -12,10 +12,14 @@
     "build": "turbo run build",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
-    "db:generate": "cd database/prisma && npx prisma generate",
-    "db:migrate": "cd database/prisma && npx prisma migrate dev",
-    "db:push": "cd database/prisma && npx prisma db push",
-    "db:studio": "cd database/prisma && npx prisma studio",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "db:generate": "prisma generate --schema=./database/prisma/schema.prisma",
+    "db:push": "prisma db push --schema=./database/prisma/schema.prisma",
+    "db:migrate": "prisma migrate dev --schema=./database/prisma/schema.prisma",
+    "db:studio": "prisma studio --schema=./database/prisma/schema.prisma",
+    "db:seed": "node database/prisma/seed.mjs",
     "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {

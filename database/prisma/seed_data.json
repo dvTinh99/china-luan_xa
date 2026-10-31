@@ -1,0 +1,851 @@
+[
+  {
+    "simplified": "你",
+    "reading": "nǐ",
+    "meaning": "bạn; anh; em (ngôi thứ hai)",
+    "partOfSpeech": "đại từ",
+    "unit": 1,
+    "example": { "zh": "你好！", "pinyin": "Nǐ hǎo!", "vi": "Chào bạn!" }
+  },
+  {
+    "simplified": "好",
+    "reading": "hǎo",
+    "meaning": "tốt; khỏe; hay",
+    "partOfSpeech": "tính từ",
+    "unit": 1,
+    "example": { "zh": "今天天气很好。", "pinyin": "Jīntiān tiānqì hěn hǎo.", "vi": "Hôm nay thời tiết rất đẹp." }
+  },
+  {
+    "simplified": "您",
+    "reading": "nín",
+    "meaning": "ngài; ông; bà (kính ngữ)",
+    "partOfSpeech": "đại từ",
+    "unit": 1,
+    "example": { "zh": "您好，老师！", "pinyin": "Nín hǎo, lǎoshī!", "vi": "Em chào thầy/cô ạ!" }
+  },
+  {
+    "simplified": "我",
+    "reading": "wǒ",
+    "meaning": "tôi; tớ; mình",
+    "partOfSpeech": "đại từ",
+    "unit": 1,
+    "example": { "zh": "我是学生。", "pinyin": "Wǒ shì xuésheng.", "vi": "Tôi là học sinh." }
+  },
+  {
+    "simplified": "我们",
+    "reading": "wǒmen",
+    "meaning": "chúng tôi; chúng ta",
+    "partOfSpeech": "đại từ",
+    "unit": 1,
+    "example": { "zh": "我们都是朋友。", "pinyin": "Wǒmen dōu shì péngyou.", "vi": "Chúng tôi đều là bạn bè." }
+  },
+  {
+    "simplified": "他",
+    "reading": "tā",
+    "meaning": "anh ấy; cậu ấy; ông ấy",
+    "partOfSpeech": "đại từ",
+    "unit": 1,
+    "example": { "zh": "他是中国人。", "pinyin": "Tā shì Zhōngguó rén.", "vi": "Anh ấy là người Trung Quốc." }
+  },
+  {
+    "simplified": "她",
+    "reading": "tā",
+    "meaning": "cô ấy; chị ấy; bà ấy",
+    "partOfSpeech": "đại từ",
+    "unit": 1,
+    "example": { "zh": "她是我的老师。", "pinyin": "Tā shì wǒ de lǎoshī.", "vi": "Cô ấy là giáo viên của tôi." }
+  },
+  {
+    "simplified": "叫",
+    "reading": "jiào",
+    "meaning": "gọi là; tên là",
+    "partOfSpeech": "động từ",
+    "unit": 1,
+    "example": { "zh": "你叫什么名字？", "pinyin": "Nǐ jiào shénme míngzi?", "vi": "Bạn tên là gì?" }
+  },
+  {
+    "simplified": "什么",
+    "reading": "shénme",
+    "meaning": "cái gì; gì",
+    "partOfSpeech": "đại từ",
+    "unit": 1,
+    "example": { "zh": "这是什么？", "pinyin": "Zhè shì shénme?", "vi": "Đây là cái gì?" }
+  },
+  {
+    "simplified": "名字",
+    "reading": "míngzi",
+    "meaning": "tên; danh tính",
+    "partOfSpeech": "danh từ",
+    "unit": 1,
+    "example": { "zh": "我的名字叫李明。", "pinyin": "Wǒ de míngzi jiào Lǐ Míng.", "vi": "Tên tôi là Lý Minh." }
+  },
+  {
+    "simplified": "是",
+    "reading": "shì",
+    "meaning": "là; phải; đúng",
+    "partOfSpeech": "động từ",
+    "unit": 1,
+    "example": { "zh": "他是医生。", "pinyin": "Tā shì yīshēng.", "vi": "Anh ấy là bác sĩ." }
+  },
+  {
+    "simplified": "不",
+    "reading": "bù",
+    "meaning": "không; chẳng",
+    "partOfSpeech": "phó từ",
+    "unit": 1,
+    "example": { "zh": "我不是老师。", "pinyin": "Wǒ bú shì lǎoshī.", "vi": "Tôi không phải là giáo viên." }
+  },
+  {
+    "simplified": "老师",
+    "reading": "lǎoshī",
+    "meaning": "thầy giáo; cô giáo",
+    "partOfSpeech": "danh từ",
+    "unit": 1,
+    "example": { "zh": "王老师在学校。", "pinyin": "Wáng lǎoshī zài xuéxiào.", "vi": "Thầy Vương đang ở trường học." }
+  },
+  {
+    "simplified": "学生",
+    "reading": "xuésheng",
+    "meaning": "học sinh; sinh viên",
+    "partOfSpeech": "danh từ",
+    "unit": 1,
+    "example": { "zh": "他们都是好学生。", "pinyin": "Tāmen dōu shì hǎo xuésheng.", "vi": "Họ đều là những học sinh giỏi." }
+  },
+  {
+    "simplified": "人",
+    "reading": "rén",
+    "meaning": "người",
+    "partOfSpeech": "danh từ",
+    "unit": 1,
+    "example": { "zh": "这里有很多人。", "pinyin": "Zhèlǐ yǒu hěn duō rén.", "vi": "Ở đây có rất nhiều người." }
+  },
+  {
+    "simplified": "中国",
+    "reading": "Zhōngguó",
+    "meaning": "Trung Quốc",
+    "partOfSpeech": "danh từ",
+    "unit": 1,
+    "example": { "zh": "我想去中国旅游。", "pinyin": "Wǒ xiǎng qù Zhōngguó lǚyóu.", "vi": "Tôi muốn đi du lịch Trung Quốc." }
+  },
+  {
+    "simplified": "越南",
+    "reading": "Yuènán",
+    "meaning": "Việt Nam",
+    "partOfSpeech": "danh từ",
+    "unit": 1,
+    "example": { "zh": "我家在越南。", "pinyin": "Wǒ jiā zài Yuènán.", "vi": "Nhà tôi ở Việt Nam." }
+  },
+  {
+    "simplified": "朋友",
+    "reading": "péngyou",
+    "meaning": "bạn bè",
+    "partOfSpeech": "danh từ",
+    "unit": 1,
+    "example": { "zh": "他是我的好朋友。", "pinyin": "Tā shì wǒ de hǎo péngyou.", "vi": "Anh ấy là bạn thân của tôi." }
+  },
+  {
+    "simplified": "谢谢",
+    "reading": "xièxie",
+    "meaning": "cảm ơn",
+    "partOfSpeech": "động từ",
+    "unit": 1,
+    "example": { "zh": "谢谢你的帮助！", "pinyin": "Xièxie nǐ de bāngzhù!", "vi": "Cảm ơn sự giúp đỡ của bạn!" }
+  },
+  {
+    "simplified": "不客气",
+    "reading": "bú kèqi",
+    "meaning": "đừng khách sáo; không có gì",
+    "partOfSpeech": "cụm từ",
+    "unit": 1,
+    "example": { "zh": "不用谢，不客气。", "pinyin": "Bú yòng xiè, bú kèqi.", "vi": "Không cần cảm ơn, đừng khách sáo." }
+  },
+  {
+    "simplified": "再见",
+    "reading": "zàijiàn",
+    "meaning": "tạm biệt; hẹn gặp lại",
+    "partOfSpeech": "động từ",
+    "unit": 1,
+    "example": { "zh": "明天见，再见！", "pinyin": "Míngtiān jiàn, zàijiàn!", "vi": "Ngày mai gặp nhé, tạm biệt!" }
+  },
+  {
+    "simplified": "对不起",
+    "reading": "duìbuqǐ",
+    "meaning": "xin lỗi",
+    "partOfSpeech": "động từ",
+    "unit": 1,
+    "example": { "zh": "对不起，我迟到了。", "pinyin": "Duìbuqǐ, wǒ chídào le.", "vi": "Xin lỗi, tôi đến muộn rồi." }
+  },
+  {
+    "simplified": "没关系",
+    "reading": "méi guānxi",
+    "meaning": "không sao; không vấn đề gì",
+    "partOfSpeech": "cụm từ",
+    "unit": 1,
+    "example": { "zh": "没关系，慢慢来。", "pinyin": "Méi guānxi, mànmàn lái.", "vi": "Không sao đâu, cứ từ từ thôi." }
+  },
+  {
+    "simplified": "一",
+    "reading": "yī",
+    "meaning": "số một; 1",
+    "partOfSpeech": "số từ",
+    "unit": 2,
+    "example": { "zh": "我有一个苹果。", "pinyin": "Wǒ yǒu yí gè píngguǒ.", "vi": "Tôi có một quả táo." }
+  },
+  {
+    "simplified": "二",
+    "reading": "èr",
+    "meaning": "số hai; 2",
+    "partOfSpeech": "số từ",
+    "unit": 2,
+    "example": { "zh": "现在两点了。", "pinyin": "Xiànzài liǎng diǎn le.", "vi": "Bây giờ hai giờ rồi." }
+  },
+  {
+    "simplified": "三",
+    "reading": "sān",
+    "meaning": "số ba; 3",
+    "partOfSpeech": "số từ",
+    "unit": 2,
+    "example": { "zh": "三月春天到了。", "pinyin": "Sānyuè chūntiān dào le.", "vi": "Tháng ba mùa xuân đã đến." }
+  },
+  {
+    "simplified": "四",
+    "reading": "sì",
+    "meaning": "số bốn; 4",
+    "partOfSpeech": "số từ",
+    "unit": 2,
+    "example": { "zh": "桌子有四条腿。", "pinyin": "Zhuōzi yǒu sì tiáo tuǐ.", "vi": "Cái bàn có bốn cái chân." }
+  },
+  {
+    "simplified": "五",
+    "reading": "wǔ",
+    "meaning": "số năm; 5",
+    "partOfSpeech": "số từ",
+    "unit": 2,
+    "example": { "zh": "星期五我们去电影院。", "pinyin": "Xīngqīwǔ wǒmen qù diànyǐngyuàn.", "vi": "Thứ sáu chúng tôi đi rạp chiếu phim." }
+  },
+  {
+    "simplified": "六",
+    "reading": "liù",
+    "meaning": "số sáu; 6",
+    "partOfSpeech": "số từ",
+    "unit": 2,
+    "example": { "zh": "一星期有七天。", "pinyin": "Yī xīngqī yǒu qī tiān.", "vi": "Một tuần có bảy ngày." }
+  },
+  {
+    "simplified": "七",
+    "reading": "qī",
+    "meaning": "số bảy; 7",
+    "partOfSpeech": "số từ",
+    "unit": 2,
+    "example": { "zh": "他每天七点起床。", "pinyin": "Tā měitiān qī diǎn qǐchuáng.", "vi": "Anh ấy thức dậy lúc 7 giờ mỗi ngày." }
+  },
+  {
+    "simplified": "八",
+    "reading": "bā",
+    "meaning": "số tám; 8",
+    "partOfSpeech": "số từ",
+    "unit": 2,
+    "example": { "zh": "八在中国是幸运数字。", "pinyin": "Bā zài Zhōngguó shì xìngyùn shùzì.", "vi": "Số tám ở Trung Quốc là con số may mắn." }
+  },
+  {
+    "simplified": "九",
+    "reading": "jiǔ",
+    "meaning": "số chín; 9",
+    "partOfSpeech": "số từ",
+    "unit": 2,
+    "example": { "zh": "九月开学了。", "pinyin": "Jiǔyuè kāixué le.", "vi": "Tháng chín bắt đầu năm học mới." }
+  },
+  {
+    "simplified": "十",
+    "reading": "shí",
+    "meaning": "số mười; 10",
+    "partOfSpeech": "số từ",
+    "unit": 2,
+    "example": { "zh": "我有十本书。", "pinyin": "Wǒ yǒu shí běn shū.", "vi": "Tôi có mười quyển sách." }
+  },
+  {
+    "simplified": "百",
+    "reading": "bǎi",
+    "meaning": "trăm; 100",
+    "partOfSpeech": "số từ",
+    "unit": 2,
+    "example": { "zh": "这件衣服一百块。", "pinyin": "Zhè jiàn yīfu yì bǎi kuài.", "vi": "Bộ quần áo này một trăm tệ." }
+  },
+  {
+    "simplified": "千",
+    "reading": "qiān",
+    "meaning": "nghìn; 1000",
+    "partOfSpeech": "số từ",
+    "unit": 2,
+    "example": { "zh": "学校有一千个学生。", "pinyin": "Xuéxiào yǒu yì qiān gè xuésheng.", "vi": "Trường học có một nghìn học sinh." }
+  },
+  {
+    "simplified": "钱",
+    "reading": "qián",
+    "meaning": "tiền bạc",
+    "partOfSpeech": "danh từ",
+    "unit": 2,
+    "example": { "zh": "这个多少钱？", "pinyin": "Zhège duōshao qián?", "vi": "Cái này bao nhiêu tiền?" }
+  },
+  {
+    "simplified": "块",
+    "reading": "kuài",
+    "meaning": "đồng; tệ (tiền tệ)",
+    "partOfSpeech": "lượng từ",
+    "unit": 2,
+    "example": { "zh": "一杯茶五块钱。", "pinyin": "Yì bēi chá wǔ kuài qián.", "vi": "Một tách trà năm đồng." }
+  },
+  {
+    "simplified": "几",
+    "reading": "jǐ",
+    "meaning": "mấy; vài",
+    "partOfSpeech": "đại từ",
+    "unit": 2,
+    "example": { "zh": "现在几点了？", "pinyin": "Xiànzài jǐ diǎn le?", "vi": "Bây giờ mấy giờ rồi?" }
+  },
+  {
+    "simplified": "多少",
+    "reading": "duōshao",
+    "meaning": "bao nhiêu",
+    "partOfSpeech": "đại từ",
+    "unit": 2,
+    "example": { "zh": "你们班有多少学生？", "pinyin": "Nǐmen bān yǒu duōshao xuésheng?", "vi": "Lớp các bạn có bao nhiêu học sinh?" }
+  },
+  {
+    "simplified": "今天",
+    "reading": "jīntiān",
+    "meaning": "hôm nay",
+    "partOfSpeech": "danh từ",
+    "unit": 2,
+    "example": { "zh": "今天是星期一。", "pinyin": "Jīntiān shì xīngqīyī.", "vi": "Hôm nay là thứ hai." }
+  },
+  {
+    "simplified": "明天",
+    "reading": "míngtiān",
+    "meaning": "ngày mai",
+    "partOfSpeech": "danh từ",
+    "unit": 2,
+    "example": { "zh": "明天你来我家吗？", "pinyin": "Míngtiān nǐ lái wǒ jiā ma?", "vi": "Ngày mai bạn đến nhà tôi nhé?" }
+  },
+  {
+    "simplified": "昨天",
+    "reading": "zuótiān",
+    "meaning": "hôm qua",
+    "partOfSpeech": "danh từ",
+    "unit": 2,
+    "example": { "zh": "昨天天气很冷。", "pinyin": "Zuótiān tiānqì hěn lěng.", "vi": "Hôm qua trời rất lạnh." }
+  },
+  {
+    "simplified": "年",
+    "reading": "nián",
+    "meaning": "năm",
+    "partOfSpeech": "danh từ",
+    "unit": 2,
+    "example": { "zh": "我在中国住了一年。", "pinyin": "Wǒ zài Zhōngguó zhù le yì nián.", "vi": "Tôi đã sống ở Trung Quốc một năm." }
+  },
+  {
+    "simplified": "月",
+    "reading": "yuè",
+    "meaning": "tháng; mặt trăng",
+    "partOfSpeech": "danh từ",
+    "unit": 2,
+    "example": { "zh": "八月十五是中秋节。", "pinyin": "Bāyuè shíwǔ shì Zhōngqiūjié.", "vi": "Rằm tháng tám là Tết Trung Thu." }
+  },
+  {
+    "simplified": "日",
+    "reading": "rì",
+    "meaning": "ngày; mặt trời",
+    "partOfSpeech": "danh từ",
+    "unit": 2,
+    "example": { "zh": "今天是十月一日。", "pinyin": "Jīntiān shì shí yuè yī rì.", "vi": "Hôm nay là ngày 1 tháng 10." }
+  },
+  {
+    "simplified": "星期",
+    "reading": "xīngqī",
+    "meaning": "tuần; thứ",
+    "partOfSpeech": "danh từ",
+    "unit": 2,
+    "example": { "zh": "这个星期我很忙。", "pinyin": "Zhège xīngqī wǒ hěn máng.", "vi": "Tuần này tôi rất bận." }
+  },
+  {
+    "simplified": "岁",
+    "reading": "suì",
+    "meaning": "tuổi",
+    "partOfSpeech": "lượng từ",
+    "unit": 2,
+    "example": { "zh": "李老师今年四十岁。", "pinyin": "Lǐ lǎoshī jīnnián sìshí suì.", "vi": "Thầy Lý năm nay 40 tuổi." }
+  },
+  {
+    "simplified": "现在",
+    "reading": "xiànzài",
+    "meaning": "bây giờ; hiện tại",
+    "partOfSpeech": "danh từ",
+    "unit": 2,
+    "example": { "zh": "现在我们去上课。", "pinyin": "Xiànzài wǒmen qù shàngkè.", "vi": "Bây giờ chúng ta đi vào lớp." }
+  },
+  {
+    "simplified": "点",
+    "reading": "diǎn",
+    "meaning": "giờ; giọt; chút",
+    "partOfSpeech": "lượng từ",
+    "unit": 2,
+    "example": { "zh": "下午三点见。", "pinyin": "Xiàwǔ sān diǎn jiàn.", "vi": "3 giờ chiều gặp nhé." }
+  },
+  {
+    "simplified": "分",
+    "reading": "fēn",
+    "meaning": "phút; chia",
+    "partOfSpeech": "lượng từ",
+    "unit": 2,
+    "example": { "zh": "现在八点十五分。", "pinyin": "Xiànzài bā diǎn shíwǔ fēn.", "vi": "Bây giờ là 8 giờ 15 phút." }
+  },
+  {
+    "simplified": "爸爸",
+    "reading": "bàba",
+    "meaning": "bố; cha; ba",
+    "partOfSpeech": "danh từ",
+    "unit": 3,
+    "example": { "zh": "我爸爸喜欢喝茶。", "pinyin": "Wǒ bàba xǐhuan hē chá.", "vi": "Bố tôi thích uống trà." }
+  },
+  {
+    "simplified": "妈妈",
+    "reading": "māma",
+    "meaning": "mẹ; má",
+    "partOfSpeech": "danh từ",
+    "unit": 3,
+    "example": { "zh": "妈妈做的菜很好吃。", "pinyin": "Māma zuò de cài hěn hǎochī.", "vi": "Món mẹ nấu rất ngon." }
+  },
+  {
+    "simplified": "儿子",
+    "reading": "érzi",
+    "meaning": "con trai",
+    "partOfSpeech": "danh từ",
+    "unit": 3,
+    "example": { "zh": "他儿子是一名大学生。", "pinyin": "Tā érzi shì yì míng dàxuéshēng.", "vi": "Con trai anh ấy là sinh viên đại học." }
+  },
+  {
+    "simplified": "女儿",
+    "reading": "nǚ'ér",
+    "meaning": "con gái",
+    "partOfSpeech": "danh từ",
+    "unit": 3,
+    "example": { "zh": "我女儿今年五岁。", "pinyin": "Wǒ nǚ'ér jīnnián wǔ suì.", "vi": "Con gái tôi năm nay 5 tuổi." }
+  },
+  {
+    "simplified": "家",
+    "reading": "jiā",
+    "meaning": "nhà; gia đình",
+    "partOfSpeech": "danh từ",
+    "unit": 3,
+    "example": { "zh": "我家有四口人。", "pinyin": "Wǒ jiā yǒu sì kǒu rén.", "vi": "Gia đình tôi có bốn người." }
+  },
+  {
+    "simplified": "有",
+    "reading": "yǒu",
+    "meaning": "có; sở hữu",
+    "partOfSpeech": "động từ",
+    "unit": 3,
+    "example": { "zh": "你有一只猫吗？", "pinyin": "Nǐ yǒu yì zhī māo ma?", "vi": "Bạn có một con mèo không?" }
+  },
+  {
+    "simplified": "没",
+    "reading": "méi",
+    "meaning": "chưa; không có",
+    "partOfSpeech": "phó từ",
+    "unit": 3,
+    "example": { "zh": "我没有自行车。", "pinyin": "Wǒ méiyǒu zìxíngchē.", "vi": "Tôi không có xe đạp." }
+  },
+  {
+    "simplified": "个",
+    "reading": "gè",
+    "meaning": "cái; con; người (lượng từ phổ biến)",
+    "partOfSpeech": "lượng từ",
+    "unit": 3,
+    "example": { "zh": "这两个学生都很努力。", "pinyin": "Zhè liǎng gè xuésheng dōu hěn nǔlì.", "vi": "Hai học sinh này đều rất chăm chỉ." }
+  },
+  {
+    "simplified": "这",
+    "reading": "zhè",
+    "meaning": "đây; này",
+    "partOfSpeech": "đại từ",
+    "unit": 3,
+    "example": { "zh": "这是我的汉语书。", "pinyin": "Zhè shì wǒ de hànyǔ shū.", "vi": "Đây là sách tiếng Trung của tôi." }
+  },
+  {
+    "simplified": "那",
+    "reading": "nà",
+    "meaning": "kia; đó",
+    "partOfSpeech": "đại từ",
+    "unit": 3,
+    "example": { "zh": "那是你的电脑吗？", "pinyin": "Nà shì nǐ de diànnǎo ma?", "vi": "Kia có phải là máy tính của bạn không?" }
+  },
+  {
+    "simplified": "书",
+    "reading": "shū",
+    "meaning": "sách; cuốn sách",
+    "partOfSpeech": "danh từ",
+    "unit": 3,
+    "example": { "zh": "桌子上有一本书。", "pinyin": "Zhuōzi shang yǒu yì běn shū.", "vi": "Trên bàn có một cuốn sách." }
+  },
+  {
+    "simplified": "吃",
+    "reading": "chī",
+    "meaning": "ăn",
+    "partOfSpeech": "động từ",
+    "unit": 4,
+    "example": { "zh": "你想吃什么？", "pinyin": "Nǐ xiǎng chī shénme?", "vi": "Bạn muốn ăn gì?" }
+  },
+  {
+    "simplified": "喝",
+    "reading": "hē",
+    "meaning": "uống",
+    "partOfSpeech": "động từ",
+    "unit": 4,
+    "example": { "zh": "请喝茶。", "pinyin": "Qǐng hē chá.", "vi": "Mời uống trà." }
+  },
+  {
+    "simplified": "茶",
+    "reading": "chá",
+    "meaning": "trà; chè",
+    "partOfSpeech": "danh từ",
+    "unit": 4,
+    "example": { "zh": "中国人喜欢喝绿茶。", "pinyin": "Zhōngguó rén xǐhuan hē lǜchá.", "vi": "Người Trung Quốc thích uống trà xanh." }
+  },
+  {
+    "simplified": "水",
+    "reading": "shuǐ",
+    "meaning": "nước; chất lỏng",
+    "partOfSpeech": "danh từ",
+    "unit": 4,
+    "example": { "zh": "多喝水对身体好。", "pinyin": "Duō hē shuǐ duì shēntǐ hǎo.", "vi": "Uống nhiều nước rất tốt cho sức khỏe." }
+  },
+  {
+    "simplified": "米饭",
+    "reading": "mǐfàn",
+    "meaning": "cơm trắng",
+    "partOfSpeech": "danh từ",
+    "unit": 4,
+    "example": { "zh": "今天中午我吃米饭。", "pinyin": "Jīntiān zhōngwǔ wǒ chī mǐfàn.", "vi": "Trưa nay tôi ăn cơm trắng." }
+  },
+  {
+    "simplified": "菜",
+    "reading": "cài",
+    "meaning": "món ăn; rau củ",
+    "partOfSpeech": "danh từ",
+    "unit": 4,
+    "example": { "zh": "中国菜很有名。", "pinyin": "Zhōngguó cài hěn yǒumíng.", "vi": "Món ăn Trung Quốc rất nổi tiếng." }
+  },
+  {
+    "simplified": "苹果",
+    "reading": "píngguǒ",
+    "meaning": "quả táo",
+    "partOfSpeech": "danh từ",
+    "unit": 4,
+    "example": { "zh": "这个苹果又大又甜。", "pinyin": "Zhège píngguǒ yòu dà yòu tián.", "vi": "Quả táo này vừa to vừa ngọt." }
+  },
+  {
+    "simplified": "水果",
+    "reading": "shuǐguǒ",
+    "meaning": "trái cây; hoa quả",
+    "partOfSpeech": "danh từ",
+    "unit": 4,
+    "example": { "zh": "夏天有很多新鲜水果。", "pinyin": "Xiàtiān yǒu hěn duō xīnxiān shuǐguǒ.", "vi": "Mùa hè có rất nhiều hoa quả tươi ngon." }
+  },
+  {
+    "simplified": "买",
+    "reading": "mǎi",
+    "meaning": "mua",
+    "partOfSpeech": "động từ",
+    "unit": 4,
+    "example": { "zh": "我想买一瓶水。", "pinyin": "Wǒ xiǎng mǎi yì píng shuǐ.", "vi": "Tôi muốn mua một chai nước." }
+  },
+  {
+    "simplified": "卖",
+    "reading": "mài",
+    "meaning": "bán",
+    "partOfSpeech": "động từ",
+    "unit": 4,
+    "example": { "zh": "这家商店卖很多书。", "pinyin": "Zhè jiā shāngdiàn mài hěn duō shū.", "vi": "Cửa hàng này bán rất nhiều sách." }
+  },
+  {
+    "simplified": "喜欢",
+    "reading": "xǐhuan",
+    "meaning": "thích; yêu thích",
+    "partOfSpeech": "động từ",
+    "unit": 4,
+    "example": { "zh": "我喜欢学中文。", "pinyin": "Wǒ xǐhuan xué Zhōngwén.", "vi": "Tôi thích học tiếng Trung." }
+  },
+  {
+    "simplified": "想",
+    "reading": "xiǎng",
+    "meaning": "muốn; nhớ; suy nghĩ",
+    "partOfSpeech": "động từ",
+    "unit": 4,
+    "example": { "zh": "我想回家休息。", "pinyin": "Wǒ xiǎng huí jiā xiūxi.", "vi": "Tôi muốn về nhà nghỉ ngơi." }
+  },
+  {
+    "simplified": "看",
+    "reading": "kàn",
+    "meaning": "xem; nhìn; đọc",
+    "partOfSpeech": "động từ",
+    "unit": 5,
+    "example": { "zh": "他在看电影。", "pinyin": "Tā zài kàn diànyǐng.", "vi": "Anh ấy đang xem phim." }
+  },
+  {
+    "simplified": "听",
+    "reading": "tīng",
+    "meaning": "nghe",
+    "partOfSpeech": "động từ",
+    "unit": 5,
+    "example": { "zh": "请认真听老师讲课。", "pinyin": "Qǐng rènzhēn tīng lǎoshī jiǎngkè.", "vi": "Xin hãy chú ý lắng nghe cô giáo giảng bài." }
+  },
+  {
+    "simplified": "说",
+    "reading": "shuō",
+    "meaning": "nói",
+    "partOfSpeech": "động từ",
+    "unit": 5,
+    "example": { "zh": "你会说汉语吗？", "pinyin": "Nǐ huì shuō Hànyǔ ma?", "vi": "Bạn biết nói tiếng Trung không?" }
+  },
+  {
+    "simplified": "读",
+    "reading": "dú",
+    "meaning": "đọc (thành tiếng); học",
+    "partOfSpeech": "động từ",
+    "unit": 5,
+    "example": { "zh": "跟我一起读生词。", "pinyin": "Gēn wǒ yìqǐ dú shēngcí.", "vi": "Cùng tôi đọc từ mới nào." }
+  },
+  {
+    "simplified": "写",
+    "reading": "xiě",
+    "meaning": "viết",
+    "partOfSpeech": "động từ",
+    "unit": 5,
+    "example": { "zh": "他在写汉字。", "pinyin": "Tā zài xiě hànzì.", "vi": "Cậu ấy đang viết chữ Hán." }
+  },
+  {
+    "simplified": "学",
+    "reading": "xué",
+    "meaning": "học; bắt chước",
+    "partOfSpeech": "động từ",
+    "unit": 5,
+    "example": { "zh": "我们每天学新汉字。", "pinyin": "Wǒmen měitiān xué xīn hànzì.", "vi": "Chúng tôi học chữ Hán mới mỗi ngày." }
+  },
+  {
+    "simplified": "学习",
+    "reading": "xuéxí",
+    "meaning": "học tập; rèn luyện",
+    "partOfSpeech": "động từ",
+    "unit": 5,
+    "example": { "zh": "好好学习，天天向上。", "pinyin": "Hǎohǎo xuéxí, tiāntiān xiàngshàng.", "vi": "Học tập thật tốt, ngày ngày tiến bộ." }
+  },
+  {
+    "simplified": "汉字",
+    "reading": "hànzì",
+    "meaning": "chữ Hán",
+    "partOfSpeech": "danh từ",
+    "unit": 5,
+    "example": { "zh": "汉字很有意思。", "pinyin": "Hànzì hěn yǒu yìsi.", "vi": "Chữ Hán rất thú vị." }
+  },
+  {
+    "simplified": "汉语",
+    "reading": "hànyǔ",
+    "meaning": "tiếng Hán; tiếng Trung",
+    "partOfSpeech": "danh từ",
+    "unit": 5,
+    "example": { "zh": "汉语难不难？", "pinyin": "Hànyǔ nán bu nán?", "vi": "Tiếng Trung có khó không?" }
+  },
+  {
+    "simplified": "去",
+    "reading": "qù",
+    "meaning": "đi",
+    "partOfSpeech": "động từ",
+    "unit": 5,
+    "example": { "zh": "你去哪里？", "pinyin": "Nǐ qù nǎlǐ?", "vi": "Bạn đi đâu đấy?" }
+  },
+  {
+    "simplified": "来",
+    "reading": "lái",
+    "meaning": "đến; lại đây",
+    "partOfSpeech": "động từ",
+    "unit": 5,
+    "example": { "zh": "欢迎来中国！", "pinyin": "Huānyíng lái Zhōngguó!", "vi": "Chào mừng đến với Trung Quốc!" }
+  },
+  {
+    "simplified": "回",
+    "reading": "huí",
+    "meaning": "về; quay lại",
+    "partOfSpeech": "động từ",
+    "unit": 5,
+    "example": { "zh": "我想回家了。", "pinyin": "Wǒ xiǎng huí jiā le.", "vi": "Tôi muốn về nhà rồi." }
+  },
+  {
+    "simplified": "在",
+    "reading": "zài",
+    "meaning": "ở; tại; đang",
+    "partOfSpeech": "động từ",
+    "unit": 5,
+    "example": { "zh": "爸爸在家看书。", "pinyin": "Bàba zài jiā kàn shū.", "vi": "Bố đang ở nhà đọc sách." }
+  },
+  {
+    "simplified": "哪儿",
+    "reading": "nǎr",
+    "meaning": "ở đâu; chỗ nào",
+    "partOfSpeech": "đại từ",
+    "unit": 5,
+    "example": { "zh": "洗手间在哪儿？", "pinyin": "Xǐshǒujiān zài nǎr?", "vi": "Nhà vệ sinh ở đâu vậy?" }
+  },
+  {
+    "simplified": "学校",
+    "reading": "xuéxiào",
+    "meaning": "trường học",
+    "partOfSpeech": "danh từ",
+    "unit": 5,
+    "example": { "zh": "我们的学校很大。", "pinyin": "Wǒmen de xuéxiào hěn dà.", "vi": "Trường học của chúng tôi rất lớn." }
+  },
+  {
+    "simplified": "医院",
+    "reading": "yīyuàn",
+    "meaning": "bệnh viện",
+    "partOfSpeech": "danh từ",
+    "unit": 5,
+    "example": { "zh": "医生在医院工作。", "pinyin": "Yīshēng zài yīyuàn gōngzuò.", "vi": "Bác sĩ làm việc tại bệnh viện." }
+  },
+  {
+    "simplified": "商店",
+    "reading": "shāngdiàn",
+    "meaning": "cửa hàng; tiệm",
+    "partOfSpeech": "danh từ",
+    "unit": 5,
+    "example": { "zh": "商店早上八点开门。", "pinyin": "Shāngdiàn zǎoshang bā diǎn kāimén.", "vi": "Cửa hàng mở cửa lúc 8 giờ sáng." }
+  },
+  {
+    "simplified": "北京",
+    "reading": "Běijīng",
+    "meaning": "Bắc Kinh",
+    "partOfSpeech": "danh từ",
+    "unit": 5,
+    "example": { "zh": "北京是中国的首都。", "pinyin": "Běijīng shì Zhōngguó de shǒudū.", "vi": "Bắc Kinh là thủ đô của Trung Quốc." }
+  },
+  {
+    "simplified": "大",
+    "reading": "dà",
+    "meaning": "to; lớn",
+    "partOfSpeech": "tính từ",
+    "unit": 5,
+    "example": { "zh": "这个西瓜真大。", "pinyin": "Zhège xīguā zhēn dà.", "vi": "Quả dưa hấu này thật to." }
+  },
+  {
+    "simplified": "小",
+    "reading": "xiǎo",
+    "meaning": "nhỏ; bé",
+    "partOfSpeech": "tính từ",
+    "unit": 5,
+    "example": { "zh": "这是一只小狗。", "pinyin": "Zhè shì yì zhī xiǎo gǒu.", "vi": "Đây là một chú chó nhỏ." }
+  },
+  {
+    "simplified": "多",
+    "reading": "duō",
+    "meaning": "nhiều",
+    "partOfSpeech": "tính từ",
+    "unit": 5,
+    "example": { "zh": "图书馆有很多书。", "pinyin": "Túshūguǎn yǒu hěn duō shū.", "vi": "Thư viện có rất nhiều sách." }
+  },
+  {
+    "simplified": "少",
+    "reading": "shǎo",
+    "meaning": "ít",
+    "partOfSpeech": "tính từ",
+    "unit": 5,
+    "example": { "zh": "今天来的人很少。", "pinyin": "Jīntiān lái de rén hěn shǎo.", "vi": "Hôm nay số người đến rất ít." }
+  },
+  {
+    "simplified": "冷",
+    "reading": "lěng",
+    "meaning": "lạnh; rét",
+    "partOfSpeech": "tính từ",
+    "unit": 5,
+    "example": { "zh": "冬天很冷，多穿点衣服。", "pinyin": "Dōngtiān hěn lěng, duō chuān diǎn yīfu.", "vi": "Mùa đông rất lạnh, hãy mặc nhiều áo vào nhé." }
+  },
+  {
+    "simplified": "热",
+    "reading": "rè",
+    "meaning": "nóng; nhiệt",
+    "partOfSpeech": "tính từ",
+    "unit": 5,
+    "example": { "zh": "天气太热了，我想喝冰水。", "pinyin": "Tiānqì tài rè le, wǒ xiǎng hē bīng shuǐ.", "vi": "Trời nóng quá, tôi muốn uống nước đá." }
+  },
+  {
+    "simplified": "高兴",
+    "reading": "gāoxìng",
+    "meaning": "vui mừng; vui vẻ",
+    "partOfSpeech": "tính từ",
+    "unit": 5,
+    "example": { "zh": "认识你很高兴。", "pinyin": "Rènshi nǐ hěn gāoxìng.", "vi": "Rất vui được quen biết bạn." }
+  },
+  {
+    "simplified": "很",
+    "reading": "hěn",
+    "meaning": "rất; lắm",
+    "partOfSpeech": "phó từ",
+    "unit": 5,
+    "example": { "zh": "他汉语说得很好。", "pinyin": "Tā hànyǔ shuō de hěn hǎo.", "vi": "Anh ấy nói tiếng Trung rất tốt." }
+  },
+  {
+    "simplified": "太",
+    "reading": "tài",
+    "meaning": "quá; lắm",
+    "partOfSpeech": "phó từ",
+    "unit": 5,
+    "example": { "zh": "太好了！", "pinyin": "Tài hǎo le!", "vi": "Tuyệt vời quá!" }
+  },
+  {
+    "simplified": "也",
+    "reading": "yě",
+    "meaning": "cũng",
+    "partOfSpeech": "phó từ",
+    "unit": 5,
+    "example": { "zh": "我也是越南人。", "pinyin": "Wǒ yě shì Yuènán rén.", "vi": "Tôi cũng là người Việt Nam." }
+  },
+  {
+    "simplified": "都",
+    "reading": "dōu",
+    "meaning": "đều; tất cả",
+    "partOfSpeech": "phó từ",
+    "unit": 5,
+    "example": { "zh": "我们都是学生。", "pinyin": "Wǒmen dōu shì xuésheng.", "vi": "Chúng tôi đều là học sinh." }
+  },
+  {
+    "simplified": "呢",
+    "reading": "ne",
+    "meaning": "thế; nhỉ (trợ từ tình thái)",
+    "partOfSpeech": "trợ từ",
+    "unit": 5,
+    "example": { "zh": "你呢？", "pinyin": "Nǐ ne?", "vi": "Còn bạn thì sao?" }
+  },
+  {
+    "simplified": "吗",
+    "reading": "ma",
+    "meaning": "không; hả (trợ từ nghi vấn)",
+    "partOfSpeech": "trợ từ",
+    "unit": 5,
+    "example": { "zh": "你好吗？", "pinyin": "Nǐ hǎo ma?", "vi": "Bạn khỏe không?" }
+  },
+  {
+    "simplified": "了",
+    "reading": "le",
+    "meaning": "rồi; đã (trợ từ biểu thị sự thay đổi hoặc hoàn thành)",
+    "partOfSpeech": "trợ từ",
+    "unit": 5,
+    "example": { "zh": "我吃饭了。", "pinyin": "Wǒ chī fàn le.", "vi": "Tôi ăn cơm rồi." }
+  },
+  {
+    "simplified": "的",
+    "reading": "de",
+    "meaning": "của (trợ từ sở hữu hoặc định ngữ)",
+    "partOfSpeech": "trợ từ",
+    "unit": 5,
+    "example": { "zh": "这是我的书。", "pinyin": "Zhè shì wǒ de shū.", "vi": "Đây là sách của tôi." }
+  }
+]
+

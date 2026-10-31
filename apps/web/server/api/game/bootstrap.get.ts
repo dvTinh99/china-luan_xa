@@ -1,39 +1,35 @@
 // ============================================================================
 // GET /api/game/bootstrap
 // ============================================================================
-// Returns the initial game data needed to set up the Godot client.
-// Requires authentication (Phase 0 uses demo user via middleware).
-//
-// Response envelope:
-// {
-//   "data": {
-//     "version": 1,
-//     "player": { ... },
-//     "world": { ... },
-//     "config": { ... }
-//   }
-// }
-// ============================================================================
 
 import { defineEventHandler } from 'h3';
 import { BRIDGE_VERSION } from '@linguaworld/shared-types';
 import type { GameBootstrapResponse } from '@linguaworld/api-contracts';
+import { prisma } from '../../utils/prisma';
+import { sendApiSuccess, sendApiError } from '../../utils/response';
 
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
   const user = event.context.user;
 
   if (!user) {
     return sendApiError(event, 401, 'UNAUTHORIZED', 'Authentication required.');
   }
 
-  // TODO Phase 1: Fetch real player + character data from DB via Prisma:
-  //   const character = await prisma.character.findFirst({
-  //     where: { userId: user.id },
-  //     orderBy: { createdAt: 'desc' },
-  //   });
-  //   if (!character) { ... create default character ... }
+  // Fetch real character from database
+  let character = await prisma.character.findUnique({
+    where: { userId: user.id },
+  });
 
-  // TODO Phase 1: Fetch unlocked regions from DB based on player progress.
+  if (!character) {
+    character = await prisma.character.create({
+      data: {
+        userId: user.id,
+        name: user.username,
+        level: 1,
+        exp: 0,
+      },
+    });
+  }
 
   const bootstrapData: GameBootstrapResponse = {
     version: 1,
@@ -41,28 +37,28 @@ export default defineEventHandler((event) => {
       id: user.id,
       username: user.username,
       character: {
-        id: 'char-001',
-        name: '小龙',    // "Little Dragon" — default character name
-        level: 1,
-        exp: 0,
+        id: character.id,
+        name: character.name,
+        level: character.level,
+        exp: character.exp,
       },
     },
     world: {
       regions: [
         {
           id: 'beginner_village',
-          name: 'Beginner Village',
+          name: 'Beginner Village (新手村)',
           unlocked: true,
         },
         {
-          id: 'market_district',
-          name: 'Market District',
-          unlocked: false,
+          id: 'whispering_forest',
+          name: 'Whispering Forest (低语森林)',
+          unlocked: character.level >= 3,
         },
         {
           id: 'scholar_temple',
-          name: 'Scholar Temple',
-          unlocked: false,
+          name: 'Scholar Temple (学者文庙)',
+          unlocked: character.level >= 5,
         },
       ],
     },

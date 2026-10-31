@@ -1,30 +1,40 @@
 // ============================================================================
 // GET /api/auth/me
 // ============================================================================
-// Returns the currently authenticated user.
-// Phase 0: Returns the demo user injected by the auth middleware.
-//
-// TODO Phase 1: Return real user from session lookup.
-// ============================================================================
 
 import { defineEventHandler } from 'h3';
-import type { User } from '@linguaworld/api-contracts';
+import { prisma } from '../../utils/prisma';
+import { sendApiSuccess, sendApiError } from '../../utils/response';
 
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
   const user = event.context.user;
 
   if (!user) {
     return sendApiError(event, 401, 'UNAUTHORIZED', 'Authentication required.');
   }
 
-  // TODO Phase 1: Fetch full user object from DB
-  const userData: User = {
-    id: user.id,
-    email: user.email,
-    username: user.username,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
+  // Fetch full details
+  const fullUser = await prisma.user.findUnique({
+    where: { id: user.id },
+    include: {
+      character: true,
+      wallet: true,
+      settings: true,
+    },
+  });
 
-  return sendApiSuccess(event, { user: userData });
+  if (!fullUser) {
+    return sendApiError(event, 404, 'NOT_FOUND', 'User record not found.');
+  }
+
+  return sendApiSuccess(event, {
+    user: {
+      id: fullUser.id,
+      email: fullUser.email,
+      username: fullUser.username,
+      character: fullUser.character,
+      wallet: fullUser.wallet,
+      settings: fullUser.settings,
+    },
+  });
 });
