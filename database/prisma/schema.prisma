@@ -31,6 +31,9 @@ model User {
   learningAnswers    LearningAnswer[]
   vocabularyProgress VocabularyProgress[]
   reviewHistory      ReviewHistory[]
+  inventoryItems     InventoryItem[]
+  userQuests         UserQuest[]
+  combatSessions     CombatSession[]
 
   @@map("users")
 }
@@ -360,6 +363,118 @@ model WalletTransaction {
 }
 
 // ---------------------------------------------------------------------------
+// 7b. Items, Inventory, Equipment & Daily Quests (Phase 2 RPG Foundation)
+// ---------------------------------------------------------------------------
+
+enum ItemType {
+  EQUIPMENT
+  CONSUMABLE
+  COSMETIC
+}
+
+enum EquipmentSlot {
+  HEAD
+  WEAPON
+  ARMOR
+  ACCESSORY
+}
+
+enum ItemRarity {
+  COMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+model Item {
+  id          String         @id @default(cuid())
+  code        String         @unique // e.g. "item_bamboo_brush", "item_silk_robe"
+  name        String         // "Bút Lông Trúc Lâm (Bamboo Brush)"
+  description String
+  itemType    ItemType       @default(EQUIPMENT) @map("item_type")
+  slot        EquipmentSlot?
+  rarity      ItemRarity     @default(COMMON)
+  priceGold   Int            @default(50) @map("price_gold")
+  icon        String         @default("Package")
+  stats       Json?          // { hpBonus: 10, bonusExpPercent: 5 }
+  isShopItem  Boolean        @default(true) @map("is_shop_item")
+  createdAt   DateTime       @default(now()) @map("created_at")
+  updatedAt   DateTime       @updatedAt @map("updated_at")
+
+  inventoryItems InventoryItem[]
+
+  @@map("items")
+}
+
+model InventoryItem {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  itemId     String   @map("item_id")
+  quantity   Int      @default(1)
+  isEquipped Boolean  @default(false) @map("is_equipped")
+  acquiredAt DateTime @default(now()) @map("acquired_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, itemId])
+  @@index([userId, isEquipped])
+  @@map("inventory_items")
+}
+
+enum QuestCategory {
+  DAILY
+  ACHIEVEMENT
+}
+
+enum QuestTargetType {
+  COMPLETE_LESSON
+  REVIEW_FLASHCARDS
+  EARN_EXP
+  PERFECT_QUIZ
+}
+
+model Quest {
+  id          String          @id @default(cuid())
+  code        String          @unique // e.g. "daily_complete_1_lesson"
+  title       String          // "Vượt ải đầu ngày"
+  description String          // "Hoàn thành 1 bài học tiếng Trung bất kỳ"
+  category    QuestCategory   @default(DAILY)
+  targetType  QuestTargetType @map("target_type")
+  targetCount Int             @default(1) @map("target_count")
+  rewardGold  Int             @default(50) @map("reward_gold")
+  rewardExp   Int             @default(30) @map("reward_exp")
+  icon        String          @default("Scroll")
+  isActive    Boolean         @default(true) @map("is_active")
+  createdAt   DateTime        @default(now()) @map("created_at")
+
+  userQuests UserQuest[]
+
+  @@map("quests")
+}
+
+model UserQuest {
+  id           String    @id @default(cuid())
+  userId       String    @map("user_id")
+  questId      String    @map("quest_id")
+  currentCount Int       @default(0) @map("current_count")
+  isCompleted  Boolean   @default(false) @map("is_completed")
+  isClaimed    Boolean   @default(false) @map("is_claimed")
+  resetDate    String    @map("reset_date") // YYYY-MM-DD for daily quests
+  claimedAt    DateTime? @map("claimed_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quest Quest @relation(fields: [questId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, questId, resetDate])
+  @@index([userId, resetDate])
+  @@map("user_quests")
+}
+
+// ---------------------------------------------------------------------------
 // 8. Audio Infrastructure & Voice System (Audio_system.md)
 // ---------------------------------------------------------------------------
 
@@ -472,4 +587,52 @@ model AudioGenerationJob {
   @@index([status, createdAt])
   @@index([contentType, contentId])
   @@map("audio_generation_jobs")
+}
+
+// ---------------------------------------------------------------------------
+// 9. World Regions & Server-Authoritative Combat (Phase 3 Adventure World)
+// ---------------------------------------------------------------------------
+
+model Region {
+  id            String   @id @default(cuid())
+  code          String   @unique // e.g. "region_novice_village", "region_bamboo_grove"
+  name          String   // "Làng Tân Khởi (Novice Village)"
+  description   String
+  requiredLevel Int      @default(1) @map("required_level")
+  isUnlocked    Boolean  @default(true) @map("is_unlocked")
+  orderIndex    Int      @default(1) @map("order_index")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("regions")
+}
+
+enum CombatState {
+  IN_PROGRESS
+  VICTORY
+  DEFEAT
+  FLED
+}
+
+model CombatSession {
+  id             String      @id @default(cuid())
+  userId         String      @map("user_id")
+  enemyName      String      @map("enemy_name")
+  enemyHp        Int         @map("enemy_hp")
+  enemyMaxHp     Int         @map("enemy_max_hp")
+  enemyAtk       Int         @default(15) @map("enemy_atk")
+  playerHp       Int         @map("player_hp")
+  playerMaxHp    Int         @map("player_max_hp")
+  status         CombatState @default(IN_PROGRESS)
+  currentTurn    Int         @default(1) @map("current_turn")
+  turnQuestions  Json        @map("turn_questions") // Stored question list with correct answers for validation
+  expReward      Int         @default(40) @map("exp_reward")
+  goldReward     Int         @default(25) @map("gold_reward")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@map("combat_sessions")
 }

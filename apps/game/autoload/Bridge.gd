@@ -139,6 +139,10 @@ func send_enter_region(region_id: String) -> void:
 	_send_to_nuxt("ENTER_REGION", {"regionId": region_id})
 
 
+func send_start_combat(encounter_id: String = "encounter_wild_01") -> void:
+	_send_to_nuxt("START_COMBAT", {"encounterId": encounter_id})
+
+
 func send_open_app_route(route: String) -> void:
 	# Only allow approved routes
 	var allowed_routes := ["/learn", "/inventory", "/shop", "/quests", "/character", "/profile"]

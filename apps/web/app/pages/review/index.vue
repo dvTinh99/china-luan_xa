@@ -19,6 +19,27 @@
       </div>
     </div>
 
+    <!-- Quest Completion Toast -->
+    <transition
+      enter-active-class="transition duration-300 ease-out"
+      enter-from-class="transform -translate-y-2 opacity-0"
+      enter-to-class="transform translate-y-0 opacity-100"
+      leave-active-class="transition duration-200 ease-in"
+      leave-from-class="transform translate-y-0 opacity-100"
+      leave-to-class="transform -translate-y-2 opacity-0"
+    >
+      <div
+        v-if="questToast"
+        class="mb-4 p-3 rounded-2xl bg-gradient-to-r from-gold-500/20 to-emerald-500/20 border border-gold-500/40 text-gold-200 text-xs font-bold flex items-center justify-between gap-3 shadow-rpg-glow-gold"
+      >
+        <div class="flex items-center gap-2">
+          <Sparkles :size="16" class="text-gold-400" />
+          <span>🎯 Nhiệm vụ hoàn thành: {{ questToast }}!</span>
+        </div>
+        <NuxtLink to="/quests" class="underline text-gold-300 hover:text-white">Nhận thưởng</NuxtLink>
+      </div>
+    </transition>
+
     <!-- Loading State -->
     <div v-if="pending" class="flex-1 flex flex-col items-center justify-center py-20 text-slate-400">
       <div class="w-12 h-12 rounded-2xl bg-surface-850 border border-surface-750 flex items-center justify-center animate-spin mb-3 text-gold-400">
@@ -160,6 +181,7 @@ import {
   CheckCircle2,
   BookOpen,
   Gamepad2,
+  Sparkles,
 } from 'lucide-vue-next';
 
 definePageMeta({
@@ -172,6 +194,7 @@ const cards = ref<any[]>([]);
 const currentIndex = ref(0);
 const revealed = ref(false);
 const sessionGoldEarned = ref(0);
+const questToast = ref<string | null>(null);
 
 watchEffect(() => {
   if (data.value?.data?.items) {
@@ -196,6 +219,13 @@ async function submitRating(rating: 1 | 2 | 3 | 4) {
 
     if (res?.data?.rewards) {
       sessionGoldEarned.value += res.data.rewards.goldEarned || 2;
+    }
+
+    if (res?.data?.questsCompleted && res.data.questsCompleted.length > 0) {
+      questToast.value = res.data.questsCompleted.map((q: any) => q.title).join(', ');
+      setTimeout(() => {
+        questToast.value = null;
+      }, 5000);
     }
   } catch (err) {}
 

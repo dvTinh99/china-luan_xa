@@ -61,21 +61,225 @@
       v-if="bridge.status.value === 'ready'"
       class="absolute top-0 left-0 right-0 flex items-center justify-between p-4 pointer-events-none z-10"
     >
-      <!-- Back button -->
-      <NuxtLink
-        to="/"
-        class="pointer-events-auto min-h-[40px] px-3.5 py-1.5 bg-surface-950/80 border border-surface-750 backdrop-blur-md text-white rounded-xl text-xs font-bold hover:bg-surface-900 transition-colors flex items-center gap-1.5 shadow-sm"
-      >
-        <ArrowLeft :size="14" aria-hidden="true" />
-        <span>Thoát thế giới</span>
-      </NuxtLink>
+      <!-- Back button & Region Tag -->
+      <div class="pointer-events-auto flex items-center gap-2">
+        <NuxtLink
+          to="/"
+          class="min-h-[40px] px-3.5 py-1.5 bg-surface-950/80 border border-surface-750 backdrop-blur-md text-white rounded-xl text-xs font-bold hover:bg-surface-900 transition-colors flex items-center gap-1.5 shadow-sm"
+        >
+          <ArrowLeft :size="14" aria-hidden="true" />
+          <span>Thoát thế giới</span>
+        </NuxtLink>
 
-      <!-- Status indicator -->
-      <div
-        class="pointer-events-auto px-3.5 py-1.5 bg-surface-950/80 border border-surface-750 backdrop-blur-md text-emerald-400 rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm"
-      >
-        <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-        <span>Godot Bridge: Đã kết nối</span>
+        <div class="px-3.5 py-1.5 bg-wood-950/80 border border-wood-750 backdrop-blur-md text-gold-300 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm">
+          <MapPin :size="13" class="text-gold-400" />
+          <span>Tân Khởi Thôn (Lv.1+)</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons & Status -->
+      <div class="pointer-events-auto flex items-center gap-2.5">
+        <button
+          type="button"
+          @click="startCombat"
+          :disabled="combatLoading"
+          class="min-h-[40px] px-4 py-1.5 bg-gradient-to-r from-dragon-600 to-amber-600 hover:from-dragon-500 hover:to-amber-500 border border-gold-400/50 text-white rounded-xl text-xs font-black transition-all flex items-center gap-2 shadow-rpg-glow-dragon cursor-pointer hover:scale-105"
+        >
+          <Sword :size="15" />
+          <span>Khiêu chiến Quái Thú</span>
+        </button>
+
+        <div
+          class="px-3.5 py-1.5 bg-surface-950/80 border border-surface-750 backdrop-blur-md text-emerald-400 rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm"
+        >
+          <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+          <span>Godot 4.6</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMBAT OVERLAY MODAL (Turn-based Chinese Learning Battle) -->
+    <div
+      v-if="isCombatOpen"
+      class="fixed inset-0 bg-surface-950/85 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fade-in"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="bg-wood-900/95 border-2 border-gold-500/50 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative overflow-hidden flex flex-col justify-between max-h-[92vh]">
+        <!-- Battle Header -->
+        <div class="flex items-center justify-between border-b border-wood-800 pb-3 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-dragon-600/30 text-dragon-300 border border-dragon-500/40">
+              Chiến Trường Ngôn Ngữ
+            </span>
+            <span class="text-xs text-amber-200/60 font-bold">Lượt {{ combatSession?.question?.turn || 1 }} / {{ combatSession?.question?.totalTurns || 5 }}</span>
+          </div>
+
+          <button
+            type="button"
+            @click="fleeCombat"
+            class="px-3 py-1 rounded-xl bg-wood-800 hover:bg-wood-750 text-amber-200/60 hover:text-white text-xs font-bold border border-wood-700 cursor-pointer"
+          >
+            Rút lui (Flee)
+          </button>
+        </div>
+
+        <!-- Combat Arena: Enemy vs Player Cards -->
+        <div class="grid grid-cols-2 gap-4 mb-6">
+          <!-- Enemy Side -->
+          <div class="p-4 rounded-2xl bg-wood-950/80 border border-wood-800 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 mb-1.5">
+                <div class="w-8 h-8 rounded-xl bg-dragon-600/20 border border-dragon-500/40 flex items-center justify-center text-dragon-400">
+                  <Flame :size="18" />
+                </div>
+                <div>
+                  <div class="text-xs font-bold text-white leading-tight">{{ combatSession?.enemy?.name }}</div>
+                  <div class="text-[10px] text-dragon-400 font-bold">Quái thú Hán tự</div>
+                </div>
+              </div>
+
+              <!-- Enemy HP Bar -->
+              <div class="mt-3">
+                <div class="flex justify-between text-[11px] font-bold font-mono text-dragon-300 mb-1">
+                  <span>HP</span>
+                  <span>{{ combatSession?.enemy?.hp }} / {{ combatSession?.enemy?.maxHp }}</span>
+                </div>
+                <div class="h-2 rounded-full bg-wood-900 overflow-hidden border border-wood-800">
+                  <div
+                    class="h-full bg-gradient-to-r from-dragon-600 to-red-500 transition-all duration-300"
+                    :style="{ width: `${Math.max(0, Math.min(100, (combatSession?.enemy?.hp / combatSession?.enemy?.maxHp) * 100))}%` }"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Player Side -->
+          <div class="p-4 rounded-2xl bg-wood-950/80 border border-wood-800 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 mb-1.5">
+                <div class="w-8 h-8 rounded-xl bg-emerald-600/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+                  <Shield :size="18" />
+                </div>
+                <div>
+                  <div class="text-xs font-bold text-white leading-tight">{{ combatSession?.player?.name }}</div>
+                  <div class="text-[10px] text-emerald-400 font-bold">Cấp {{ combatSession?.player?.level }} Hiệp Khách</div>
+                </div>
+              </div>
+
+              <!-- Player HP Bar -->
+              <div class="mt-3">
+                <div class="flex justify-between text-[11px] font-bold font-mono text-emerald-300 mb-1">
+                  <span>HP</span>
+                  <span>{{ combatSession?.player?.hp }} / {{ combatSession?.player?.maxHp }}</span>
+                </div>
+                <div class="h-2 rounded-full bg-wood-900 overflow-hidden border border-wood-800">
+                  <div
+                    class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-300"
+                    :style="{ width: `${Math.max(0, Math.min(100, (combatSession?.player?.hp / combatSession?.player?.maxHp) * 100))}%` }"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Feedback Banner -->
+        <div v-if="battleMessage" class="mb-4 p-2.5 rounded-xl text-center text-xs font-bold border transition-all animate-fade-in" :class="battleMessageClass">
+          {{ battleMessage }}
+        </div>
+
+        <!-- Active Combat Question Area (Mandarin Attack Challenge) -->
+        <div v-if="!combatFinished" class="space-y-4">
+          <div class="p-5 rounded-2xl bg-wood-950/90 border border-wood-750 text-center relative">
+            <div class="text-[11px] font-bold text-amber-200/50 uppercase tracking-widest mb-2">
+              Bí Kíp Xuất Chiêu • Chọn nghĩa đúng của chữ Hán
+            </div>
+
+            <div class="flex items-center justify-center gap-3 mb-2">
+              <span class="text-5xl font-black font-hanzi text-white tracking-wider">
+                {{ combatSession?.question?.simplified }}
+              </span>
+              <SpeakerButton
+                :text="combatSession?.question?.simplified"
+                :audio-url="combatSession?.question?.audioUrl"
+                size="md"
+              />
+            </div>
+
+            <div class="text-sm font-bold text-gold-400 font-heading">
+              {{ combatSession?.question?.pinyin }}
+            </div>
+          </div>
+
+          <!-- Answer Options (4 Multiple Choice Buttons) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <button
+              v-for="(option, idx) in combatSession?.question?.options"
+              :key="idx"
+              type="button"
+              @click="submitCombatAnswer(option)"
+              :disabled="combatTurnPending"
+              class="p-3.5 rounded-xl border border-wood-750 bg-wood-950/70 hover:bg-wood-800 hover:border-gold-500/50 text-xs font-bold text-slate-100 text-left transition-all flex items-center justify-between cursor-pointer disabled:opacity-50"
+            >
+              <span>{{ option }}</span>
+              <ChevronRight :size="14" class="text-amber-200/40" />
+            </button>
+          </div>
+        </div>
+
+        <!-- VICTORY / DEFEAT MODAL CONCLUSION -->
+        <div v-else class="text-center py-4 space-y-4 animate-fade-in">
+          <div
+            class="w-16 h-16 rounded-3xl mx-auto flex items-center justify-center border-2 shadow-lg"
+            :class="combatOutcome === 'VICTORY' ? 'bg-gold-500/20 border-gold-400 text-gold-300' : 'bg-dragon-600/20 border-dragon-500 text-dragon-300'"
+          >
+            <Trophy v-if="combatOutcome === 'VICTORY'" :size="32" />
+            <AlertTriangle v-else :size="32" />
+          </div>
+
+          <div>
+            <h3 class="text-2xl font-black font-heading text-white">
+              {{ combatOutcome === 'VICTORY' ? 'Đại Thắng Quái Thú!' : 'Chiến Bại!' }}
+            </h3>
+            <p class="text-xs text-amber-200/70 mt-1">
+              {{ combatOutcome === 'VICTORY' ? 'Bạn đã đánh bại quái thú bằng tri thức tiếng Trung chính xác.' : 'Hãy rèn luyện thêm từ vựng để quay trở lại phục thù.' }}
+            </p>
+          </div>
+
+          <!-- Rewards Grid if Victory -->
+          <div v-if="combatOutcome === 'VICTORY' && victoryRewards" class="grid grid-cols-2 gap-3 max-w-sm mx-auto">
+            <div class="p-3 rounded-2xl bg-wood-950 border border-wood-800 text-center">
+              <div class="text-[10px] text-amber-200/50 uppercase font-bold">Kinh nghiệm</div>
+              <div class="text-lg font-black font-heading text-purple-400 mt-0.5">
+                +{{ victoryRewards.expEarned }} EXP
+              </div>
+              <div v-if="victoryRewards.gearBonusExp > 0" class="text-[10px] text-gold-400 font-bold">
+                (+{{ victoryRewards.gearBonusExp }} từ trang bị)
+              </div>
+            </div>
+
+            <div class="p-3 rounded-2xl bg-wood-950 border border-wood-800 text-center">
+              <div class="text-[10px] text-amber-200/50 uppercase font-bold">Vàng nhận được</div>
+              <div class="text-lg font-black font-heading text-gold-300 mt-0.5">
+                +{{ victoryRewards.goldEarned }} Gold
+              </div>
+            </div>
+          </div>
+
+          <div v-if="victoryRewards?.leveledUp" class="p-2.5 rounded-xl bg-gold-500/20 border border-gold-500/40 text-gold-300 text-xs font-bold">
+            🌟 Chúc mừng! Nhân vật của bạn đã lên cấp!
+          </div>
+
+          <button
+            type="button"
+            @click="closeCombat"
+            class="px-8 py-3 rounded-2xl bg-gold-500 hover:bg-gold-400 text-wood-950 font-bold text-xs shadow-rpg-glow-gold transition-all cursor-pointer"
+          >
+            Trở lại Thám Hiểm
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -88,6 +292,12 @@ import {
   RotateCcw,
   Home,
   ArrowLeft,
+  MapPin,
+  Sword,
+  Shield,
+  Flame,
+  ChevronRight,
+  Trophy,
 } from 'lucide-vue-next';
 import { NuxtToGodotEvent, GodotToNuxtEvent } from '@linguaworld/shared-types';
 
@@ -100,6 +310,112 @@ const gameIframeRef = ref<HTMLIFrameElement | null>(null);
 
 const gameIframeSrc = '/game/index.html';
 const bridge = useGameBridge(gameIframeRef);
+
+// Combat State
+const isCombatOpen = ref(false);
+const combatLoading = ref(false);
+const combatTurnPending = ref(false);
+const combatSession = ref<any>(null);
+const combatFinished = ref(false);
+const combatOutcome = ref<'VICTORY' | 'DEFEAT' | null>(null);
+const victoryRewards = ref<any>(null);
+const battleMessage = ref<string | null>(null);
+const battleMessageClass = ref('bg-wood-800 text-amber-200 border-wood-700');
+
+async function startCombat() {
+  combatLoading.value = true;
+  combatFinished.value = false;
+  combatOutcome.value = null;
+  victoryRewards.value = null;
+  battleMessage.value = null;
+
+  try {
+    const res = await $fetch<any>('/api/combat/start', {
+      method: 'POST',
+    });
+
+    if (res?.data) {
+      combatSession.value = res.data;
+      isCombatOpen.value = true;
+    }
+  } catch (err: any) {
+    alert(err?.data?.message || 'Không thể khởi tạo trận đấu');
+  } finally {
+    combatLoading.value = false;
+  }
+}
+
+async function submitCombatAnswer(option: string) {
+  if (combatTurnPending.value || !combatSession.value) return;
+
+  combatTurnPending.value = true;
+  try {
+    const res = await $fetch<any>('/api/combat/action', {
+      method: 'POST',
+      body: {
+        combatSessionId: combatSession.value.combatSessionId,
+        action: 'attack',
+        answer: option,
+      },
+    });
+
+    const data = res?.data;
+    if (!data) return;
+
+    if (data.isCorrect) {
+      battleMessage.value = `🎯 CHÍNH XÁC! Bạn xuất chiêu gây ${data.playerDamage} sát thương!`;
+      battleMessageClass.value = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
+    } else {
+      battleMessage.value = `❌ SAI RỒI! Nghĩa đúng là "${data.correctMeaning}". Quái vật phản công gây ${data.enemyDamage} sát thương!`;
+      battleMessageClass.value = 'bg-dragon-600/20 text-dragon-300 border-dragon-500/40';
+    }
+
+    // Update HP
+    combatSession.value.enemy.hp = data.enemyHp;
+    combatSession.value.player.hp = data.playerHp;
+
+    if (data.outcome === 'VICTORY') {
+      combatFinished.value = true;
+      combatOutcome.value = 'VICTORY';
+      victoryRewards.value = data.rewards;
+    } else if (data.outcome === 'DEFEAT') {
+      combatFinished.value = true;
+      combatOutcome.value = 'DEFEAT';
+    } else if (data.nextQuestion) {
+      combatSession.value.question = data.nextQuestion;
+    }
+  } catch (err: any) {
+    battleMessage.value = `Lỗi: ${err?.data?.message || err.message}`;
+    battleMessageClass.value = 'bg-dragon-600/20 text-dragon-300 border-dragon-500/40';
+  } finally {
+    combatTurnPending.value = false;
+  }
+}
+
+async function fleeCombat() {
+  if (!combatSession.value) {
+    isCombatOpen.value = false;
+    return;
+  }
+
+  try {
+    await $fetch('/api/combat/action', {
+      method: 'POST',
+      body: {
+        combatSessionId: combatSession.value.combatSessionId,
+        action: 'flee',
+      },
+    });
+  } catch (e) {}
+
+  isCombatOpen.value = false;
+}
+
+function closeCombat() {
+  isCombatOpen.value = false;
+  combatSession.value = null;
+  combatFinished.value = false;
+}
 
 onMounted(() => {
   bridge.on(GodotToNuxtEvent.INTERACT_NPC, async (payload: any) => {
@@ -117,6 +433,17 @@ onMounted(() => {
       }
     } catch (e) {
       console.warn('[World] Failed to resolve NPC audio via bridge:', e);
+    }
+  });
+
+  bridge.on(GodotToNuxtEvent.START_COMBAT, async (payload: any) => {
+    console.log('[World] Godot initiated combat:', payload);
+    await startCombat();
+  });
+
+  bridge.on(GodotToNuxtEvent.OPEN_APP_ROUTE, (payload: any) => {
+    if (payload?.route) {
+      router.push(payload.route);
     }
   });
 

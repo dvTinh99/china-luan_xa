@@ -297,6 +297,30 @@
           </div>
         </div>
 
+        <!-- Gear Bonus Pill -->
+        <div
+          v-if="completionData?.gearBonusExp > 0"
+          class="p-2.5 bg-purple-500/15 border border-purple-500/30 rounded-xl text-purple-300 text-xs font-bold mb-4 flex items-center justify-center gap-2"
+        >
+          <Sparkles :size="14" class="text-purple-400" />
+          <span>+{{ completionData.gearBonusExp }} EXP thưởng từ trang bị đang kích hoạt (+{{ completionData.bonusExpPercent }}%)</span>
+        </div>
+
+        <!-- Daily Quests Completed Banner -->
+        <div
+          v-if="completionData?.questsCompleted && completionData.questsCompleted.length > 0"
+          class="p-3 bg-emerald-500/20 border border-emerald-500/40 rounded-xl text-emerald-300 text-xs font-bold mb-4 space-y-1 text-left"
+        >
+          <div class="flex items-center gap-1.5 font-black uppercase text-[11px] text-emerald-200">
+            <Trophy :size="13" />
+            <span>Nhiệm vụ hoàn thành!</span>
+          </div>
+          <div v-for="q in completionData.questsCompleted" :key="q.questId" class="text-emerald-100 flex items-center justify-between">
+            <span>• {{ q.title }}</span>
+            <span class="text-gold-300 font-mono">+{{ q.rewardGold }}G / +{{ q.rewardExp }}XP</span>
+          </div>
+        </div>
+
         <div v-if="completionData?.leveledUp" class="p-3 bg-gold-500/20 border border-gold-500/40 rounded-xl text-gold-300 text-xs font-bold mb-6 flex items-center justify-center gap-2">
           <Sparkles :size="16" aria-hidden="true" />
           <span>CHÚC MỪNG: Nhân vật của bạn đã lên cấp!</span>

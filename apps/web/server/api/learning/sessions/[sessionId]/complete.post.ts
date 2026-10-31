@@ -6,6 +6,7 @@
 import { defineEventHandler, getRouterParam } from 'h3';
 import { prisma } from '../../../../utils/prisma';
 import { sendApiSuccess, sendApiError } from '../../../../utils/response';
+import { trackQuestProgress } from '../../../../utils/quests';
 
 export default defineEventHandler(async (event) => {
   const user = event.context.user;
@@ -62,17 +63,32 @@ export default defineEventHandler(async (event) => {
   // Calculate server-authoritative rewards
   const baseExp = session.lesson?.expReward || 50;
   const baseGold = session.lesson?.goldReward || 20;
-
-  // Reward scaling based on accuracy (50% guaranteed + 50% performance bonus)
   const accuracyMultiplier = 0.5 + session.accuracy * 0.5;
-  const expEarned = Math.round(baseExp * accuracyMultiplier);
+  const baseExpEarned = Math.round(baseExp * accuracyMultiplier);
   const goldEarned = Math.round(baseGold * accuracyMultiplier);
 
   const idempotencyKey = `session_${sessionId}_reward`;
 
   // Interactive transaction for atomic wallet & progression updates
   const result = await prisma.$transaction(async (tx) => {
-    // 1. Mark session completed
+    // 1. Calculate active equipped gear bonus
+    const equippedItems = await tx.inventoryItem.findMany({
+      where: { userId: user.id, isEquipped: true },
+      include: { item: true },
+    });
+
+    let bonusExpPercent = 0;
+    for (const inv of equippedItems) {
+      const stats = (inv.item.stats as any) || {};
+      if (stats.bonusExpPercent) {
+        bonusExpPercent += Number(stats.bonusExpPercent);
+      }
+    }
+
+    const gearBonusExp = Math.round((baseExpEarned * bonusExpPercent) / 100);
+    const totalExpEarned = baseExpEarned + gearBonusExp;
+
+    // 2. Mark session completed
     const updatedSession = await tx.learningSession.update({
       where: { id: session.id },
       data: {
@@ -81,7 +97,7 @@ export default defineEventHandler(async (event) => {
       },
     });
 
-    // 2. Idempotent Wallet credit & ledger entry
+    // 3. Idempotent Wallet credit & ledger entry
     let wallet = await tx.wallet.findUnique({ where: { userId: user.id } });
     if (!wallet) {
       wallet = await tx.wallet.create({
@@ -106,7 +122,7 @@ export default defineEventHandler(async (event) => {
       },
     });
 
-    // 3. Update Character EXP and Level
+    // 4. Update Character EXP and Level
     let character = await tx.character.findUnique({ where: { userId: user.id } });
     if (!character) {
       character = await tx.character.create({
@@ -114,7 +130,7 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    const newExp = character.exp + expEarned;
+    const newExp = character.exp + totalExpEarned;
     // Level formula: 100 * level required to reach next level
     let newLevel = character.level;
     let expForNext = newLevel * 100;
@@ -134,7 +150,7 @@ export default defineEventHandler(async (event) => {
       },
     });
 
-    // 4. Enroll words into Spaced Repetition (SRS)
+    // 5. Enroll words into Spaced Repetition (SRS)
     if (session.lesson?.vocabulary) {
       for (const entry of session.lesson.vocabulary) {
         await tx.vocabularyProgress.upsert({
@@ -158,11 +174,19 @@ export default defineEventHandler(async (event) => {
       }
     }
 
+    // 6. Track Quest Progress (COMPLETE_LESSON and EARN_EXP)
+    const lessonQuestUpdates = await trackQuestProgress(user.id, 'COMPLETE_LESSON', 1, tx);
+    const expQuestUpdates = await trackQuestProgress(user.id, 'EARN_EXP', totalExpEarned, tx);
+
     return {
       session: updatedSession,
       character: updatedCharacter,
       walletBalance: wallet.balanceGold + goldEarned,
       leveledUp,
+      gearBonusExp,
+      bonusExpPercent,
+      totalExpEarned,
+      questUpdates: [...lessonQuestUpdates, ...expQuestUpdates],
     };
   });
 
@@ -171,7 +195,10 @@ export default defineEventHandler(async (event) => {
     accuracy: session.accuracy,
     totalQuestions: session.totalQuestions,
     correctCount: session.correctCount,
-    expEarned,
+    expEarned: result.totalExpEarned,
+    baseExpEarned,
+    gearBonusExp: result.gearBonusExp,
+    bonusExpPercent: result.bonusExpPercent,
     goldEarned,
     leveledUp: result.leveledUp,
     character: {
@@ -180,6 +207,7 @@ export default defineEventHandler(async (event) => {
       exp: result.character.exp,
     },
     walletGold: result.walletBalance,
+    questsCompleted: result.questUpdates.filter((q) => q.justCompleted),
   });
 });
 

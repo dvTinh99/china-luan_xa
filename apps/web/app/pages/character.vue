@@ -62,7 +62,7 @@
             </div>
 
             <!-- EXP Bar -->
-            <div class="mb-6">
+            <div class="mb-4">
               <div class="flex justify-between text-xs font-bold mb-1.5">
                 <span class="text-slate-300 flex items-center gap-1">
                   <Zap :size="13" class="text-purple-400" aria-hidden="true" />
@@ -77,16 +77,37 @@
                 />
               </div>
             </div>
+
+            <!-- Active Gear Bonuses Display -->
+            <div v-if="gearStats.equippedCount > 0" class="flex items-center justify-between p-3 bg-purple-500/10 border border-purple-500/20 rounded-2xl mb-4 text-xs">
+              <span class="text-purple-300 font-bold flex items-center gap-1.5">
+                <Sparkles :size="14" class="text-purple-400" />
+                <span>Trang bị kích hoạt ({{ gearStats.equippedCount }})</span>
+              </span>
+              <span class="text-gold-300 font-bold font-heading">
+                +{{ gearStats.totalBonusExpPercent }}% EXP / +{{ gearStats.totalHpBonus }} HP
+              </span>
+            </div>
           </div>
 
-          <!-- Wallet Balance -->
+          <!-- Wallet Balance & Inventory Link -->
           <div class="flex items-center justify-between p-4 bg-surface-950/80 rounded-2xl border border-surface-750 mt-4">
-            <span class="text-xs font-semibold text-slate-400">Tài sản hiện có</span>
-            <div class="flex items-center gap-2 font-black font-heading text-gold-300 text-lg">
-              <Coins :size="18" class="text-gold-400" aria-hidden="true" />
-              <span>{{ walletBalance }}</span>
-              <span class="text-xs font-semibold text-gold-500">Gold</span>
+            <div>
+              <span class="text-[10px] uppercase font-bold text-slate-500">Tài sản hiện có</span>
+              <div class="flex items-center gap-2 font-black font-heading text-gold-300 text-lg">
+                <Coins :size="18" class="text-gold-400" aria-hidden="true" />
+                <span>{{ walletBalance }}</span>
+                <span class="text-xs font-semibold text-gold-500">Gold</span>
+              </div>
             </div>
+
+            <NuxtLink
+              to="/inventory"
+              class="px-3.5 py-2 rounded-xl bg-surface-800 hover:bg-surface-750 border border-surface-700 hover:border-gold-500/40 text-xs font-bold text-amber-200 hover:text-gold-300 transition-all flex items-center gap-1.5"
+            >
+              <Briefcase :size="14" />
+              <span>Hành trang</span>
+            </NuxtLink>
           </div>
         </div>
 
@@ -205,6 +226,8 @@ import {
   RotateCcw,
   ArrowDownLeft,
   ArrowUpRight,
+  Sparkles,
+  Briefcase,
 } from 'lucide-vue-next';
 
 definePageMeta({
@@ -218,6 +241,7 @@ const character = computed(() => characterData.value?.character || {});
 const walletBalance = computed(() => characterData.value?.wallet?.goldBalance ?? 0);
 const proficiency = computed(() => characterData.value?.proficiency || {});
 const transactions = computed(() => characterData.value?.transactions || []);
+const gearStats = computed(() => characterData.value?.gearStats || { totalBonusExpPercent: 0, totalHpBonus: 0, equippedCount: 0 });
 
 const nextLevelExp = computed(() => (character.value?.level || 1) * 100);
 const expPercentage = computed(() => {

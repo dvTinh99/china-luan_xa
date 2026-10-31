@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { prisma } from '../../utils/prisma';
 import { calculateSrsNextReview, SrsRating, SrsState, SRS_ALGORITHM_VERSION } from '../../utils/srs';
 import { sendApiSuccess, sendApiError } from '../../utils/response';
+import { trackQuestProgress } from '../../utils/quests';
 
 const reviewSchema = z.object({
   vocabularyId: z.string().min(1),
@@ -128,15 +129,40 @@ export default defineEventHandler(async (event) => {
       },
     });
 
-    // 4. Increment Character EXP
+    // 4. Calculate gear bonus for EXP
+    const equippedItems = await tx.inventoryItem.findMany({
+      where: { userId: user.id, isEquipped: true },
+      include: { item: true },
+    });
+
+    let bonusExpPercent = 0;
+    for (const inv of equippedItems) {
+      const stats = (inv.item.stats as any) || {};
+      if (stats.bonusExpPercent) {
+        bonusExpPercent += Number(stats.bonusExpPercent);
+      }
+    }
+
+    const gearBonusExp = Math.round((expReward * bonusExpPercent) / 100);
+    const totalExpGranted = expReward + gearBonusExp;
+
+    // Increment Character EXP
     await tx.character.updateMany({
       where: { userId: user.id },
-      data: { exp: { increment: expReward } },
+      data: { exp: { increment: totalExpGranted } },
     });
+
+    // 5. Track Quest Progress (REVIEW_FLASHCARDS & EARN_EXP)
+    const reviewQuestUpdates = await trackQuestProgress(user.id, 'REVIEW_FLASHCARDS', 1, tx);
+    const expQuestUpdates = await trackQuestProgress(user.id, 'EARN_EXP', totalExpGranted, tx);
 
     return {
       updatedProgress,
       walletBalance: wallet.balanceGold + goldReward,
+      totalExpGranted,
+      gearBonusExp,
+      bonusExpPercent,
+      questUpdates: [...reviewQuestUpdates, ...expQuestUpdates],
     };
   });
 
@@ -149,10 +175,13 @@ export default defineEventHandler(async (event) => {
       nextReviewInDays: result.updatedProgress.intervalDays,
     },
     rewards: {
-      expEarned: expReward,
+      expEarned: result.totalExpGranted,
+      baseExp: expReward,
+      gearBonusExp: result.gearBonusExp,
       goldEarned: goldReward,
       walletGold: result.walletBalance,
     },
+    questsCompleted: result.questUpdates.filter((q) => q.justCompleted),
   });
 });
 

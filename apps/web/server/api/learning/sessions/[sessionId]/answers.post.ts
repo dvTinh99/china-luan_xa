@@ -7,6 +7,7 @@ import { defineEventHandler, getRouterParam, readBody } from 'h3';
 import { z } from 'zod';
 import { prisma } from '../../../../utils/prisma';
 import { sendApiSuccess, sendApiError } from '../../../../utils/response';
+import { trackQuestProgress } from '../../../../utils/quests';
 
 const answerSchema = z.object({
   vocabularyId: z.string().min(1),
@@ -116,6 +117,13 @@ export default defineEventHandler(async (event) => {
     },
   });
 
+  // Track quest progress if answer is correct
+  let completedQuests: any[] = [];
+  if (isCorrect) {
+    const questUpdates = await trackQuestProgress(user.id, 'PERFECT_QUIZ', 1);
+    completedQuests = questUpdates.filter((q) => q.justCompleted);
+  }
+
   return sendApiSuccess(event, {
     isCorrect,
     correctAnswer: {
@@ -125,6 +133,7 @@ export default defineEventHandler(async (event) => {
     },
     currentAccuracy: newAccuracy,
     totalAnswered: newTotal,
+    completedQuests,
   });
 });
 

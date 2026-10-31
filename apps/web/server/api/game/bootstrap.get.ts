@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     return sendApiError(event, 401, 'UNAUTHORIZED', 'Authentication required.');
   }
 
-  // Fetch real character from database
+  // Fetch real character and equipped items from database
   let character = await prisma.character.findUnique({
     where: { userId: user.id },
   });
@@ -31,7 +31,26 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const bootstrapData: GameBootstrapResponse = {
+  // Fetch world regions from database
+  const dbRegions = await prisma.region.findMany({
+    orderBy: { orderIndex: 'asc' },
+  });
+
+  // Fetch equipped items
+  const equippedInventory = await prisma.inventoryItem.findMany({
+    where: { userId: user.id, isEquipped: true },
+    include: { item: true },
+  });
+
+  const regions = dbRegions.map((r) => ({
+    id: r.code,
+    name: r.name,
+    description: r.description,
+    requiredLevel: r.requiredLevel,
+    unlocked: r.isUnlocked || character.level >= r.requiredLevel,
+  }));
+
+  const bootstrapData: any = {
     version: 1,
     player: {
       id: user.id,
@@ -41,26 +60,18 @@ export default defineEventHandler(async (event) => {
         name: character.name,
         level: character.level,
         exp: character.exp,
+        hp: character.hp,
+        maxHp: character.maxHp,
       },
+      equipped: equippedInventory.map((inv) => ({
+        slot: inv.item.slot,
+        code: inv.item.code,
+        name: inv.item.name,
+        icon: inv.item.icon,
+      })),
     },
     world: {
-      regions: [
-        {
-          id: 'beginner_village',
-          name: 'Beginner Village (新手村)',
-          unlocked: true,
-        },
-        {
-          id: 'whispering_forest',
-          name: 'Whispering Forest (低语森林)',
-          unlocked: character.level >= 3,
-        },
-        {
-          id: 'scholar_temple',
-          name: 'Scholar Temple (学者文庙)',
-          unlocked: character.level >= 5,
-        },
-      ],
+      regions,
     },
     config: {
       bridgeVersion: BRIDGE_VERSION,

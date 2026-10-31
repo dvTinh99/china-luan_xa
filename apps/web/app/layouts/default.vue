@@ -78,6 +78,33 @@
             <Shield :size="16" class="text-purple-400" aria-hidden="true" />
             <span class="font-rpg tracking-wide">Nhân vật</span>
           </NuxtLink>
+
+          <NuxtLink
+            to="/shop"
+            class="px-3.5 py-2 rounded-2xl text-sm font-bold text-amber-100/70 hover:text-white hover:bg-wood-850 transition-all flex items-center gap-1.5 border border-transparent"
+            active-class="bg-wood-850 text-gold-300 border-wood-700 shadow-sm"
+          >
+            <Store :size="16" class="text-amber-400" aria-hidden="true" />
+            <span class="font-rpg tracking-wide">Cửa hàng</span>
+          </NuxtLink>
+
+          <NuxtLink
+            to="/inventory"
+            class="px-3.5 py-2 rounded-2xl text-sm font-bold text-amber-100/70 hover:text-white hover:bg-wood-850 transition-all flex items-center gap-1.5 border border-transparent"
+            active-class="bg-wood-850 text-gold-300 border-wood-700 shadow-sm"
+          >
+            <Briefcase :size="16" class="text-orange-400" aria-hidden="true" />
+            <span class="font-rpg tracking-wide">Hành trang</span>
+          </NuxtLink>
+
+          <NuxtLink
+            to="/quests"
+            class="px-3.5 py-2 rounded-2xl text-sm font-bold text-amber-100/70 hover:text-white hover:bg-wood-850 transition-all flex items-center gap-1.5 border border-transparent"
+            active-class="bg-wood-850 text-gold-300 border-wood-700 shadow-sm"
+          >
+            <Scroll :size="16" class="text-gold-400" aria-hidden="true" />
+            <span class="font-rpg tracking-wide">Nhiệm vụ</span>
+          </NuxtLink>
         </nav>
 
         <!-- Right Side: Coin Pouch & Hero Pill -->
@@ -189,7 +216,34 @@
           active-class="bg-wood-850 text-gold-300"
         >
           <Shield :size="18" class="text-purple-400" aria-hidden="true" />
-          <span class="font-rpg">Nhân vật & Túi đồ</span>
+          <span class="font-rpg">Nhân vật & Thông số</span>
+        </NuxtLink>
+        <NuxtLink
+          to="/shop"
+          @click="isMobileMenuOpen = false"
+          class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-200 hover:bg-wood-850"
+          active-class="bg-wood-850 text-gold-300"
+        >
+          <Store :size="18" class="text-amber-400" aria-hidden="true" />
+          <span class="font-rpg">Cửa hàng Thương nhân</span>
+        </NuxtLink>
+        <NuxtLink
+          to="/inventory"
+          @click="isMobileMenuOpen = false"
+          class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-200 hover:bg-wood-850"
+          active-class="bg-wood-850 text-gold-300"
+        >
+          <Briefcase :size="18" class="text-orange-400" aria-hidden="true" />
+          <span class="font-rpg">Hành trang & Trang bị</span>
+        </NuxtLink>
+        <NuxtLink
+          to="/quests"
+          @click="isMobileMenuOpen = false"
+          class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-200 hover:bg-wood-850"
+          active-class="bg-wood-850 text-gold-300"
+        >
+          <Scroll :size="18" class="text-gold-400" aria-hidden="true" />
+          <span class="font-rpg">Nhiệm vụ hàng ngày</span>
         </NuxtLink>
 
         <div v-if="user" class="pt-3 border-t border-wood-800">
@@ -238,8 +292,13 @@
           </span>
         </div>
 
-        <div class="text-[11px] text-wood-600">
-          FSRS Spaced Repetition • Web Speech Synthesis Mandarin
+        <div class="flex items-center gap-4 text-[11px] text-wood-600">
+          <span>FSRS Spaced Repetition • Web Speech Synthesis Mandarin</span>
+          <span>•</span>
+          <NuxtLink to="/admin/audio" class="hover:text-gold-300 transition-colors flex items-center gap-1 text-wood-500 hover:text-gold-300">
+            <Headphones :size="12" />
+            <span>Audio Studio</span>
+          </NuxtLink>
         </div>
       </div>
     </footer>
@@ -254,10 +313,14 @@ import {
   Gamepad2,
   Shield,
   Coins,
+  Store,
+  Briefcase,
+  Scroll,
   LogIn,
   LogOut,
   Menu,
   X,
+  Headphones,
 } from 'lucide-vue-next';
 
 const isMobileMenuOpen = ref(false);
@@ -266,7 +329,7 @@ const { data: authData, refresh: refreshAuth } = await useFetch<any>('/api/auth/
 const user = computed(() => authData.value?.data?.user);
 const characterName = computed(() => user.value?.character?.name || '');
 const characterLevel = computed(() => user.value?.character?.level || 1);
-const walletGold = computed(() => user.value?.wallet?.goldBalance ?? 0);
+const walletGold = computed(() => user.value?.wallet?.balanceGold ?? user.value?.wallet?.goldBalance ?? 0);
 
 const dueCount = ref(0);
 async function fetchDueCount() {
