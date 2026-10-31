@@ -1,0 +1,108 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/world/NPC.tscn" id="1_npc"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_h"]
+size = Vector2(1600, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_v"]
+size = Vector2(32, 1200)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_tree"]
+radius = 24.0
+
+[node name="TestWorld" type="Node2D"]
+
+[node name="Ground" type="ColorRect" parent="."]
+offset_left = -800.0
+offset_top = -600.0
+offset_right = 800.0
+offset_bottom = 600.0
+color = Color(0.18, 0.32, 0.22, 1)
+
+[node name="Road" type="ColorRect" parent="."]
+offset_left = -600.0
+offset_top = -40.0
+offset_right = 600.0
+offset_bottom = 40.0
+color = Color(0.42, 0.36, 0.26, 1)
+
+[node name="VillagePlaza" type="ColorRect" parent="."]
+offset_left = 60.0
+offset_top = -100.0
+offset_right = 260.0
+offset_bottom = 100.0
+color = Color(0.46, 0.40, 0.30, 1)
+
+[node name="Boundaries" type="StaticBody2D" parent="."]
+collision_mask = 2
+
+[node name="NorthWall" type="CollisionShape2D" parent="Boundaries"]
+position = Vector2(0, -590)
+shape = SubResource("RectangleShape2D_wall_h")
+
+[node name="SouthWall" type="CollisionShape2D" parent="Boundaries"]
+position = Vector2(0, 590)
+shape = SubResource("RectangleShape2D_wall_h")
+
+[node name="WestWall" type="CollisionShape2D" parent="Boundaries"]
+position = Vector2(-790, 0)
+shape = SubResource("RectangleShape2D_wall_v")
+
+[node name="EastWall" type="CollisionShape2D" parent="Boundaries"]
+position = Vector2(790, 0)
+shape = SubResource("RectangleShape2D_wall_v")
+
+[node name="Tree1" type="StaticBody2D" parent="."]
+position = Vector2(-150, -120)
+
+[node name="Trunk" type="Polygon2D" parent="Tree1"]
+color = Color(0.4, 0.25, 0.15, 1)
+polygon = PackedVector2Array(-6, -10, 6, -10, 6, 20, -6, 20)
+
+[node name="Foliage" type="Polygon2D" parent="Tree1"]
+position = Vector2(0, -25)
+color = Color(0.15, 0.48, 0.2, 1)
+polygon = PackedVector2Array(0, -35, 28, 5, 16, 5, 24, 25, -24, 25, -16, 5, -28, 5)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Tree1"]
+position = Vector2(0, 10)
+shape = SubResource("CircleShape2D_tree")
+
+[node name="Tree2" type="StaticBody2D" parent="."]
+position = Vector2(-100, 140)
+
+[node name="Trunk" type="Polygon2D" parent="Tree2"]
+color = Color(0.4, 0.25, 0.15, 1)
+polygon = PackedVector2Array(-6, -10, 6, -10, 6, 20, -6, 20)
+
+[node name="Foliage" type="Polygon2D" parent="Tree2"]
+position = Vector2(0, -25)
+color = Color(0.12, 0.44, 0.18, 1)
+polygon = PackedVector2Array(0, -35, 28, 5, 16, 5, 24, 25, -24, 25, -16, 5, -28, 5)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Tree2"]
+position = Vector2(0, 10)
+shape = SubResource("CircleShape2D_tree")
+
+[node name="Tree3" type="StaticBody2D" parent="."]
+position = Vector2(300, -140)
+
+[node name="Trunk" type="Polygon2D" parent="Tree3"]
+color = Color(0.4, 0.25, 0.15, 1)
+polygon = PackedVector2Array(-6, -10, 6, -10, 6, 20, -6, 20)
+
+[node name="Foliage" type="Polygon2D" parent="Tree3"]
+position = Vector2(0, -25)
+color = Color(0.16, 0.52, 0.22, 1)
+polygon = PackedVector2Array(0, -35, 28, 5, 16, 5, 24, 25, -24, 25, -16, 5, -28, 5)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Tree3"]
+position = Vector2(0, 10)
+shape = SubResource("CircleShape2D_tree")
+
+[node name="NPC_Elder" parent="." instance=ExtResource("1_npc")]
+position = Vector2(160, -10)
+npc_id = "npc_elder_chen"
+npc_name = "Elder Chen (陈老)"
+

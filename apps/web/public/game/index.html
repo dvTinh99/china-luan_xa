@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>LinguaWorld Web Game Client</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #1a1e29;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    #canvas-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      touch-action: none;
+    }
+    #hud {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      color: #f7df1e;
+      font-size: 14px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+      pointer-events: none;
+    }
+    #hud .stats {
+      color: #94a3b8;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+    #prompt {
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.75);
+      color: #fef08a;
+      padding: 8px 18px;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 14px;
+      border: 1px solid rgba(250, 204, 21, 0.4);
+      display: none;
+      pointer-events: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      animation: pulse 1.5s infinite;
+    }
+    #dialogue {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 600px;
+      width: 90%;
+      background: rgba(15, 23, 42, 0.95);
+      color: #f8fafc;
+      padding: 16px 20px;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      display: none;
+      z-index: 10;
+    }
+    #dialogue .name {
+      color: #38bdf8;
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    #dialogue .text {
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    #dialogue .close-hint {
+      margin-top: 8px;
+      font-size: 11px;
+      color: #64748b;
+      text-align: right;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+      50% { opacity: 0.8; transform: translateX(-50%) scale(1.03); }
+    }
+    #touch-controls {
+      display: none;
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      width: 120px;
+      height: 120px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 60px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      touch-action: none;
+    }
+    #touch-stick {
+      position: absolute;
+      top: 35px;
+      left: 35px;
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 25px;
+      pointer-events: none;
+    }
+    #touch-action {
+      display: none;
+      position: absolute;
+      bottom: 36px;
+      right: 32px;
+      width: 64px;
+      height: 64px;
+      background: #e11d48;
+      color: #fff;
+      font-weight: bold;
+      border-radius: 32px;
+      border: none;
+      box-shadow: 0 4px 12px rgba(225, 29, 72, 0.4);
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    @media (pointer: coarse) {
+      #touch-controls { display: block; }
+      #touch-action { display: flex; }
+    }
+  </style>
+</head>
+<body>
+  <div id="canvas-container">
+    <canvas id="game-canvas"></canvas>
+    <div id="hud">
+      <div id="game-title">LinguaWorld — 2D World (Phase 0)</div>
+      <div class="stats" id="player-stats">Player: Connecting...</div>
+      <div class="stats" id="fps-counter">FPS: --</div>
+    </div>
+    <div id="prompt">[ Press E or Tap Action to Talk ]</div>
+    <div id="dialogue">
+      <div class="name" id="dialogue-name">Elder Chen (陈老)</div>
+      <div class="text" id="dialogue-text">你好！Welcome to LinguaWorld, young traveler. Are you ready to begin your Mandarin adventure?</div>
+      <div class="close-hint">[ Press Space / Tap outside to dismiss ]</div>
+    </div>
+
+    <!-- Mobile Virtual Controls -->
+    <div id="touch-controls"><div id="touch-stick"></div></div>
+    <button id="touch-action" type="button">TALK</button>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // ── Bridge Protocol ──────────────────────────────────────────────────
+      const BRIDGE_VERSION = 1;
+      let bridgeInitialized = false;
+      let playerData = null;
+      let worldData = null;
+
+      // Notify parent host that client is ready
+      function sendToNuxt(type, payload, requestId) {
+        const msg = {
+          version: BRIDGE_VERSION,
+          type: type,
+          payload: payload || {}
+        };
+        if (requestId) msg.requestId = requestId;
+        console.log('[GameClient → Nuxt]', msg);
+        window.parent.postMessage(msg, '*');
+      }
+
+      // Handle messages from Nuxt host
+      window.addEventListener('message', function (event) {
+        const data = event.data;
+        if (!data || typeof data !== 'object') return;
+        if (data.version !== BRIDGE_VERSION) return;
+
+        console.log('[Nuxt → GameClient]', data.type, data.payload);
+
+        switch (data.type) {
+          case 'GAME_INIT':
+            bridgeInitialized = true;
+            playerData = data.payload.player;
+            worldData = data.payload.world;
+            updateHud();
+            break;
+          case 'PLAYER_DATA':
+            playerData = Object.assign(playerData || {}, data.payload);
+            updateHud();
+            break;
+          case 'PAUSE_GAME':
+            gamePaused = true;
+            break;
+          case 'RESUME_GAME':
+            gamePaused = false;
+            break;
+        }
+      });
+
+      // Provide window hook for Godot Bridge parity
+      window.godotBridgeCallback = function (msg) {
+        window.dispatchEvent(new MessageEvent('message', { data: msg }));
+      };
+
+      // ── Game Canvas & 2D World ──────────────────────────────────────────
+      const canvas = document.getElementById('game-canvas');
+      const ctx = canvas.getContext('2d');
+      const hudPlayer = document.getElementById('player-stats');
+      const hudFps = document.getElementById('fps-counter');
+      const promptEl = document.getElementById('prompt');
+      const dialogueEl = document.getElementById('dialogue');
+      const dialogueNameEl = document.getElementById('dialogue-name');
+      const dialogueTextEl = document.getElementById('dialogue-text');
+
+      let gamePaused = false;
+      let lastTime = performance.now();
+      let frameCount = 0;
+      let fpsTimer = 0;
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      function updateHud() {
+        if (!playerData) return;
+        hudPlayer.textContent = `Hero: ${playerData.character?.name || playerData.username} | Lv.${playerData.character?.level || 1} (EXP: ${playerData.character?.exp || 0})`;
+      }
+
+      // World boundaries
+      const WORLD = {
+        minX: -600,
+        maxX: 600,
+        minY: -450,
+        maxY: 450
+      };
+
+      // Player State
+      const player = {
+        x: 0,
+        y: 0,
+        vx: 0,
+        vy: 0,
+        speed: 220,
+        facing: 1, // 1: right, -1: left
+        isMoving: false,
+        size: 32
+      };
+
+      // NPC State
+      const npc = {
+        id: 'npc_elder_chen',
+        name: 'Elder Chen (陈老)',
+        x: 180,
+        y: -20,
+        size: 36,
+        interactRadius: 80,
+        bounce: 0
+      };
+
+      // Scenery Props (Trees, Stones)
+      const trees = [
+        { x: -200, y: -150, r: 35 },
+        { x: -140, y: 160, r: 30 },
+        { x: 320, y: -160, r: 40 },
+        { x: 260, y: 200, r: 32 },
+        { x: -380, y: -40, r: 36 }
+      ];
+
+      // Input handling
+      const keys = {};
+      window.addEventListener('keydown', function (e) {
+        keys[e.key.toLowerCase()] = true;
+        if (e.key === ' ' || e.key.toLowerCase() === 'e') {
+          handleInteractKey();
+        }
+      });
+      window.addEventListener('keyup', function (e) {
+        keys[e.key.toLowerCase()] = false;
+      });
+
+      function handleInteractKey() {
+        if (dialogueEl.style.display === 'block') {
+          dialogueEl.style.display = 'none';
+          return;
+        }
+
+        const dx = player.x - npc.x;
+        const dy = player.y - npc.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist <= npc.interactRadius) {
+          interactWithNPC();
+        }
+      }
+
+      function interactWithNPC() {
+        // Send validated bridge event to Nuxt
+        const reqId = 'req_' + Date.now();
+        sendToNuxt('INTERACT_NPC', {
+          npcId: npc.id,
+          npcName: npc.name
+        }, reqId);
+
+        // Visual bounce animation
+        npc.bounce = 12;
+
+        // Show dialogue box
+        dialogueNameEl.textContent = npc.name;
+        dialogueTextEl.textContent = '你好！(Nǐ hǎo!) Welcome to Beginner Village. I am Elder Chen. Practice your words, complete quests, and unlock new realms!';
+        dialogueEl.style.display = 'block';
+      }
+
+      dialogueEl.addEventListener('click', function () {
+        dialogueEl.style.display = 'none';
+      });
+
+      // Mobile Touch Controls
+      const touchControls = document.getElementById('touch-controls');
+      const touchStick = document.getElementById('touch-stick');
+      const touchAction = document.getElementById('touch-action');
+
+      let touchActive = false;
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let touchMoveX = 0;
+      let touchMoveY = 0;
+
+      touchControls.addEventListener('pointerdown', function (e) {
+        touchActive = true;
+        const rect = touchControls.getBoundingClientRect();
+        touchStartX = rect.left + rect.width / 2;
+        touchStartY = rect.top + rect.height / 2;
+        touchMoveX = e.clientX - touchStartX;
+        touchMoveY = e.clientY - touchStartY;
+      });
+
+      window.addEventListener('pointermove', function (e) {
+        if (!touchActive) return;
+        const dx = e.clientX - touchStartX;
+        const dy = e.clientY - touchStartY;
+        const dist = Math.min(45, Math.hypot(dx, dy));
+        const angle = Math.atan2(dy, dx);
+        touchMoveX = Math.cos(angle) * (dist / 45);
+        touchMoveY = Math.sin(angle) * (dist / 45);
+
+        touchStick.style.transform = `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px)`;
+      });
+
+      function resetTouch() {
+        touchActive = false;
+        touchMoveX = 0;
+        touchMoveY = 0;
+        touchStick.style.transform = 'translate(0px, 0px)';
+      }
+      window.addEventListener('pointerup', resetTouch);
+      window.addEventListener('pointercancel', resetTouch);
+
+      touchAction.addEventListener('click', handleInteractKey);
+
+      // ── Main Game Loop ───────────────────────────────────────────────────
+      function loop(now) {
+        const dt = Math.min((now - lastTime) / 1000, 0.1);
+        lastTime = now;
+
+        frameCount++;
+        fpsTimer += dt;
+        if (fpsTimer >= 0.5) {
+          hudFps.textContent = 'FPS: ' + Math.round(frameCount / fpsTimer);
+          frameCount = 0;
+          fpsTimer = 0;
+        }
+
+        if (!gamePaused) {
+          update(dt);
+        }
+        render();
+
+        requestAnimationFrame(loop);
+      }
+
+      function update(dt) {
+        let ix = 0;
+        let iy = 0;
+
+        if (keys['w'] || keys['arrowup']) iy -= 1;
+        if (keys['s'] || keys['arrowdown']) iy += 1;
+        if (keys['a'] || keys['arrowleft']) ix -= 1;
+        if (keys['d'] || keys['arrowright']) ix += 1;
+
+        if (touchActive) {
+          ix += touchMoveX;
+          iy += touchMoveY;
+        }
+
+        const len = Math.hypot(ix, iy);
+        if (len > 1) {
+          ix /= len;
+          iy /= len;
+        }
+
+        player.vx = ix * player.speed;
+        player.vy = iy * player.speed;
+
+        player.x += player.vx * dt;
+        player.y += player.vy * dt;
+
+        // Boundaries clamp
+        player.x = Math.max(WORLD.minX, Math.min(WORLD.maxX, player.x));
+        player.y = Math.max(WORLD.minY, Math.min(WORLD.maxY, player.y));
+
+        if (ix > 0.05) player.facing = 1;
+        else if (ix < -0.05) player.facing = -1;
+
+        player.isMoving = len > 0.05;
+
+        // NPC bounce decay
+        if (npc.bounce > 0) {
+          npc.bounce = Math.max(0, npc.bounce - dt * 25);
+        }
+
+        // Proximity check for interact prompt
+        const distToNpc = Math.hypot(player.x - npc.x, player.y - npc.y);
+        if (distToNpc <= npc.interactRadius && dialogueEl.style.display !== 'block') {
+          promptEl.style.display = 'block';
+        } else {
+          promptEl.style.display = 'none';
+        }
+      }
+
+      function render() {
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+
+        // Clear background
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.save();
+        // Camera translation: center world on player
+        ctx.translate(cx - player.x, cy - player.y);
+
+        // 1. World Ground
+        ctx.fillStyle = '#2d4a3e';
+        ctx.fillRect(WORLD.minX, WORLD.minY, WORLD.maxX - WORLD.minX, WORLD.maxY - WORLD.minY);
+
+        // Cobblestone Road
+        ctx.fillStyle = '#475569';
+        ctx.fillRect(-500, -35, 1000, 70);
+
+        // Village Plaza
+        ctx.fillStyle = '#64748b';
+        ctx.beginPath();
+        ctx.arc(180, -20, 90, 0, Math.PI * 2);
+        ctx.fill();
+
+        // World Border Wall
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 6;
+        ctx.strokeRect(WORLD.minX, WORLD.minY, WORLD.maxX - WORLD.minX, WORLD.maxY - WORLD.minY);
+
+        // 2. Scenery: Trees
+        trees.forEach(function (t) {
+          // Trunk shadow
+          ctx.fillStyle = 'rgba(0,0,0,0.2)';
+          ctx.beginPath();
+          ctx.ellipse(t.x, t.y + 12, t.r * 0.7, t.r * 0.3, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Trunk
+          ctx.fillStyle = '#5c4033';
+          ctx.fillRect(t.x - 6, t.y - 10, 12, 22);
+
+          // Foliage layers
+          ctx.fillStyle = '#166534';
+          ctx.beginPath();
+          ctx.arc(t.x, t.y - 18, t.r, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = '#22c55e';
+          ctx.beginPath();
+          ctx.arc(t.x - 4, t.y - 24, t.r * 0.7, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        // 3. NPC Rendering
+        const npcY = npc.y - npc.bounce;
+
+        // Shadow
+        ctx.fillStyle = 'rgba(0,0,0,0.25)';
+        ctx.beginPath();
+        ctx.ellipse(npc.x, npc.y + 16, 16, 8, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // NPC Robe (Orange / Hanfu style)
+        ctx.fillStyle = '#ea580c';
+        ctx.fillRect(npc.x - 14, npcY - 10, 28, 26);
+
+        // NPC Head
+        ctx.fillStyle = '#fde047';
+        ctx.beginPath();
+        ctx.arc(npc.x, npcY - 20, 12, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Elder beard
+        ctx.fillStyle = '#f8fafc';
+        ctx.beginPath();
+        ctx.moveTo(npc.x - 7, npcY - 14);
+        ctx.lineTo(npc.x, npcY - 4);
+        ctx.lineTo(npc.x + 7, npcY - 14);
+        ctx.fill();
+
+        // NPC Label
+        ctx.fillStyle = '#fef08a';
+        ctx.font = 'bold 13px -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(npc.name, npc.x, npcY - 36);
+
+        // 4. Player Rendering
+        const bob = player.isMoving ? Math.sin(now * 0.012) * 3 : Math.sin(now * 0.003) * 1;
+
+        // Shadow
+        ctx.fillStyle = 'rgba(0,0,0,0.3)';
+        ctx.beginPath();
+        ctx.ellipse(player.x, player.y + 16, 16, 7, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Body (Blue Hero Tunic)
+        ctx.save();
+        ctx.translate(player.x, player.y + bob);
+        ctx.scale(player.facing, 1);
+
+        ctx.fillStyle = '#0284c7';
+        ctx.fillRect(-12, -10, 24, 25);
+
+        // Belt (Gold)
+        ctx.fillStyle = '#eab308';
+        ctx.fillRect(-12, 2, 24, 4);
+
+        // Head
+        ctx.fillStyle = '#fcd34d';
+        ctx.beginPath();
+        ctx.arc(0, -18, 11, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Eyes
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.arc(4, -18, 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Hair / Headband (Red)
+        ctx.fillStyle = '#ef4444';
+        ctx.fillRect(-10, -28, 20, 5);
+        ctx.restore();
+
+        // Player Name Tag
+        const heroName = playerData?.character?.name || playerData?.username || 'Hero';
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = 'bold 13px -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(heroName, player.x, player.y - 36);
+
+        ctx.restore();
+      }
+
+      // Signal ready immediately upon web page load
+      sendToNuxt('GAME_READY', { engineVersion: 'Godot 4.6 Web Canvas' });
+
+      // Start loop
+      requestAnimationFrame(function (t) {
+        lastTime = t;
+        requestAnimationFrame(loop);
+      });
+    })();
+  </script>
+</body>
+</html>
+

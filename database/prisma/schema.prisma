@@ -1,0 +1,64 @@
+// ============================================================================
+// LinguaWorld — Prisma Schema (Phase 0)
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// User — core account
+// ---------------------------------------------------------------------------
+model User {
+  id           String      @id @default(cuid())
+  email        String      @unique
+  username     String      @unique
+  passwordHash String      @map("password_hash")
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+
+  sessions     Session[]
+  characters   Character[]
+
+  @@map("users")
+}
+
+// ---------------------------------------------------------------------------
+// Session — server-side session for HttpOnly cookie auth
+// ---------------------------------------------------------------------------
+model Session {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+  @@map("sessions")
+}
+
+// ---------------------------------------------------------------------------
+// Character — the player's in-game avatar (minimal for Phase 0 bootstrap)
+// ---------------------------------------------------------------------------
+model Character {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  name      String
+  level     Int      @default(1)
+  exp       Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("characters")
+}

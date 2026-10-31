@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+.output/
+.nuxt/
+dist/
+.turbo/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Prisma
+database/prisma/migrations/
+database/prisma/*.db
+
+# Godot
+apps/game/.godot/
+apps/game/export/
+*.import
+*.translation
+
+# Godot Web Export artifacts (binary and heavy runtime bundles)
+apps/web/public/game/*.wasm
+apps/web/public/game/*.pck
+apps/web/public/game/*.side.zip
+!apps/web/public/game/index.html
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+*.tsbuildinfo
