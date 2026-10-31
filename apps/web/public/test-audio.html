@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinguaWorld — Audio Diagnostic & Test Bench</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 32px;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    h1 { color: #f59e0b; margin-bottom: 8px; font-size: 24px; }
+    p { color: #94a3b8; font-size: 14px; margin-bottom: 24px; }
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .btn {
+      background: #f59e0b;
+      color: #0f172a;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: #fbbf24; }
+    .btn-secondary {
+      background: #334155;
+      color: #f8fafc;
+    }
+    .btn-secondary:hover { background: #475569; }
+    #log {
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 12px;
+      height: 180px;
+      overflow-y: auto;
+      color: #38bdf8;
+    }
+  </style>
+</head>
+<body>
+  <h1>LinguaWorld Audio Test Bench</h1>
+  <p>Kiểm tra hệ thống phát âm: Pre-recorded MP3, Web Speech API và Server Streaming TTS.</p>
+
+  <div class="card">
+    <h3 style="margin-top:0; color:#38bdf8;">1. Test Pre-recorded MP3 Files (Vocab)</h3>
+    <button class="btn" onclick="playFile('/audio/learning/hsk-3.0/band-1/vocab_cmvwmfcyf000zmjol2pcae4ji/vp_learning_standard/v1.mp3', '你 (nǐ)')">Phát từ: 你 (nǐ)</button>
+    <button class="btn" onclick="playFile('/audio/learning/hsk-3.0/band-1/vocab_cmvwmfcyl0015mjolq5f03t15/vp_learning_standard/v1.mp3', '好 (hǎo)')">Phát từ: 好 (hǎo)</button>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0; color:#4ade80;">2. Test Web Speech API (zh-CN)</h3>
+    <button class="btn btn-secondary" onclick="testWebSpeech('你好！很高兴认识你。')">Câu: 你好！很高兴认识你。</button>
+    <button class="btn btn-secondary" onclick="testWebSpeech('谢谢你的帮助。')">Câu: 谢谢你的帮助。</button>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0; color:#c084fc;">3. Test Server Dynamic Stream Fallback</h3>
+    <button class="btn btn-secondary" onclick="playFile('/api/audio/stream?text=' + encodeURIComponent('欢迎来到LinguaWorld奇幻世界！'), 'Server Stream: 欢迎来到LinguaWorld')">Stream: 欢迎来到LinguaWorld</button>
+  </div>
+
+  <div class="card">
+    <h4 style="margin-top:0; margin-bottom:8px;">Console Logs:</h4>
+    <div id="log">Sẵn sàng kiểm tra...<br></div>
+  </div>
+
+  <script>
+    function log(msg) {
+      const el = document.getElementById('log');
+      el.innerHTML += `[${new Date().toLocaleTimeString()}] ${msg}<br>`;
+      el.scrollTop = el.scrollHeight;
+      console.log(msg);
+    }
+
+    let audio = null;
+    function playFile(url, label) {
+      log(`Đang tải file MP3: ${label} (${url})`);
+      if (audio) { audio.pause(); }
+      audio = new Audio(url);
+      audio.onplay = () => log(`✓ Bắt đầu phát MP3: ${label}`);
+      audio.onended = () => log(`✓ Hoàn thành phát MP3: ${label}`);
+      audio.onerror = (e) => log(`✗ Lỗi phát MP3: ${e.message || 'Decode error'}`);
+      audio.play().catch(e => log(`✗ Play() rejected: ${e.message}`));
+    }
+
+    let activeUtterance = null;
+    function testWebSpeech(text) {
+      log(`Đang gọi Web Speech Synthesis: "${text}"`);
+      if (!('speechSynthesis' in window)) {
+        log('✗ Trình duyệt không hỗ trợ speechSynthesis!');
+        return;
+      }
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.resume();
+
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'zh-CN';
+      u.rate = 0.85;
+
+      const voices = window.speechSynthesis.getVoices();
+      const zhVoice = voices.find(v => v.lang.toLowerCase().startsWith('zh'));
+      if (zhVoice) {
+        u.voice = zhVoice;
+        log(`✓ Tìm thấy giọng: ${zhVoice.name} (${zhVoice.lang})`);
+      } else {
+        log(`ℹ Không tìm thấy giọng zh riêng biệt, dùng voice mặc định với lang=zh-CN`);
+      }
+
+      activeUtterance = u;
+      u.onstart = () => log(`✓ Web Speech bắt đầu đọc...`);
+      u.onend = () => { log(`✓ Web Speech kết thúc thành công!`); activeUtterance = null; };
+      u.onerror = (e) => { log(`✗ Web Speech lỗi: ${e.error}`); activeUtterance = null; };
+
+      window.speechSynthesis.speak(u);
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+    }
+
+    window.addEventListener('load', () => {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.getVoices();
+        window.speechSynthesis.onvoiceschanged = () => {
+          const vs = window.speechSynthesis.getVoices().filter(v => v.lang.toLowerCase().startsWith('zh'));
+          log(`Hệ thống nhận diện ${vs.length} giọng tiếng Trung trên thiết bị.`);
+        };
+      }
+    });
+  </script>
+</body>
+</html>
+

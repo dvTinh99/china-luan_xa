@@ -1,5 +1,5 @@
 // ============================================================================
-// LinguaWorld — Mandarin Pronunciation Engine (Web Speech Synthesis + Audio API)
+// LinguaWorld — Mandarin Pronunciation Engine (Web Speech Synthesis + Audio Stream API)
 // ============================================================================
 
 export interface PronounceOptions {
@@ -8,31 +8,49 @@ export interface PronounceOptions {
   audioUrl?: string; // Optional recorded audio fallback
 }
 
-// Shared module-level reactive state across all components
+// Module-level state & utterance retention to prevent Chromium GC bug
 const isPlaying = ref(false);
 const currentText = ref<string | null>(null);
-let audioElement: HTMLAudioElement | null = null;
+let activeAudioElement: HTMLAudioElement | null = null;
+const activeUtterances = new Set<SpeechSynthesisUtterance>();
+let cachedVoices: SpeechSynthesisVoice[] = [];
+
+// Initialize voice listener immediately on client side
+if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+  cachedVoices = window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = () => {
+    cachedVoices = window.speechSynthesis.getVoices();
+  };
+}
 
 export function usePronunciation() {
-  // Find the highest quality Chinese voice available on the device
   function getChineseVoice(): SpeechSynthesisVoice | null {
     if (typeof window === 'undefined' || !window.speechSynthesis) return null;
 
-    const voices = window.speechSynthesis.getVoices();
+    const voices = cachedVoices.length ? cachedVoices : window.speechSynthesis.getVoices();
     if (!voices.length) return null;
 
     // Preference hierarchy for natural Mandarin pronunciation
-    // 1. zh-CN specific voice
-    // 2. Ting-Ting (macOS/iOS standard) or Li-Mu / Yaoyao
-    // 3. Google 普通话 (Chrome/Android)
-    // 4. Any voice starting with zh
-    const preferredNames = ['ting-ting', 'li-mu', 'yaoyao', 'google 普通话', 'xiaoxiao', 'yunxi', 'huihui'];
+    // 1. Specific standard Chinese voices across macOS, Windows, iOS, Android, Chrome
+    const preferredPatterns = [
+      'tingting',
+      'ting-ting',
+      'xiaoxiao',
+      'yunxi',
+      'huihui',
+      'yaoyao',
+      'li-mu',
+      'google 普通话',
+      'sinji',
+      'meijia',
+    ];
 
-    for (const name of preferredNames) {
-      const match = voices.find((v) => v.name.toLowerCase().includes(name));
+    for (const pattern of preferredPatterns) {
+      const match = voices.find((v) => v.name.toLowerCase().includes(pattern));
       if (match) return match;
     }
 
+    // 2. Any zh-CN / zh voice
     return (
       voices.find((v) => v.lang.replace('_', '-').toLowerCase() === 'zh-cn') ||
       voices.find((v) => v.lang.toLowerCase().startsWith('zh')) ||
@@ -40,26 +58,15 @@ export function usePronunciation() {
     );
   }
 
-  // Pre-load voices on client
-  onMounted(() => {
-    if (typeof window !== 'undefined' && window.speechSynthesis) {
-      window.speechSynthesis.getVoices();
-      if (window.speechSynthesis.onvoiceschanged !== undefined) {
-        window.speechSynthesis.onvoiceschanged = () => {
-          window.speechSynthesis.getVoices();
-        };
-      }
-    }
-  });
-
   function stop() {
     if (typeof window !== 'undefined' && window.speechSynthesis) {
       window.speechSynthesis.cancel();
+      activeUtterances.clear();
     }
-    if (audioElement) {
-      audioElement.pause();
-      audioElement.currentTime = 0;
-      audioElement = null;
+    if (activeAudioElement) {
+      activeAudioElement.pause();
+      activeAudioElement.currentTime = 0;
+      activeAudioElement = null;
     }
     isPlaying.value = false;
     currentText.value = null;
@@ -71,46 +78,66 @@ export function usePronunciation() {
     // Stop any ongoing speech
     stop();
 
-    // 1. If pre-recorded audioUrl is provided, try playing audio file first
+    // 1. If explicit pre-recorded audioUrl is provided, attempt that first
     if (options.audioUrl) {
-      try {
-        audioElement = new Audio(options.audioUrl);
-        isPlaying.value = true;
-        currentText.value = text;
-
-        audioElement.onended = () => {
-          isPlaying.value = false;
-          currentText.value = null;
-          audioElement = null;
-        };
-
-        audioElement.onerror = () => {
-          // Fallback to SpeechSynthesis if audio file fails
-          playSpeechSynthesis(text, options);
-        };
-
-        audioElement.play().catch(() => {
-          playSpeechSynthesis(text, options);
-        });
-        return;
-      } catch (e) {
-        // Fallback
-      }
+      playAudioFile(options.audioUrl, text, options);
+      return;
     }
 
-    // 2. Browser Web Speech Synthesis
+    // 2. Play via Browser Web Speech Synthesis
     playSpeechSynthesis(text, options);
   }
 
+  function playAudioFile(url: string, text: string, options: PronounceOptions) {
+    try {
+      const audio = new Audio(url);
+      activeAudioElement = audio;
+      isPlaying.value = true;
+      currentText.value = text;
+
+      audio.onended = () => {
+        if (activeAudioElement === audio) {
+          activeAudioElement = null;
+          isPlaying.value = false;
+          currentText.value = null;
+        }
+      };
+
+      audio.onerror = () => {
+        // Fallback to Web Speech Synthesis if audio file fails to load/decode
+        if (activeAudioElement === audio) {
+          activeAudioElement = null;
+        }
+        playSpeechSynthesis(text, options);
+      };
+
+      audio.play().catch(() => {
+        if (activeAudioElement === audio) {
+          activeAudioElement = null;
+        }
+        playSpeechSynthesis(text, options);
+      });
+    } catch {
+      playSpeechSynthesis(text, options);
+    }
+  }
+
   function playSpeechSynthesis(text: string, options: PronounceOptions) {
-    if (!window.speechSynthesis) {
-      console.warn('[Pronunciation] SpeechSynthesis API not supported by browser');
+    if (typeof window === 'undefined' || !window.speechSynthesis) {
+      // Direct stream fallback
+      playServerStream(text, options);
       return;
+    }
+
+    // Workaround for Chrome/WebKit speech synthesis pause bug
+    window.speechSynthesis.cancel();
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
     }
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'zh-CN';
-    utterance.rate = options.rate ?? 0.85; // Slightly slower than 1.0 for tone clarity
+    utterance.rate = options.rate ?? 0.85;
     utterance.pitch = options.pitch ?? 1.0;
 
     const voice = getChineseVoice();
@@ -118,26 +145,79 @@ export function usePronunciation() {
       utterance.voice = voice;
     }
 
+    // Keep reference in module-level Set to prevent V8 garbage-collecting the utterance
+    activeUtterances.add(utterance);
+
     utterance.onstart = () => {
       isPlaying.value = true;
       currentText.value = text;
     };
 
     utterance.onend = () => {
-      isPlaying.value = false;
-      currentText.value = null;
+      activeUtterances.delete(utterance);
+      if (currentText.value === text) {
+        isPlaying.value = false;
+        currentText.value = null;
+      }
     };
 
     utterance.onerror = (e) => {
-      // Ignore interruption cancels
+      activeUtterances.delete(utterance);
+      // If error is not a manual cancel, fall back to server audio stream
       if (e.error !== 'interrupted' && e.error !== 'canceled') {
-        console.error('[Pronunciation] Speech error:', e.error);
+        console.warn('[Pronunciation] SpeechSynthesis error:', e.error, '- attempting server stream fallback');
+        playServerStream(text, options);
+      } else {
+        isPlaying.value = false;
+        currentText.value = null;
       }
-      isPlaying.value = false;
-      currentText.value = null;
     };
 
     window.speechSynthesis.speak(utterance);
+
+    // Some versions of Chrome pause immediately after speak; resume unblocks it
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+    }
+  }
+
+  function playServerStream(text: string, options: PronounceOptions) {
+    try {
+      const rateParam = options.rate ? `&rate=${options.rate}` : '';
+      const streamUrl = `/api/audio/stream?text=${encodeURIComponent(text)}${rateParam}`;
+      const audio = new Audio(streamUrl);
+      activeAudioElement = audio;
+      isPlaying.value = true;
+      currentText.value = text;
+
+      audio.onended = () => {
+        if (activeAudioElement === audio) {
+          activeAudioElement = null;
+          isPlaying.value = false;
+          currentText.value = null;
+        }
+      };
+
+      audio.onerror = () => {
+        if (activeAudioElement === audio) {
+          activeAudioElement = null;
+          isPlaying.value = false;
+          currentText.value = null;
+        }
+      };
+
+      audio.play().catch((e) => {
+        console.warn('[Pronunciation] Server stream playback rejected:', e);
+        if (activeAudioElement === audio) {
+          activeAudioElement = null;
+          isPlaying.value = false;
+          currentText.value = null;
+        }
+      });
+    } catch {
+      isPlaying.value = false;
+      currentText.value = null;
+    }
   }
 
   return {

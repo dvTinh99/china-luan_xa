@@ -358,3 +358,118 @@ model WalletTransaction {
   @@index([userId, createdAt])
   @@map("wallet_transactions")
 }
+
+// ---------------------------------------------------------------------------
+// 8. Audio Infrastructure & Voice System (Audio_system.md)
+// ---------------------------------------------------------------------------
+
+enum AudioContentType {
+  VOCABULARY
+  EXAMPLE_SENTENCE
+  CONVERSATION_LINE
+  NPC_DIALOGUE
+  SYSTEM_UI
+}
+
+enum AudioReviewStatus {
+  PENDING
+  NEEDS_REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum AudioPublicationStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum AudioJobStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model VoiceProfile {
+  id              String   @id @default(cuid())
+  code            String   @unique // e.g. "vp_learning_standard", "vp_village_guide"
+  name            String   // "Giáo Viên Chuẩn Phổ Thông"
+  description     String?
+  gender          String   @default("female") // "female" | "male" | "neutral"
+  role            String   @default("learning") // "learning" | "village_guide" | "shopkeeper" | "storyteller"
+  languageCode    String   @default("zh-CN") @map("language_code")
+  provider        String   @default("cosyvoice") // "cosyvoice" | "edge-tts" | "mock"
+  providerVoiceId String   @map("provider_voice_id") // Voice identifier within provider
+  pitch           Float    @default(1.0)
+  speed           Float    @default(0.85) // Tone-clarified rate for Mandarin learners
+  isSystem        Boolean  @default(true) @map("is_system")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  assets AudioAsset[]
+  jobs   AudioGenerationJob[]
+
+  @@map("voice_profiles")
+}
+
+model AudioAsset {
+  id                String                 @id @default(cuid())
+  contentType       AudioContentType       @map("content_type")
+  contentId         String                 @map("content_id")
+  language          String                 @default("zh-CN")
+  sourceText        String                 @map("source_text")
+  pinyin            String?
+  voiceProfileId    String                 @map("voice_profile_id")
+  provider          String                 @default("cosyvoice")
+  storageKey        String                 @unique @map("storage_key")
+  audioFormat       String                 @default("mp3") @map("audio_format")
+  durationMs        Int                    @default(0) @map("duration_ms")
+  fileSizeBytes     Int                    @default(0) @map("file_size_bytes")
+  checksum          String                 @default("") // SHA-256 hash
+  version           Int                    @default(1)
+  generationParams  Json?                  @map("generation_params")
+  reviewStatus      AudioReviewStatus      @default(NEEDS_REVIEW) @map("review_status")
+  publicationStatus AudioPublicationStatus @default(DRAFT) @map("publication_status")
+  isPrimary         Boolean                @default(false) @map("is_primary")
+  reviewedBy        String?                @map("reviewed_by")
+  reviewedAt        DateTime?              @map("reviewed_at")
+  publishedAt       DateTime?              @map("published_at")
+  createdAt         DateTime               @default(now()) @map("created_at")
+  updatedAt         DateTime               @updatedAt @map("updated_at")
+
+  voiceProfile VoiceProfile         @relation(fields: [voiceProfileId], references: [id], onDelete: Restrict)
+  jobs         AudioGenerationJob[]
+
+  @@index([contentType, contentId, publicationStatus])
+  @@index([contentType, contentId, isPrimary])
+  @@index([voiceProfileId])
+  @@map("audio_assets")
+}
+
+model AudioGenerationJob {
+  id             String           @id @default(cuid())
+  contentType    AudioContentType @map("content_type")
+  contentId      String           @map("content_id")
+  sourceText     String           @map("source_text")
+  pinyin         String?
+  voiceProfileId String           @map("voice_profile_id")
+  provider       String           @default("cosyvoice")
+  status         AudioJobStatus   @default(PENDING)
+  attempts       Int              @default(0)
+  maxAttempts    Int              @default(3) @map("max_attempts")
+  errorMessage   String?          @map("error_message")
+  resultAssetId  String?          @map("result_asset_id")
+  idempotencyKey String           @unique @map("idempotency_key")
+  startedAt      DateTime?        @map("started_at")
+  completedAt    DateTime?        @map("completed_at")
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+
+  voiceProfile VoiceProfile @relation(fields: [voiceProfileId], references: [id], onDelete: Restrict)
+  resultAsset  AudioAsset?  @relation(fields: [resultAssetId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([contentType, contentId])
+  @@map("audio_generation_jobs")
+}
