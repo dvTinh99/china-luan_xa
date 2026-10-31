@@ -23,6 +23,10 @@ export enum NuxtToGodotEvent {
   PAUSE_GAME = 'PAUSE_GAME',
   /** Resume the game loop */
   RESUME_GAME = 'RESUME_GAME',
+  /** Play an approved audio asset in game */
+  PLAY_AUDIO = 'PLAY_AUDIO',
+  /** Stop active audio in game */
+  STOP_AUDIO = 'STOP_AUDIO',
 }
 
 /** Events sent from Godot → Nuxt */
@@ -39,6 +43,8 @@ export enum GodotToNuxtEvent {
   START_COMBAT = 'START_COMBAT',
   /** Game requests navigating to a Nuxt route */
   OPEN_APP_ROUTE = 'OPEN_APP_ROUTE',
+  /** Audio playback status notification */
+  AUDIO_STATUS = 'AUDIO_STATUS',
 }
 
 /** Union of all bridge event types */
@@ -142,6 +148,29 @@ export interface WorldDataPayload {
   }>;
 }
 
+/** PLAY_AUDIO payload (Nuxt → Godot) */
+export interface PlayAudioPayload {
+  assetId?: string;
+  audioUrl: string;
+  sourceText?: string;
+  speakerId?: string;
+  speed?: number;
+  volume?: number;
+}
+
+/** STOP_AUDIO payload (Nuxt → Godot) */
+export interface StopAudioPayload {
+  assetId?: string;
+}
+
+/** AUDIO_STATUS payload (Godot → Nuxt) */
+export interface AudioStatusPayload {
+  assetId?: string;
+  audioUrl?: string;
+  status: 'playing' | 'ended' | 'error';
+  error?: string;
+}
+
 // ---------------------------------------------------------------------------
 // Payload map — maps event types to their payload shapes
 // ---------------------------------------------------------------------------
@@ -154,6 +183,8 @@ export interface BridgePayloadMap {
   [NuxtToGodotEvent.SET_AUDIO]: SetAudioPayload;
   [NuxtToGodotEvent.PAUSE_GAME]: undefined;
   [NuxtToGodotEvent.RESUME_GAME]: undefined;
+  [NuxtToGodotEvent.PLAY_AUDIO]: PlayAudioPayload;
+  [NuxtToGodotEvent.STOP_AUDIO]: StopAudioPayload;
 
   // Godot → Nuxt
   [GodotToNuxtEvent.GAME_READY]: GameReadyPayload;
@@ -162,6 +193,7 @@ export interface BridgePayloadMap {
   [GodotToNuxtEvent.ENTER_REGION]: EnterRegionPayload;
   [GodotToNuxtEvent.START_COMBAT]: StartCombatPayload;
   [GodotToNuxtEvent.OPEN_APP_ROUTE]: OpenAppRoutePayload;
+  [GodotToNuxtEvent.AUDIO_STATUS]: AudioStatusPayload;
 }
 
 // ---------------------------------------------------------------------------

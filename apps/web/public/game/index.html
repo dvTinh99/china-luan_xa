@@ -209,6 +209,14 @@
           case 'RESUME_GAME':
             gamePaused = false;
             break;
+          case 'PLAY_AUDIO':
+            if (data.payload && data.payload.audioUrl) {
+              playAudio(data.payload.audioUrl, data.payload.assetId);
+            }
+            break;
+          case 'STOP_AUDIO':
+            stopAudio(data.payload && data.payload.assetId);
+            break;
         }
       });
 
@@ -311,6 +319,41 @@
         }
       }
 
+      // ── Audio System (Godot Bridge Integration) ─────────────────────────
+      let activeGameAudio = null;
+      function playAudio(url, assetId) {
+        if (activeGameAudio) {
+          activeGameAudio.pause();
+          activeGameAudio = null;
+        }
+        try {
+          activeGameAudio = new Audio(url);
+          sendToNuxt('AUDIO_STATUS', { assetId, audioUrl: url, status: 'playing' });
+          activeGameAudio.onended = function () {
+            sendToNuxt('AUDIO_STATUS', { assetId, audioUrl: url, status: 'ended' });
+            activeGameAudio = null;
+          };
+          activeGameAudio.onerror = function () {
+            sendToNuxt('AUDIO_STATUS', { assetId, audioUrl: url, status: 'error', error: 'Audio failed to play' });
+            activeGameAudio = null;
+          };
+          activeGameAudio.play().catch(function (e) {
+            sendToNuxt('AUDIO_STATUS', { assetId, audioUrl: url, status: 'error', error: e.message });
+          });
+        } catch (e) {
+          sendToNuxt('AUDIO_STATUS', { assetId, audioUrl: url, status: 'error', error: e.message });
+        }
+      }
+
+      function stopAudio(assetId) {
+        if (activeGameAudio) {
+          activeGameAudio.pause();
+          activeGameAudio.currentTime = 0;
+          activeGameAudio = null;
+          sendToNuxt('AUDIO_STATUS', { assetId, status: 'ended' });
+        }
+      }
+
       function interactWithNPC() {
         // Send validated bridge event to Nuxt
         const reqId = 'req_' + Date.now();
@@ -322,14 +365,18 @@
         // Visual bounce animation
         npc.bounce = 12;
 
+        // Play NPC Voice via Bridge / Static URL
+        playAudio('/audio/npc/npc_village_chief_intro/vp_village_guide/v1.mp3', 'npc_village_chief_intro');
+
         // Show dialogue box
         dialogueNameEl.textContent = npc.name;
-        dialogueTextEl.textContent = '你好！(Nǐ hǎo!) Welcome to Beginner Village. I am Elder Chen. Practice your words, complete quests, and unlock new realms!';
+        dialogueTextEl.textContent = '欢迎来到灵界！我是这里的村长。(Huānyíng lái dào língjiè! Wǒ shì zhèlǐ de cūnzhǎng. — Welcome to LinguaWorld! I am the village chief.)';
         dialogueEl.style.display = 'block';
       }
 
       dialogueEl.addEventListener('click', function () {
         dialogueEl.style.display = 'none';
+        stopAudio('npc_village_chief_intro');
       });
 
       // Mobile Touch Controls

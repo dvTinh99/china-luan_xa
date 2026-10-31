@@ -10,8 +10,8 @@ import { getAudioStorageProvider } from '../../utils/audio/storage';
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id');
 
-  if (!id) {
-    return sendApiError(event, 400, 'BAD_REQUEST', 'Missing audio ID parameter.');
+  if (!id || ['jobs', 'assets', 'voices', 'resolve', 'stream'].includes(id)) {
+    return;
   }
 
   const asset = await prisma.audioAsset.findUnique({

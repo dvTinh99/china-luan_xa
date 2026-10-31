@@ -89,6 +89,7 @@ import {
   Home,
   ArrowLeft,
 } from 'lucide-vue-next';
+import { NuxtToGodotEvent, GodotToNuxtEvent } from '@linguaworld/shared-types';
 
 definePageMeta({
   layout: 'game',
@@ -99,6 +100,30 @@ const gameIframeRef = ref<HTMLIFrameElement | null>(null);
 
 const gameIframeSrc = '/game/index.html';
 const bridge = useGameBridge(gameIframeRef);
+
+onMounted(() => {
+  bridge.on(GodotToNuxtEvent.INTERACT_NPC, async (payload: any) => {
+    console.log('[World] Player interacted with NPC:', payload);
+    try {
+      // Safely resolve published NPC audio through backend API (§9)
+      const res = await $fetch<any>(`/api/audio/resolve?contentType=NPC_DIALOGUE&contentId=npc_village_chief_intro`);
+      if (res?.data?.asset?.url) {
+        bridge.send(NuxtToGodotEvent.PLAY_AUDIO, {
+          assetId: res.data.asset.id,
+          audioUrl: res.data.asset.url,
+          sourceText: res.data.asset.sourceText,
+          speakerId: payload.npcId,
+        });
+      }
+    } catch (e) {
+      console.warn('[World] Failed to resolve NPC audio via bridge:', e);
+    }
+  });
+
+  bridge.on(GodotToNuxtEvent.AUDIO_STATUS, (payload: any) => {
+    console.log('[World] Audio status from game:', payload);
+  });
+});
 
 function handleIframeLoad() {
   console.log('[World] Game iframe loaded');

@@ -12,6 +12,8 @@ signal world_data_received(data: Dictionary)
 signal audio_setting_received(data: Dictionary)
 signal game_paused
 signal game_resumed
+signal play_audio_received(data: Dictionary)
+signal stop_audio_received(data: Dictionary)
 signal bridge_error(message: String)
 
 # ── Constants ────────────────────────────────────────────────────────────────
@@ -93,6 +95,12 @@ func _on_message_from_nuxt(args: Array) -> void:
 			get_tree().paused = false
 			game_resumed.emit()
 			print("Bridge: Game resumed")
+		"PLAY_AUDIO":
+			play_audio_received.emit(payload)
+			print("Bridge: PLAY_AUDIO received: ", payload.get("audioUrl", ""))
+		"STOP_AUDIO":
+			stop_audio_received.emit(payload)
+			print("Bridge: STOP_AUDIO received")
 		_:
 			push_warning("Bridge: Unknown message type: " + msg_type)
 
@@ -138,6 +146,14 @@ func send_open_app_route(route: String) -> void:
 		_send_to_nuxt("OPEN_APP_ROUTE", {"route": route})
 	else:
 		push_warning("Bridge: Route not in allowlist: " + route)
+
+
+func send_audio_status(status: String, asset_id: String = "", error: String = "") -> void:
+	_send_to_nuxt("AUDIO_STATUS", {
+		"status": status,
+		"assetId": asset_id,
+		"error": error
+	})
 
 
 # ── Mock init for desktop / editor ──────────────────────────────────────────
