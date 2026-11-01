@@ -574,8 +574,8 @@
         "id": "avatar_portrait_luma",
         "name": "Luma Avatar Circular Portrait",
         "file": "apps/web/public/assets/character/ui/avatar_luma_portrait.png",
-        "dimensions": "256x256",
-        "status": "integrated"
+        "dimensions": "512x512",
+        "status": "approved"
       }
     ]
   }

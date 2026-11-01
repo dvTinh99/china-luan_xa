@@ -66,7 +66,7 @@ export function useCharacterStudio() {
 
     return CHARACTER_ASSET_MANIFEST.map((manifest) => {
       const invRecord = inventoryItems.value.find((inv) => inv.item.code === manifest.code);
-      const isOwned = ownedCodes.has(manifest.code) || manifest.unlockRequirements === 'Khởi đầu';
+      const isOwned = ownedCodes.has(manifest.code) || manifest.unlockRequirements.startsWith('Khởi đầu');
       const isEquipped =
         savedAppearance.value.hatId === manifest.code ||
         savedAppearance.value.outfitId === manifest.code ||

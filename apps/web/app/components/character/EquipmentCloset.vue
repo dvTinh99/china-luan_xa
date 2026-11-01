@@ -46,16 +46,16 @@
         <div
           v-for="item in items"
           :key="item.id"
-          @click="item.isOwned ? $emit('preview', item) : null"
-          class="p-3.5 rounded-2xl border-2 transition-all flex flex-col justify-between gap-2.5 relative select-none"
+          @click="$emit('preview', item)"
+          class="p-3.5 rounded-2xl border-2 transition-all flex flex-col justify-between gap-2.5 relative select-none cursor-pointer"
           :class="[
-            !item.isOwned
-              ? 'opacity-60 bg-wood-950/50 border-wood-800/80 cursor-not-allowed'
-              : isPreviewing(item)
-              ? 'bg-wood-850 border-gold-400 shadow-rpg-glow-gold cursor-pointer scale-[1.01]'
+            isPreviewing(item)
+              ? 'bg-wood-850 border-gold-400 shadow-rpg-glow-gold scale-[1.01]'
               : item.isEquipped
-              ? 'bg-wood-900 border-gold-500/50 cursor-pointer'
-              : 'bg-wood-950/60 hover:bg-wood-850 border-wood-800 hover:border-wood-700 cursor-pointer'
+              ? 'bg-wood-900 border-gold-500/50'
+              : !item.isOwned
+              ? 'opacity-85 bg-wood-950/50 border-wood-800/80 hover:border-gold-500/40'
+              : 'bg-wood-950/60 hover:bg-wood-850 border-wood-800 hover:border-wood-700'
           ]"
         >
           <div class="flex items-start gap-3">
@@ -84,9 +84,14 @@
             <div class="flex-1 min-w-0">
               <div class="flex items-center justify-between gap-1">
                 <h4 class="text-xs font-bold font-heading text-white truncate">{{ item.name }}</h4>
-                <span class="text-[9px] font-black uppercase px-1.5 py-0.2 rounded" :class="getRarityBadge(item.rarity)">
-                  {{ item.rarity }}
-                </span>
+                <div class="flex items-center gap-1 shrink-0">
+                  <span v-if="hasApprovedArt(item.code)" class="text-[8px] font-black uppercase px-1 py-0.2 rounded bg-teal-500/20 text-teal-300 border border-teal-500/30">
+                    2D Art
+                  </span>
+                  <span class="text-[9px] font-black uppercase px-1.5 py-0.2 rounded" :class="getRarityBadge(item.rarity)">
+                    {{ item.rarity }}
+                  </span>
+                </div>
               </div>
 
               <p class="text-[10px] text-amber-200/60 mt-0.5 line-clamp-2 leading-relaxed">
@@ -107,21 +112,21 @@
 
           <!-- Card Bottom State Badges -->
           <div class="flex items-center justify-between pt-2 border-t border-wood-800/60 text-[10px]">
-            <span v-if="!item.isOwned" class="text-amber-200/40 italic flex items-center gap-1">
-              <Lock :size="10" />
-              <span>Chưa sở hữu</span>
-            </span>
-            <span v-else-if="isPreviewing(item)" class="text-gold-300 font-black flex items-center gap-1">
+            <span v-if="isPreviewing(item)" class="text-gold-300 font-black flex items-center gap-1">
               <Sparkles :size="11" />
-              <span>Đang thử</span>
+              <span>Đang thử{{ !item.isOwned ? ' (Chưa mua)' : '' }}</span>
             </span>
             <span v-else-if="item.isEquipped" class="text-emerald-400 font-bold flex items-center gap-1">
               <Check :size="11" />
               <span>Đang dùng</span>
             </span>
+            <span v-else-if="!item.isOwned" class="text-amber-200/40 italic flex items-center gap-1">
+              <Lock :size="10" />
+              <span>Chưa sở hữu</span>
+            </span>
             <span v-else class="text-amber-200/40">Có sẵn</span>
 
-            <span v-if="item.isOwned" class="text-gold-400 font-bold hover:underline">
+            <span class="text-gold-400 font-bold hover:underline">
               {{ isPreviewing(item) ? 'Bỏ chọn' : 'Thử đồ' }}
             </span>
           </div>
@@ -222,6 +227,32 @@ const categories = [
 ];
 
 const failedIconCodes = ref<Set<string>>(new Set());
+
+const APPROVED_ART_SET = new Set([
+  'item_phoenix_crown',
+  'item_straw_hat',
+  'item_scholar_hat',
+  'item_dragon_armor',
+  'item_silk_robe',
+  'item_leather_vest',
+  'hair_wanderer',
+  'hair_topknot',
+  'hair_long_fantasy',
+  'acc_round_glasses',
+  'acc_small_scarf',
+  'acc_decorative_necklace',
+  'item_jade_pendant',
+  'item_wooden_sword',
+  'item_bamboo_brush',
+  'hair_luma_adventurer',
+  'outfit_luma_tunic',
+  'shoes_luma_boots',
+  'accessory_luma_satchel',
+]);
+
+function hasApprovedArt(code: string): boolean {
+  return APPROVED_ART_SET.has(code);
+}
 
 function onIconError(code: string) {
   failedIconCodes.value.add(code);
