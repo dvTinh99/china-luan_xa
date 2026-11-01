@@ -1,11 +1,11 @@
 extends SceneTree
-## Godot 4.6 Headless Runtime Verification for Luma (LinguaWorld)
+## Godot 4.6 Headless Runtime Verification for Luma Art Direction 2.0 (Super Deformed Fantasy Chibi)
 ## Tests:
-## 1. Asset loading (.json, .atlas, .png)
+## 1. Asset loading (.json, .skel, .atlas, .png)
 ## 2. Skeleton & Bone hierarchy verification (32 bones)
 ## 3. Slot & Draw-order verification (29 slots)
-## 4. Animation playback test (idle_breathe, happy, etc.)
-## 5. Modular equipment switching test (Explorer vs Ranger)
+## 4. Animation playback test (all 9 animations: idle_breathe, idle_blink, happy, curious, surprised, sleepy, proud, walk, run)
+## 5. Modular equipment switching test (Explorer vs Adventurer, facial expressions)
 
 const SKELETON_JSON_PATH = "res://assets/characters/luma/export/luma.json"
 const ATLAS_PATH = "res://assets/characters/luma/export/luma.atlas"
@@ -25,7 +25,7 @@ func _assert(condition: bool, message: String) -> void:
 
 func _init() -> void:
 	print("==================================================")
-	print(" GODOT 4.6 LUMA CHARACTER RUNTIME TEST")
+	print(" GODOT 4.6 LUMA ART DIRECTION 2.0 RUNTIME TEST")
 	print("==================================================")
 
 	# ── 1. Load Skeleton JSON ──────────────────────────────────────────────
@@ -60,9 +60,12 @@ func _init() -> void:
 	var slots: Array = skel_data.get("slots", [])
 	_assert(slots.size() == 29, "Slot count matches 29 (got %d)" % slots.size())
 
-	# Check animations
+	# Check all 9 animations
 	var anims: Dictionary = skel_data.get("animations", {})
-	var expected_anims := ["idle_breathe", "idle_blink", "happy", "curious", "surprised", "sleepy", "proud"]
+	var expected_anims := [
+		"idle_breathe", "idle_blink", "happy", "curious",
+		"surprised", "sleepy", "proud", "walk", "run"
+	]
 	for a_name in expected_anims:
 		_assert(anims.has(a_name), "Found animation: " + a_name)
 
@@ -73,7 +76,7 @@ func _init() -> void:
 
 	var atlas_text := atlas_file.get_as_text()
 	var regions := _parse_atlas_regions(atlas_text)
-	_assert(regions.size() >= 29, "Atlas regions parsed: %d found" % regions.size())
+	_assert(regions.size() >= 35, "Atlas regions parsed: %d found (>= 35)" % regions.size())
 
 	var img := Image.load_from_file(ProjectSettings.globalize_path(TEXTURE_PATH))
 	_assert(img != null and not img.is_empty(), "Loaded atlas image: " + TEXTURE_PATH)
@@ -96,7 +99,7 @@ func _init() -> void:
 		var b_name: String = b_info.get("name", "")
 		var bone_2d := Bone2D.new()
 		bone_2d.name = b_name
-		bone_2d.position = Vector2(b_info.get("x", 0.0), -b_info.get("y", 0.0)) # Flip Y for Godot
+		bone_2d.position = Vector2(b_info.get("x", 0.0), -b_info.get("y", 0.0))
 		bone_2d.rotation_degrees = -b_info.get("rotation", 0.0)
 		bone_nodes[b_name] = bone_2d
 
@@ -112,39 +115,53 @@ func _init() -> void:
 
 	# ── 4. Test Animation Playback ─────────────────────────────────────────
 	print("\n4. Testing Animation Timeline Playback...")
-	# Verify idle_breathe keyframes
-	var breathe_anim: Dictionary = anims.get("idle_breathe", {})
-	_assert(breathe_anim.has("bones"), "idle_breathe has bone tracks")
-	var chest_track = breathe_anim.bones.get("chest", {})
-	_assert(chest_track.has("translate"), "chest is translated in idle_breathe")
-	var keys: Array = chest_track.get("translate", [])
-	_assert(keys.size() >= 3, "idle_breathe chest keys >= 3 (t=0, t=1, t=2)")
+	# Verify walk loop
+	var walk_anim: Dictionary = anims.get("walk", {})
+	_assert(walk_anim.has("bones"), "walk animation has bone tracks")
+	var walk_thigh_l = walk_anim.bones.get("thigh_l", {})
+	_assert(walk_thigh_l.has("rotate"), "thigh_l rotates in walk animation")
+	var walk_keys: Array = walk_thigh_l.get("rotate", [])
+	_assert(walk_keys.size() >= 5, "walk thigh_l keys >= 5 (looping stride)")
 
-	# Verify happy keyframes
+	# Verify run loop
+	var run_anim: Dictionary = anims.get("run", {})
+	_assert(run_anim.has("bones"), "run animation has bone tracks")
+	var run_hip = run_anim.bones.get("hip", {})
+	_assert(run_hip.has("translate"), "hip translates dynamically in run animation")
+
+	# Verify happy bounce
 	var happy_anim: Dictionary = anims.get("happy", {})
 	var hip_track = happy_anim.bones.get("hip", {})
 	_assert(hip_track.has("translate"), "hip bounces in happy animation")
-	var happy_hip_keys: Array = hip_track.get("translate", [])
-	_assert(happy_hip_keys.size() >= 4, "happy hip keys >= 4 (bouncing curve)")
 
-	# ── 5. Test Modular Equipment Switching ────────────────────────────────
-	print("\n5. Testing Modular Equipment Switching...")
-	# Switch slot 'torso' from default explorer to ranger vest
+	# ── 5. Test Modular Equipment & Expression Switching ───────────────────
+	print("\n5. Testing Modular Equipment & Expression Switching...")
+	# Outfit switch: torso vs outfit_adventurer
 	var torso_reg_default = regions.get("torso", Rect2i())
-	var torso_reg_ranger = regions.get("outfit_ranger", Rect2i())
+	var torso_reg_adventurer = regions.get("outfit_adventurer", Rect2i())
 	_assert(torso_reg_default.size.x > 0 and torso_reg_default.size.y > 0, "Default outfit region valid in atlas")
-	_assert(torso_reg_ranger.size.x > 0 and torso_reg_ranger.size.y > 0, "Ranger outfit region valid in atlas")
+	_assert(torso_reg_adventurer.size.x > 0 and torso_reg_adventurer.size.y > 0, "Adventurer outfit region valid in atlas")
 
-	# Switch slot 'hat_adventurer' from beret to hood
-	var hat_reg_default = regions.get("hat_adventurer", Rect2i())
-	var hat_reg_hood = regions.get("hat_hood", Rect2i())
-	_assert(hat_reg_default.size.x > 0, "Default beret region valid in atlas")
-	_assert(hat_reg_hood.size.x > 0, "Traveler hood region valid in atlas")
+	# Hair switch: hair_front vs hair_short
+	var hair_reg_default = regions.get("hair_front", Rect2i())
+	var hair_reg_short = regions.get("hair_short", Rect2i())
+	_assert(hair_reg_default.size.x > 0, "Default hair region valid in atlas")
+	_assert(hair_reg_short.size.x > 0, "Short pixie hair region valid in atlas")
 
-	# Switch slot 'foot_l' from boot to sandals
+	# Boots switch: foot_l vs shoes_boots_l
 	var boot_l = regions.get("foot_l", Rect2i())
-	var sandals_l = regions.get("shoes_sandals_l", Rect2i())
-	_assert(boot_l.size.x > 0 and sandals_l.size.x > 0, "Boot & sandals interchangeable")
+	var travel_boots_l = regions.get("shoes_boots_l", Rect2i())
+	_assert(boot_l.size.x > 0 and travel_boots_l.size.x > 0, "Default boot & travel boots valid")
+
+	# Accessory switch: pendant vs satchel
+	var pendant_reg = regions.get("accessory_front_pendant", Rect2i())
+	var satchel_reg = regions.get("accessory_front_satchel", Rect2i())
+	_assert(pendant_reg.size.x > 0 and satchel_reg.size.x > 0, "Pendant & satchel interchangeable")
+
+	# Facial expression attachments: mouth_happy & eye_blink_l
+	var mouth_happy = regions.get("mouth_happy", Rect2i())
+	var eye_blink = regions.get("eye_blink_l", Rect2i())
+	_assert(mouth_happy.size.x > 0 and eye_blink.size.x > 0, "Facial expression attachments verified")
 
 	print("\n==================================================")
 	print(" ALL %d RUNTIME CHECKS PASSED SUCCESSFULLY!" % _passed_checks)

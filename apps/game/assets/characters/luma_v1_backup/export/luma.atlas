@@ -1,0 +1,73 @@
+luma.png
+size: 512, 1024
+filter: Linear, Linear
+accessory_front_satchel
+bounds: 261, 412, 110, 125
+accessory_front_scarf
+bounds: 2, 699, 91, 107
+brow_l
+bounds: 347, 887, 51, 19
+brow_r
+bounds: 294, 887, 51, 19
+cape_back
+bounds: 2, 412, 171, 161
+eye_l
+bounds: 376, 699, 70, 78
+eye_r
+bounds: 304, 699, 70, 78
+foot_l
+bounds: 2, 887, 51, 54
+foot_r
+bounds: 407, 808, 51, 54
+forearm_l
+bounds: 256, 808, 35, 67
+forearm_r
+bounds: 174, 808, 35, 67
+hair_back
+bounds: 2, 2, 242, 216
+hair_front
+bounds: 246, 2, 202, 211
+hair_short
+bounds: 2, 575, 192, 122
+hair_side_l
+bounds: 218, 412, 41, 137
+hair_side_r
+bounds: 175, 412, 41, 137
+hand_l
+bounds: 225, 887, 39, 40
+hand_r
+bounds: 184, 887, 39, 40
+hat_adventurer
+bounds: 95, 699, 207, 96
+hat_hood
+bounds: 238, 220, 232, 167
+head
+bounds: 2, 220, 234, 190
+mouth
+bounds: 266, 887, 26, 21
+neck
+bounds: 55, 887, 35, 47
+nose
+bounds: 400, 887, 14, 14
+outfit_ranger
+bounds: 305, 575, 127, 112
+pelvis
+bounds: 293, 808, 112, 66
+shin_l
+bounds: 88, 808, 39, 67
+shin_r
+bounds: 47, 808, 39, 67
+shoes_sandals_l
+bounds: 92, 887, 44, 43
+shoes_sandals_r
+bounds: 138, 887, 44, 43
+thigh_l
+bounds: 2, 808, 43, 77
+thigh_r
+bounds: 448, 699, 43, 77
+torso
+bounds: 196, 575, 107, 112
+upperarm_l
+bounds: 211, 808, 43, 67
+upperarm_r
+bounds: 129, 808, 43, 67

@@ -1,73 +1,79 @@
 luma.png
 size: 512, 1024
 filter: Linear, Linear
+accessory_front_pendant
+bounds: 264, 764, 32, 30
 accessory_front_satchel
-bounds: 261, 412, 110, 125
-accessory_front_scarf
-bounds: 2, 699, 91, 107
+bounds: 358, 586, 84, 80
 brow_l
-bounds: 347, 887, 51, 19
+bounds: 2, 822, 36, 16
 brow_r
-bounds: 294, 887, 51, 19
+bounds: 455, 764, 37, 16
 cape_back
-bounds: 2, 412, 171, 161
+bounds: 2, 450, 176, 134
+eye_blink_l
+bounds: 40, 822, 57, 16
+eye_blink_r
+bounds: 99, 822, 56, 16
 eye_l
-bounds: 376, 699, 70, 78
+bounds: 101, 690, 63, 72
 eye_r
-bounds: 304, 699, 70, 78
+bounds: 37, 690, 62, 72
 foot_l
-bounds: 2, 887, 51, 54
+bounds: 468, 690, 40, 56
 foot_r
-bounds: 407, 808, 51, 54
+bounds: 424, 690, 42, 56
 forearm_l
-bounds: 256, 808, 35, 67
+bounds: 122, 764, 36, 52
 forearm_r
-bounds: 174, 808, 35, 67
+bounds: 84, 764, 36, 52
 hair_back
-bounds: 2, 2, 242, 216
+bounds: 2, 2, 276, 226
 hair_front
-bounds: 246, 2, 202, 211
+bounds: 266, 230, 230, 195
 hair_short
-bounds: 2, 575, 192, 122
+bounds: 260, 450, 216, 128
 hair_side_l
-bounds: 218, 412, 41, 137
+bounds: 220, 450, 38, 134
 hair_side_r
-bounds: 175, 412, 41, 137
+bounds: 180, 450, 38, 134
 hand_l
-bounds: 225, 887, 39, 40
+bounds: 368, 764, 32, 28
 hand_r
-bounds: 184, 887, 39, 40
-hat_adventurer
-bounds: 95, 699, 207, 96
-hat_hood
-bounds: 238, 220, 232, 167
+bounds: 334, 764, 32, 28
+hat_explorer
+bounds: 2, 586, 250, 102
 head
-bounds: 2, 220, 234, 190
+bounds: 2, 230, 262, 218
 mouth
-bounds: 266, 887, 26, 21
+bounds: 157, 822, 24, 13
+mouth_happy
+bounds: 402, 764, 29, 21
+mouth_surprised
+bounds: 433, 764, 20, 20
 neck
-bounds: 55, 887, 35, 47
+bounds: 298, 764, 34, 28
 nose
-bounds: 400, 887, 14, 14
-outfit_ranger
-bounds: 305, 575, 127, 112
+bounds: 183, 822, 11, 10
+outfit_adventurer
+bounds: 254, 586, 102, 96
 pelvis
-bounds: 293, 808, 112, 66
+bounds: 160, 764, 102, 47
 shin_l
-bounds: 88, 808, 39, 67
+bounds: 291, 690, 31, 62
 shin_r
-bounds: 47, 808, 39, 67
-shoes_sandals_l
-bounds: 92, 887, 44, 43
-shoes_sandals_r
-bounds: 138, 887, 44, 43
+bounds: 258, 690, 31, 62
+shoes_boots_l
+bounds: 166, 690, 43, 64
+shoes_boots_r
+bounds: 211, 690, 45, 64
 thigh_l
-bounds: 2, 808, 43, 77
+bounds: 2, 690, 33, 72
 thigh_r
-bounds: 448, 699, 43, 77
+bounds: 444, 586, 33, 72
 torso
-bounds: 196, 575, 107, 112
+bounds: 324, 690, 98, 62
 upperarm_l
-bounds: 211, 808, 43, 67
+bounds: 43, 764, 39, 56
 upperarm_r
-bounds: 129, 808, 43, 67
+bounds: 2, 764, 39, 56
