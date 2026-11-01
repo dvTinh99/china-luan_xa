@@ -61,10 +61,23 @@
           <div class="flex items-start gap-3">
             <!-- Icon -->
             <div
-              class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 border"
+              class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 border overflow-hidden p-1 relative"
               :class="getRarityBg(item.rarity)"
             >
-              <component :is="getLucideIcon(item.icon)" :size="20" :class="getRarityColor(item.rarity)" />
+              <img
+                v-if="!hasIconError(item.code)"
+                :src="getItemIconSrc(item)"
+                :alt="item.name"
+                class="w-full h-full object-contain filter drop-shadow-sm select-none"
+                loading="lazy"
+                @error="onIconError(item.code)"
+              />
+              <component
+                v-else
+                :is="getLucideIcon(item.icon)"
+                :size="20"
+                :class="getRarityColor(item.rarity)"
+              />
             </div>
 
             <!-- Details -->
@@ -160,6 +173,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import {
   Sparkles,
   GraduationCap,
@@ -206,6 +220,23 @@ const categories = [
   { id: 'shoes' as const, label: 'Hài Giày', icon: Footprints },
   { id: 'accessory' as const, label: 'Phụ Kiện', icon: PenTool },
 ];
+
+const failedIconCodes = ref<Set<string>>(new Set());
+
+function onIconError(code: string) {
+  failedIconCodes.value.add(code);
+}
+
+function hasIconError(code: string): boolean {
+  return failedIconCodes.value.has(code);
+}
+
+function getItemIconSrc(item: EquipmentCatalogItem): string {
+  if (item.icon && (item.icon.startsWith('/') || item.icon.endsWith('.png'))) {
+    return item.icon;
+  }
+  return `/assets/character/icons/icon_${item.code}.png`;
+}
 
 function isPreviewing(item: EquipmentCatalogItem): boolean {
   if (item.category === 'hat') return props.draftAppearance.hatId === item.code;

@@ -5,21 +5,28 @@
       <div class="absolute -right-12 -top-12 w-64 h-64 bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
 
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-        <div>
-          <div class="flex items-center gap-2 mb-2">
-            <span class="px-3 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-gold-500/20 text-gold-300 border border-gold-400/30 flex items-center gap-1.5">
-              <Sparkles :size="12" />
-              <span>Cozy Fantasy Character Studio</span>
-            </span>
-            <span class="text-xs text-amber-200/60 font-bold hidden sm:inline">Thử đồ & Chỉ số độc lập</span>
+        <div class="flex items-start sm:items-center gap-4">
+          <img
+            src="/assets/character/ui/avatar_luma_portrait.png"
+            alt="Luma Avatar"
+            class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border-2 border-gold-400/50 shadow-rpg-glow-gold object-cover shrink-0 bg-wood-950/80"
+          />
+          <div>
+            <div class="flex items-center gap-2 mb-1.5">
+              <span class="px-3 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-gold-500/20 text-gold-300 border border-gold-400/30 flex items-center gap-1.5">
+                <Sparkles :size="12" />
+                <span>Cozy Fantasy Character Studio</span>
+              </span>
+              <span class="text-xs text-amber-200/60 font-bold hidden sm:inline">Thử đồ & Chỉ số độc lập</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-black font-heading text-white flex items-center gap-3">
+              <Shield :size="28" class="text-gold-400" />
+              <span>Chibi Character Studio & Hồ Sơ</span>
+            </h1>
+            <p class="text-amber-200/70 text-xs sm:text-sm mt-1 max-w-xl">
+              Phòng thử đồ nhân vật 2D Chibi hoạt họa. Tùy biến trang bị, theo dõi chỉ số hiệp khách và thành tích học tập HSK 3.0.
+            </p>
           </div>
-          <h1 class="text-3xl font-black font-heading text-white flex items-center gap-3">
-            <Shield :size="28" class="text-gold-400" />
-            <span>Chibi Character Studio & Hồ Sơ</span>
-          </h1>
-          <p class="text-amber-200/70 text-xs sm:text-sm mt-1 max-w-xl">
-            Phòng thử đồ nhân vật 2D Chibi hoạt họa. Tùy biến trang bị, theo dõi chỉ số hiệp khách và thành tích học tập HSK 3.0.
-          </p>
         </div>
 
         <!-- Gold Pouch Pill -->

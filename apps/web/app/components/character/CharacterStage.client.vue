@@ -1,6 +1,10 @@
 <template>
   <div class="relative w-full h-[360px] sm:h-[460px] rounded-3xl bg-gradient-to-b from-wood-850/80 via-wood-900/90 to-wood-950 border-2 border-wood-750 p-4 overflow-hidden flex flex-col justify-between shadow-rpg-panel group">
     <!-- Cozy Room Fantasy Backdrop Detail -->
+    <div
+      class="absolute inset-0 bg-cover bg-center opacity-35 pointer-events-none mix-blend-overlay"
+      style="background-image: url('/assets/character/ui/stage_backdrop_cozy.png')"
+    />
     <div class="absolute -right-16 -top-16 w-56 h-56 bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
     <div class="absolute -left-16 bottom-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 

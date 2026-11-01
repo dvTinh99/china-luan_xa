@@ -1,0 +1,582 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "project": "LinguaWorld",
+  "module": "CharacterStudio",
+  "route": "/character",
+  "character": "Luma (The Little Wanderer)",
+  "artDirection": "Super Deformed Fantasy Anime Chibi (2.0–2.3 heads)",
+  "version": "2.0.0",
+  "lastUpdated": "2026-11-01T14:38:00+07:00",
+  "palette": {
+    "mysticLavender": "#B9A0D9",
+    "fantasyBlue": "#78A9D9",
+    "royalTeal": "#579E9B",
+    "warmGold": "#E8B76B",
+    "rosePink": "#E9A8B9",
+    "softCream": "#F8EBD5",
+    "darkPlum": "#493747",
+    "natureGreen": "#9CC8A1",
+    "warmSkin": "#F5D9C4"
+  },
+  "categories": {
+    "references": [
+      {
+        "id": "ref_luma_master",
+        "name": "Luma Master Standing Pose",
+        "file": "assets/character/references/luma_master_standing.png",
+        "dimensions": "677x369",
+        "format": "RGBA",
+        "status": "approved"
+      },
+      {
+        "id": "ref_luma_emotions",
+        "name": "Luma 4-Expression Sheet",
+        "file": "assets/character/references/luma_emotion_sheet.png",
+        "dimensions": "677x369",
+        "format": "RGBA",
+        "status": "approved"
+      },
+      {
+        "id": "ref_luma_breakdown",
+        "name": "Luma Layer Breakdown Sheet",
+        "file": "assets/character/references/luma_breakdown_sheet.png",
+        "dimensions": "669x373",
+        "format": "RGBA",
+        "status": "approved"
+      }
+    ],
+    "bodyParts": [
+      {
+        "id": "body_head",
+        "slot": "head",
+        "file": "assets/character/luma/body/head_base.png",
+        "dimensions": "2048x2048",
+        "status": "integrated"
+      },
+      {
+        "id": "body_torso",
+        "slot": "torso",
+        "file": "assets/character/luma/body/body_torso.png",
+        "dimensions": "2752x1536",
+        "status": "integrated"
+      },
+      {
+        "id": "body_arm_left",
+        "slot": "arm_l",
+        "file": "assets/character/luma/body/left_arm.png",
+        "dimensions": "2752x1536",
+        "status": "integrated"
+      },
+      {
+        "id": "body_arm_right",
+        "slot": "arm_r",
+        "file": "assets/character/luma/body/right_arm.png",
+        "dimensions": "2400x1792",
+        "status": "integrated"
+      },
+      {
+        "id": "body_leg_left",
+        "slot": "leg_l",
+        "file": "assets/character/luma/body/left_leg.png",
+        "dimensions": "2816x1536",
+        "status": "integrated"
+      },
+      {
+        "id": "body_leg_right",
+        "slot": "leg_r",
+        "file": "assets/character/luma/body/right_leg.png",
+        "dimensions": "2816x1536",
+        "status": "integrated"
+      },
+      {
+        "id": "body_hair_front",
+        "slot": "hair_f",
+        "file": "assets/character/luma/hair/hair_front.png",
+        "dimensions": "2816x1536",
+        "status": "integrated"
+      },
+      {
+        "id": "body_hair_back",
+        "slot": "hair_b",
+        "file": "assets/character/luma/hair/hair_back.png",
+        "dimensions": "2816x1536",
+        "status": "integrated"
+      },
+      {
+        "id": "body_cape_back",
+        "slot": "cape_b",
+        "file": "assets/character/luma/clothing/cape_back.png",
+        "dimensions": "1792x2400",
+        "status": "integrated"
+      },
+      {
+        "id": "body_hat_explorer",
+        "slot": "hat",
+        "file": "assets/character/luma/clothing/hat_explorer.png",
+        "dimensions": "2400x1792",
+        "status": "integrated"
+      },
+      {
+        "id": "body_shoes_boots",
+        "slot": "shoes",
+        "file": "assets/character/luma/clothing/shoes_boots.png",
+        "dimensions": "2752x1536",
+        "status": "integrated"
+      },
+      {
+        "id": "body_accessories_default",
+        "slot": "accessory",
+        "file": "assets/character/luma/accessories/accessories_default.png",
+        "dimensions": "2816x1536",
+        "status": "integrated"
+      }
+    ],
+    "facialAssets": [
+      {
+        "id": "face_base",
+        "slot": "face",
+        "file": "assets/character/luma/face/face_base.png",
+        "dimensions": "512x512",
+        "status": "integrated"
+      },
+      {
+        "id": "eye_left_open",
+        "slot": "eye_l",
+        "file": "assets/character/luma/face/eye_left.png",
+        "dimensions": "256x256",
+        "status": "integrated"
+      },
+      {
+        "id": "eye_right_open",
+        "slot": "eye_r",
+        "file": "assets/character/luma/face/eye_right.png",
+        "dimensions": "256x256",
+        "status": "integrated"
+      },
+      {
+        "id": "eye_left_closed",
+        "slot": "eye_l_closed",
+        "file": "assets/character/luma/face/eye_closed_left.png",
+        "dimensions": "256x256",
+        "status": "integrated"
+      },
+      {
+        "id": "eye_right_closed",
+        "slot": "eye_r_closed",
+        "file": "assets/character/luma/face/eye_closed_right.png",
+        "dimensions": "256x256",
+        "status": "integrated"
+      },
+      {
+        "id": "eye_left_half",
+        "slot": "eye_l_half",
+        "file": "assets/character/luma/face/eye_half_left.png",
+        "dimensions": "256x256",
+        "status": "integrated"
+      },
+      {
+        "id": "eye_right_half",
+        "slot": "eye_r_half",
+        "file": "assets/character/luma/face/eye_half_right.png",
+        "dimensions": "256x256",
+        "status": "integrated"
+      },
+      {
+        "id": "brow_left",
+        "slot": "brow_l",
+        "file": "assets/character/luma/face/brow_left.png",
+        "dimensions": "256x256",
+        "status": "integrated"
+      },
+      {
+        "id": "brow_right",
+        "slot": "brow_r",
+        "file": "assets/character/luma/face/brow_right.png",
+        "dimensions": "256x256",
+        "status": "integrated"
+      },
+      {
+        "id": "mouth_neutral",
+        "slot": "mouth",
+        "file": "assets/character/luma/face/mouth_neutral.png",
+        "dimensions": "256x256",
+        "status": "integrated"
+      },
+      {
+        "id": "mouth_smile",
+        "slot": "mouth",
+        "file": "assets/character/luma/face/mouth_smile.png",
+        "dimensions": "256x256",
+        "status": "integrated"
+      },
+      {
+        "id": "mouth_open",
+        "slot": "mouth",
+        "file": "assets/character/luma/face/mouth_open.png",
+        "dimensions": "256x256",
+        "status": "integrated"
+      },
+      {
+        "id": "mouth_sleepy",
+        "slot": "mouth",
+        "file": "assets/character/luma/face/mouth_sleepy.png",
+        "dimensions": "256x256",
+        "status": "integrated"
+      },
+      {
+        "id": "mouth_frown",
+        "slot": "mouth",
+        "file": "assets/character/luma/face/mouth_frown.png",
+        "dimensions": "256x256",
+        "status": "integrated"
+      }
+    ],
+    "animations": [
+      {
+        "id": "anim_idle_breathe",
+        "name": "idle_breathe",
+        "duration": 2.5,
+        "timelines": 7,
+        "status": "integrated"
+      },
+      {
+        "id": "anim_idle_blink",
+        "name": "idle_blink",
+        "duration": 1.8,
+        "timelines": 6,
+        "status": "integrated"
+      },
+      {
+        "id": "anim_happy",
+        "name": "happy",
+        "duration": 1.4,
+        "timelines": 8,
+        "status": "integrated"
+      },
+      {
+        "id": "anim_curious",
+        "name": "curious",
+        "duration": 1.8,
+        "timelines": 6,
+        "status": "integrated"
+      },
+      {
+        "id": "anim_surprised",
+        "name": "surprised",
+        "duration": 1.5,
+        "timelines": 8,
+        "status": "integrated"
+      },
+      {
+        "id": "anim_sleepy",
+        "name": "sleepy",
+        "duration": 2.8,
+        "timelines": 7,
+        "status": "integrated"
+      },
+      {
+        "id": "anim_proud",
+        "name": "proud",
+        "duration": 2.0,
+        "timelines": 7,
+        "status": "integrated"
+      },
+      {
+        "id": "anim_walk",
+        "name": "walk",
+        "duration": 1.0,
+        "timelines": 8,
+        "status": "integrated"
+      },
+      {
+        "id": "anim_run",
+        "name": "run",
+        "duration": 0.65,
+        "timelines": 9,
+        "status": "integrated"
+      }
+    ],
+    "equipmentIcons": [
+      {
+        "code": "hair_luma_adventurer",
+        "category": "hair",
+        "name": "Tóc Lữ Khách Luma",
+        "file": "apps/web/public/assets/character/icons/icon_hair_luma_adventurer.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "hair_topknot",
+        "category": "hair",
+        "name": "Búi Tóc Nho Sinh",
+        "file": "apps/web/public/assets/character/icons/icon_hair_topknot.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "hair_wanderer",
+        "category": "hair",
+        "name": "Tóc Kiếm Khách Lãng Tử",
+        "file": "apps/web/public/assets/character/icons/icon_hair_wanderer.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "hair_short_layered",
+        "category": "hair",
+        "name": "Tóc Ngắn Tỉa Lớp",
+        "file": "apps/web/public/assets/character/icons/icon_hair_short_layered.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "hair_medium_wavy",
+        "category": "hair",
+        "name": "Tóc Lượn Sóng Lãng Du",
+        "file": "apps/web/public/assets/character/icons/icon_hair_medium_wavy.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "hair_long_fantasy",
+        "category": "hair",
+        "name": "Tóc Tiên Tung Bay",
+        "file": "apps/web/public/assets/character/icons/icon_hair_long_fantasy.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "item_scholar_hat",
+        "category": "hat",
+        "name": "Mũ Nho Sinh",
+        "file": "apps/web/public/assets/character/icons/icon_hat_scholar.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "item_straw_hat",
+        "category": "hat",
+        "name": "Nón Lá Tiêu Dao",
+        "file": "apps/web/public/assets/character/icons/icon_hat_straw.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "item_phoenix_crown",
+        "category": "hat",
+        "name": "Mão Phượng Hoàng",
+        "file": "apps/web/public/assets/character/icons/icon_hat_phoenix_crown.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "hat_fantasy_beret",
+        "category": "hat",
+        "name": "Mũ Nồi Giả Tưởng",
+        "file": "apps/web/public/assets/character/icons/icon_hat_fantasy_beret.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "hat_adventurer_hood",
+        "category": "hat",
+        "name": "Mũ Trùm Du Lữ",
+        "file": "apps/web/public/assets/character/icons/icon_hat_adventurer_hood.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "hat_nature_themed",
+        "category": "hat",
+        "name": "Nón Vành Thiên Nhiên",
+        "file": "apps/web/public/assets/character/icons/icon_hat_nature_themed.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "outfit_luma_tunic",
+        "category": "outfit",
+        "name": "Áo Khoác Du Lữ Luma",
+        "file": "apps/web/public/assets/character/icons/icon_outfit_luma_tunic.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "outfit_novice",
+        "category": "outfit",
+        "name": "Y Phục Tân Thủ",
+        "file": "apps/web/public/assets/character/icons/icon_outfit_novice.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "item_silk_robe",
+        "category": "outfit",
+        "name": "Trường Bào Lam Điền",
+        "file": "apps/web/public/assets/character/icons/icon_outfit_silk_robe.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "item_leather_vest",
+        "category": "outfit",
+        "name": "Áo Da Lữ Khách",
+        "file": "apps/web/public/assets/character/icons/icon_outfit_leather_vest.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "item_dragon_armor",
+        "category": "outfit",
+        "name": "Chiến Bào Kim Long",
+        "file": "apps/web/public/assets/character/icons/icon_outfit_dragon_armor.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "outfit_explorer_tunic",
+        "category": "outfit",
+        "name": "Áo Du Ngoạn Tiêu Chuẩn",
+        "file": "apps/web/public/assets/character/icons/icon_outfit_explorer_tunic.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "outfit_forest_ranger",
+        "category": "outfit",
+        "name": "Chiến Phục Kiểm Lâm",
+        "file": "apps/web/public/assets/character/icons/icon_outfit_forest_ranger.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "outfit_academy_robe",
+        "category": "outfit",
+        "name": "Học Phục Học Viện",
+        "file": "apps/web/public/assets/character/icons/icon_outfit_academy_robe.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "shoes_luma_boots",
+        "category": "shoes",
+        "name": "Ủng Da Lữ Khách Luma",
+        "file": "apps/web/public/assets/character/icons/icon_shoes_luma_boots.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "shoes_cloth",
+        "category": "shoes",
+        "name": "Hài Vải Hành Hiệp",
+        "file": "apps/web/public/assets/character/icons/icon_shoes_cloth.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "shoes_embroidered",
+        "category": "shoes",
+        "name": "Hài Thêu Trúc Lâm",
+        "file": "apps/web/public/assets/character/icons/icon_shoes_embroidered.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "shoes_adventure_boots",
+        "category": "shoes",
+        "name": "Ủng Thám Hiểm Da Mềm",
+        "file": "apps/web/public/assets/character/icons/icon_shoes_adventure_boots.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "shoes_fantasy_cloth",
+        "category": "shoes",
+        "name": "Giày Vải Huyền Ảo",
+        "file": "apps/web/public/assets/character/icons/icon_shoes_fantasy_cloth.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "shoes_nature_sandals",
+        "category": "shoes",
+        "name": "Sandal Dây Rừng",
+        "file": "apps/web/public/assets/character/icons/icon_shoes_nature_sandals.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "accessory_luma_satchel",
+        "category": "accessory",
+        "name": "Túi Thư Tịch Luma",
+        "file": "apps/web/public/assets/character/icons/icon_acc_luma_satchel.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "item_bamboo_brush",
+        "category": "accessory",
+        "name": "Bút Lông Trúc Lâm",
+        "file": "apps/web/public/assets/character/icons/icon_acc_bamboo_brush.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "item_wooden_sword",
+        "category": "accessory",
+        "name": "Mộc Kiếm Tân Thủ",
+        "file": "apps/web/public/assets/character/icons/icon_acc_wooden_sword.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "item_jade_pendant",
+        "category": "accessory",
+        "name": "Ngọc Bội Bình An",
+        "file": "apps/web/public/assets/character/icons/icon_acc_jade_pendant.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "acc_round_glasses",
+        "category": "accessory",
+        "name": "Kính Tròn Học Giả",
+        "file": "apps/web/public/assets/character/icons/icon_acc_round_glasses.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "acc_small_scarf",
+        "category": "accessory",
+        "name": "Khăn Len Ấm Áp",
+        "file": "apps/web/public/assets/character/icons/icon_acc_small_scarf.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      },
+      {
+        "code": "acc_decorative_necklace",
+        "category": "accessory",
+        "name": "Dây Chuyền Ngọc Hổ Phách",
+        "file": "apps/web/public/assets/character/icons/icon_acc_decorative_necklace.png",
+        "dimensions": "128x128",
+        "status": "integrated"
+      }
+    ],
+    "stageAndUi": [
+      {
+        "id": "stage_backdrop_cozy",
+        "name": "Cozy Fantasy Studio Backdrop",
+        "file": "apps/web/public/assets/character/ui/stage_backdrop_cozy.png",
+        "dimensions": "512x512",
+        "status": "integrated"
+      },
+      {
+        "id": "avatar_portrait_luma",
+        "name": "Luma Avatar Circular Portrait",
+        "file": "apps/web/public/assets/character/ui/avatar_luma_portrait.png",
+        "dimensions": "256x256",
+        "status": "integrated"
+      }
+    ]
+  }
+}
