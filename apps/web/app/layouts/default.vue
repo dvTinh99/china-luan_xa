@@ -25,17 +25,8 @@
           </div>
         </NuxtLink>
 
-        <!-- Desktop Navigation -->
+        <!-- Desktop Navigation: Grouped into Core Learn, World & RPG Hub -->
         <nav class="hidden md:flex items-center gap-1.5" aria-label="Menu chính">
-          <NuxtLink
-            to="/"
-            class="px-3.5 py-2 rounded-2xl text-sm font-bold text-amber-100/70 hover:text-white hover:bg-wood-850 transition-all flex items-center gap-2 border border-transparent"
-            active-class="bg-wood-850 text-gold-300 border-wood-700 shadow-sm"
-          >
-            <Sparkles :size="16" class="text-gold-400" aria-hidden="true" />
-            <span class="font-rpg tracking-wide">Trang chủ</span>
-          </NuxtLink>
-
           <NuxtLink
             to="/learn"
             class="px-3.5 py-2 rounded-2xl text-sm font-bold text-amber-100/70 hover:text-white hover:bg-wood-850 transition-all flex items-center gap-2 border border-transparent"
@@ -71,33 +62,6 @@
           </NuxtLink>
 
           <NuxtLink
-            to="/character"
-            class="px-3.5 py-2 rounded-2xl text-sm font-bold text-amber-100/70 hover:text-white hover:bg-wood-850 transition-all flex items-center gap-2 border border-transparent"
-            active-class="bg-wood-850 text-gold-300 border-wood-700 shadow-sm"
-          >
-            <Shield :size="16" class="text-purple-400" aria-hidden="true" />
-            <span class="font-rpg tracking-wide">Nhân vật</span>
-          </NuxtLink>
-
-          <NuxtLink
-            to="/shop"
-            class="px-3.5 py-2 rounded-2xl text-sm font-bold text-amber-100/70 hover:text-white hover:bg-wood-850 transition-all flex items-center gap-1.5 border border-transparent"
-            active-class="bg-wood-850 text-gold-300 border-wood-700 shadow-sm"
-          >
-            <Store :size="16" class="text-amber-400" aria-hidden="true" />
-            <span class="font-rpg tracking-wide">Cửa hàng</span>
-          </NuxtLink>
-
-          <NuxtLink
-            to="/inventory"
-            class="px-3.5 py-2 rounded-2xl text-sm font-bold text-amber-100/70 hover:text-white hover:bg-wood-850 transition-all flex items-center gap-1.5 border border-transparent"
-            active-class="bg-wood-850 text-gold-300 border-wood-700 shadow-sm"
-          >
-            <Briefcase :size="16" class="text-orange-400" aria-hidden="true" />
-            <span class="font-rpg tracking-wide">Hành trang</span>
-          </NuxtLink>
-
-          <NuxtLink
             to="/quests"
             class="px-3.5 py-2 rounded-2xl text-sm font-bold text-amber-100/70 hover:text-white hover:bg-wood-850 transition-all flex items-center gap-1.5 border border-transparent"
             active-class="bg-wood-850 text-gold-300 border-wood-700 shadow-sm"
@@ -105,6 +69,54 @@
             <Scroll :size="16" class="text-gold-400" aria-hidden="true" />
             <span class="font-rpg tracking-wide">Nhiệm vụ</span>
           </NuxtLink>
+
+          <!-- RPG Menu Dropdown (Nhân vật, Cửa hàng, Hành trang) -->
+          <div class="relative group" ref="rpgDropdownRef">
+            <button
+              type="button"
+              @click="isRpgMenuOpen = !isRpgMenuOpen"
+              class="px-3.5 py-2 rounded-2xl text-sm font-bold text-amber-100/70 hover:text-white hover:bg-wood-850 transition-all flex items-center gap-1.5 border border-transparent cursor-pointer"
+              :class="isRpgRouteActive ? 'bg-wood-850 text-gold-300 border-wood-700 shadow-sm' : ''"
+              aria-haspopup="true"
+              :aria-expanded="isRpgMenuOpen"
+            >
+              <Shield :size="16" class="text-purple-400" aria-hidden="true" />
+              <span class="font-rpg tracking-wide">Túi đồ & Nhân vật</span>
+              <ChevronDown :size="14" class="text-amber-200/60 transition-transform group-hover:rotate-180" />
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div
+              class="absolute top-full left-0 mt-2 w-48 bg-wood-900 border border-wood-750 rounded-2xl p-2 shadow-card-elevated backdrop-blur-xl z-50 hidden group-hover:block transition-all"
+            >
+              <NuxtLink
+                to="/character"
+                class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-wood-800 transition-colors"
+                active-class="bg-wood-800 text-gold-300"
+              >
+                <Shield :size="15" class="text-purple-400" />
+                <span>Nhân vật & Chỉ số</span>
+              </NuxtLink>
+
+              <NuxtLink
+                to="/inventory"
+                class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-wood-800 transition-colors"
+                active-class="bg-wood-800 text-gold-300"
+              >
+                <Briefcase :size="15" class="text-orange-400" />
+                <span>Hành trang đồ đạc</span>
+              </NuxtLink>
+
+              <NuxtLink
+                to="/shop"
+                class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-wood-800 transition-colors"
+                active-class="bg-wood-800 text-gold-300"
+              >
+                <Store :size="15" class="text-amber-400" />
+                <span>Cửa hàng NPC</span>
+              </NuxtLink>
+            </div>
+          </div>
         </nav>
 
         <!-- Right Side: Coin Pouch & Hero Pill -->
@@ -169,15 +181,6 @@
         class="md:hidden border-t border-wood-800 bg-wood-950/95 backdrop-blur-2xl px-4 py-4 space-y-2 animate-fade-in"
       >
         <NuxtLink
-          to="/"
-          @click="isMobileMenuOpen = false"
-          class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-200 hover:bg-wood-850"
-          active-class="bg-wood-850 text-gold-300"
-        >
-          <Sparkles :size="18" class="text-gold-400" aria-hidden="true" />
-          <span class="font-rpg">Trang chủ Tavern</span>
-        </NuxtLink>
-        <NuxtLink
           to="/learn"
           @click="isMobileMenuOpen = false"
           class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-200 hover:bg-wood-850"
@@ -210,33 +213,6 @@
           <span class="font-rpg">Thế giới RPG 2D</span>
         </NuxtLink>
         <NuxtLink
-          to="/character"
-          @click="isMobileMenuOpen = false"
-          class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-200 hover:bg-wood-850"
-          active-class="bg-wood-850 text-gold-300"
-        >
-          <Shield :size="18" class="text-purple-400" aria-hidden="true" />
-          <span class="font-rpg">Nhân vật & Thông số</span>
-        </NuxtLink>
-        <NuxtLink
-          to="/shop"
-          @click="isMobileMenuOpen = false"
-          class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-200 hover:bg-wood-850"
-          active-class="bg-wood-850 text-gold-300"
-        >
-          <Store :size="18" class="text-amber-400" aria-hidden="true" />
-          <span class="font-rpg">Cửa hàng Thương nhân</span>
-        </NuxtLink>
-        <NuxtLink
-          to="/inventory"
-          @click="isMobileMenuOpen = false"
-          class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-200 hover:bg-wood-850"
-          active-class="bg-wood-850 text-gold-300"
-        >
-          <Briefcase :size="18" class="text-orange-400" aria-hidden="true" />
-          <span class="font-rpg">Hành trang & Trang bị</span>
-        </NuxtLink>
-        <NuxtLink
           to="/quests"
           @click="isMobileMenuOpen = false"
           class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-200 hover:bg-wood-850"
@@ -245,6 +221,40 @@
           <Scroll :size="18" class="text-gold-400" aria-hidden="true" />
           <span class="font-rpg">Nhiệm vụ hàng ngày</span>
         </NuxtLink>
+
+        <!-- RPG Hub Accordion in Mobile -->
+        <div class="pt-2 border-t border-wood-850">
+          <div class="text-[10px] text-wood-500 uppercase tracking-wider font-extrabold px-4 pb-2">Nhân vật & Túi đồ</div>
+          <div class="grid grid-cols-3 gap-2">
+            <NuxtLink
+              to="/character"
+              @click="isMobileMenuOpen = false"
+              class="flex flex-col items-center gap-1.5 p-2.5 rounded-xl text-center bg-wood-900 border border-wood-800 text-slate-200 hover:text-white"
+              active-class="border-gold-500/50 text-gold-300"
+            >
+              <Shield :size="16" class="text-purple-400" />
+              <span class="text-[11px] font-bold">Chỉ số</span>
+            </NuxtLink>
+            <NuxtLink
+              to="/inventory"
+              @click="isMobileMenuOpen = false"
+              class="flex flex-col items-center gap-1.5 p-2.5 rounded-xl text-center bg-wood-900 border border-wood-800 text-slate-200 hover:text-white"
+              active-class="border-gold-500/50 text-gold-300"
+            >
+              <Briefcase :size="16" class="text-orange-400" />
+              <span class="text-[11px] font-bold">Túi đồ</span>
+            </NuxtLink>
+            <NuxtLink
+              to="/shop"
+              @click="isMobileMenuOpen = false"
+              class="flex flex-col items-center gap-1.5 p-2.5 rounded-xl text-center bg-wood-900 border border-wood-800 text-slate-200 hover:text-white"
+              active-class="border-gold-500/50 text-gold-300"
+            >
+              <Store :size="16" class="text-amber-400" />
+              <span class="text-[11px] font-bold">Tiệm đồ</span>
+            </NuxtLink>
+          </div>
+        </div>
 
         <div v-if="user" class="pt-3 border-t border-wood-800">
           <button
@@ -321,9 +331,16 @@ import {
   Menu,
   X,
   Headphones,
+  ChevronDown,
 } from 'lucide-vue-next';
 
+const route = useRoute();
 const isMobileMenuOpen = ref(false);
+const isRpgMenuOpen = ref(false);
+
+const isRpgRouteActive = computed(() => {
+  return ['/character', '/inventory', '/shop'].includes(route.path);
+});
 
 const { data: authData, refresh: refreshAuth } = await useFetch<any>('/api/auth/me');
 const user = computed(() => authData.value?.data?.user);
