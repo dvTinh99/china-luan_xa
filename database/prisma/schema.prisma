@@ -174,6 +174,8 @@ model Vocabulary {
   traditional  String?  // "你好"
   audioUrl     String?  @map("audio_url")
   languageCode String   @default("zh") @map("language_code")
+  strokeCount  Int?     @map("stroke_count")  // Total stroke count
+  strokeOrder  Json?    @map("stroke_order")   // Stroke order data for HanziWriter
   createdAt    DateTime @default(now()) @map("created_at")
 
   readings           VocabularyReading[]
@@ -183,6 +185,7 @@ model Vocabulary {
   learningAnswers    LearningAnswer[]
   vocabularyProgress VocabularyProgress[]
   reviewHistory      ReviewHistory[]
+  radicals           VocabularyRadical[]
 
   @@index([simplified])
   @@map("vocabulary")
@@ -244,6 +247,46 @@ model CurriculumVocabulary {
 }
 
 // ---------------------------------------------------------------------------
+// 4b. Radicals (部首 / Bộ thủ) — Kangxi 214 System
+// ---------------------------------------------------------------------------
+model Radical {
+  id          String @id @default(cuid())
+  character   String @unique // "亻" (radical character)
+  unicode     String @unique // "U+4EBB"
+  kangxiNo    Int    @unique @map("kangxi_no") // 1-214 Kangxi number
+  strokeCount Int    @map("stroke_count")
+  pinyin      String // "rén"
+  meaningEn   String @map("meaning_en") // "person"
+  meaningVi   String @map("meaning_vi") // "người"
+  mnemonic    String? // Memory aid: "Looks like a person walking"
+  mnemonicVi  String? @map("mnemonic_vi") // Vietnamese mnemonic
+  examples    String? // Common characters using this radical: "你,他,们"
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  vocabularyRadicals VocabularyRadical[]
+
+  @@index([kangxiNo])
+  @@index([strokeCount])
+  @@map("radicals")
+}
+
+model VocabularyRadical {
+  id           String @id @default(cuid())
+  vocabularyId String @map("vocabulary_id")
+  radicalId    String @map("radical_id")
+  position     String @default("left") // "left" | "right" | "top" | "bottom" | "enclosure" | "whole"
+  isPrimary    Boolean @default(false) @map("is_primary") // Main radical (部首) vs component
+
+  vocabulary Vocabulary @relation(fields: [vocabularyId], references: [id], onDelete: Cascade)
+  radical    Radical    @relation(fields: [radicalId], references: [id], onDelete: Cascade)
+
+  @@unique([vocabularyId, radicalId])
+  @@index([vocabularyId])
+  @@index([radicalId])
+  @@map("vocabulary_radicals")
+}
+
+// ---------------------------------------------------------------------------
 // 5. Learning Sessions & Answer History
 // ---------------------------------------------------------------------------
 model LearningSession {
@@ -271,7 +314,7 @@ model LearningAnswer {
   sessionId      String   @map("session_id")
   userId         String   @map("user_id")
   vocabularyId   String   @map("vocabulary_id")
-  activityType   String   @map("activity_type") // "flashcard" | "matching" | "quiz"
+  activityType   String   @map("activity_type") // "flashcard" | "matching" | "quiz" | "radical" | "writing"
   userAnswer     String   @map("user_answer")
   isCorrect      Boolean  @map("is_correct")
   responseTimeMs Int      @default(0) @map("response_time_ms")

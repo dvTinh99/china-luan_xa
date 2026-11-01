@@ -11,11 +11,11 @@
       </NuxtLink>
 
       <!-- Step / Activity Tabs -->
-      <div class="flex items-center gap-1 bg-surface-900/90 border border-surface-750 p-1 rounded-2xl text-xs font-bold">
+      <div class="flex items-center gap-1 bg-surface-900/90 border border-surface-750 p-1 rounded-2xl text-xs font-bold overflow-x-auto max-w-full">
         <button
           type="button"
           @click="currentActivity = 'flashcard'"
-          class="px-3.5 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5"
+          class="px-3 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
           :class="currentActivity === 'flashcard' ? 'bg-brand-600 text-white shadow-glow-brand' : 'text-slate-400 hover:text-white'"
         >
           <Layers :size="14" aria-hidden="true" />
@@ -23,21 +23,39 @@
         </button>
         <button
           type="button"
+          @click="currentActivity = 'radical'"
+          class="px-3 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
+          :class="currentActivity === 'radical' ? 'bg-amber-600 text-white shadow-glow-gold' : 'text-slate-400 hover:text-white'"
+        >
+          <Sparkles :size="14" aria-hidden="true" />
+          <span class="hidden sm:inline">2.</span> Bộ thủ
+        </button>
+        <button
+          type="button"
           @click="currentActivity = 'matching'"
-          class="px-3.5 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5"
+          class="px-3 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
           :class="currentActivity === 'matching' ? 'bg-brand-600 text-white shadow-glow-brand' : 'text-slate-400 hover:text-white'"
         >
           <Sparkles :size="14" aria-hidden="true" />
-          <span class="hidden sm:inline">2.</span> Nối từ
+          <span class="hidden sm:inline">3.</span> Nối từ
+        </button>
+        <button
+          type="button"
+          @click="currentActivity = 'writing'"
+          class="px-3 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
+          :class="currentActivity === 'writing' ? 'bg-emerald-600 text-white shadow-glow-jade' : 'text-slate-400 hover:text-white'"
+        >
+          <PenTool :size="14" aria-hidden="true" />
+          <span class="hidden sm:inline">4.</span> Viết chữ
         </button>
         <button
           type="button"
           @click="currentActivity = 'quiz'"
-          class="px-3.5 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5"
+          class="px-3 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
           :class="currentActivity === 'quiz' ? 'bg-brand-600 text-white shadow-glow-brand' : 'text-slate-400 hover:text-white'"
         >
           <HelpCircle :size="14" aria-hidden="true" />
-          <span class="hidden sm:inline">3.</span> Trắc nghiệm
+          <span class="hidden sm:inline">5.</span> Trắc nghiệm
         </button>
       </div>
 
@@ -200,13 +218,31 @@
           </div>
           <button
             type="button"
-            @click="currentActivity = 'quiz'"
-            class="min-h-[48px] px-7 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-sm shadow-glow-brand transition-all flex items-center gap-2 mx-auto cursor-pointer"
+            @click="currentActivity = 'writing'"
+            class="min-h-[48px] px-7 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-glow-jade transition-all flex items-center gap-2 mx-auto cursor-pointer"
           >
-            <span>Tiếp tục: Phần Trắc nghiệm</span>
+            <span>Tiếp tục: Phần Luyện Viết Chữ</span>
             <ArrowRight :size="16" aria-hidden="true" />
           </button>
         </div>
+      </div>
+
+      <!-- 4. RADICAL STRATEGY ACTIVITY -->
+      <div v-else-if="currentActivity === 'radical'" class="flex-1 flex flex-col justify-center">
+        <RadicalStrategyActivity
+          :vocabulary="vocabulary"
+          :session-id="sessionId"
+          @completed="currentActivity = 'matching'"
+        />
+      </div>
+
+      <!-- 5. HANZI WRITING ACTIVITY -->
+      <div v-else-if="currentActivity === 'writing'" class="flex-1 flex flex-col justify-center">
+        <HanziWritingActivity
+          :vocabulary="vocabulary"
+          :session-id="sessionId"
+          @completed="currentActivity = 'quiz'"
+        />
       </div>
 
       <!-- 3. QUIZ ACTIVITY -->
@@ -362,7 +398,10 @@ import {
   X,
   Volume2,
   Trophy,
+  PenTool,
 } from 'lucide-vue-next';
+import RadicalStrategyActivity from '~/components/learning/RadicalStrategyActivity.vue';
+import HanziWritingActivity from '~/components/learning/HanziWritingActivity.vue';
 
 definePageMeta({
   layout: 'default',
@@ -379,7 +418,7 @@ const vocabulary = computed(() => lesson.value?.vocabulary || []);
 
 // Active session state
 const sessionId = ref<string | null>(null);
-const currentActivity = ref<'flashcard' | 'matching' | 'quiz'>('flashcard');
+const currentActivity = ref<'flashcard' | 'matching' | 'quiz' | 'radical' | 'writing'>('flashcard');
 
 // Flashcard state
 const currentCardIndex = ref(0);

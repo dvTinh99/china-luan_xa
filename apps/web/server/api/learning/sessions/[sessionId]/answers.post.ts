@@ -11,7 +11,7 @@ import { trackQuestProgress } from '../../../../utils/quests';
 
 const answerSchema = z.object({
   vocabularyId: z.string().min(1),
-  activityType: z.enum(['flashcard', 'matching', 'quiz']),
+  activityType: z.enum(['flashcard', 'matching', 'quiz', 'radical', 'writing']),
   userAnswer: z.string(),
   responseTimeMs: z.number().int().nonnegative().default(0),
 });
@@ -88,6 +88,20 @@ export default defineEventHandler(async (event) => {
       normalizedUserAnswer === primaryPinyin ||
       normalizedUserAnswer === viMeaning ||
       viMeaning.includes(normalizedUserAnswer);
+  } else if (activityType === 'radical') {
+    // Radical: userAnswer represents correct radical character or 'correct'
+    isCorrect =
+      normalizedUserAnswer === 'correct' ||
+      normalizedUserAnswer === 'true' ||
+      vocab.simplified.includes(userAnswer) ||
+      userAnswer.length > 0;
+  } else if (activityType === 'writing') {
+    // Writing: HanziWriter client verified stroke accuracy (client reports 'completed' with stroke count or accuracy)
+    isCorrect =
+      normalizedUserAnswer === 'completed' ||
+      normalizedUserAnswer === 'perfect' ||
+      normalizedUserAnswer === 'pass' ||
+      normalizedUserAnswer === vocab.simplified;
   }
 
   // Record answer entry

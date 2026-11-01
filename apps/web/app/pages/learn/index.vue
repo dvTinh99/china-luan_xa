@@ -11,7 +11,7 @@
           Lộ Trình Học Tiếng Trung HSK 3.0
         </h1>
         <p class="text-slate-400 text-sm mt-1 max-w-2xl">
-          Làm chủ các từ vựng căn bản qua 3 giai đoạn: Thẻ từ (Flashcard), Nối chữ (Matching) và Trắc nghiệm (Quiz).
+          Làm chủ từ vựng qua 5 giai đoạn: Thẻ từ (Flashcard), Chiến thuật Bộ thủ (Radicals), Nối chữ (Matching), Luyện viết (Writing) và Trắc nghiệm (Quiz).
         </p>
       </div>
 

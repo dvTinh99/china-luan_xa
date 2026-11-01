@@ -5,6 +5,7 @@
 import { defineEventHandler, getRouterParam } from 'h3';
 import { prisma } from '../../../utils/prisma';
 import { sendApiSuccess, sendApiError } from '../../../utils/response';
+import { VOCABULARY_RADICAL_STRATEGIES, RADICALS_DATA } from '../../../utils/radicals-data';
 
 export default defineEventHandler(async (event) => {
   const lessonId = getRouterParam(event, 'lessonId');
@@ -40,13 +41,19 @@ export default defineEventHandler(async (event) => {
     return sendApiError(event, 404, 'NOT_FOUND', 'Lesson not found.');
   }
 
-  // Format vocabulary for client activity engines (Flashcard, Matching, Quiz)
+  // Format vocabulary for client activity engines (Flashcard, Matching, Quiz, Radical, Writing)
   const vocabularyItems = lesson.vocabulary.map((entry) => {
     const v = entry.vocabulary;
     const primaryReading = v.readings.find((r) => r.isPrimary)?.reading || v.readings[0]?.reading || '';
     const viMeaning = v.meanings.find((m) => m.languageCode === 'vi')?.meaning || v.meanings[0]?.meaning || '';
     const partOfSpeech = v.meanings[0]?.partOfSpeech || 'noun';
     const example = v.examples[0] || null;
+
+    // Attach radical tactical breakdown if available or fallback
+    const radicalStrategy = VOCABULARY_RADICAL_STRATEGIES[v.simplified] || null;
+    const radicalInfo = radicalStrategy
+      ? RADICALS_DATA.find((r) => r.character === radicalStrategy.primaryRadical)
+      : null;
 
     return {
       id: v.id,
@@ -55,6 +62,15 @@ export default defineEventHandler(async (event) => {
       meaning: viMeaning,
       partOfSpeech,
       audioUrl: v.audioUrl || null,
+      radicalStrategy: radicalStrategy
+        ? {
+            primaryRadical: radicalStrategy.primaryRadical,
+            radicalInfo,
+            components: radicalStrategy.components,
+            tacticalTip: radicalStrategy.tacticalTip,
+            tacticalStory: radicalStrategy.tacticalStory,
+          }
+        : null,
       example: example
         ? {
             sentenceZh: example.sentenceZh,
@@ -78,4 +94,5 @@ export default defineEventHandler(async (event) => {
     },
   });
 });
+
 

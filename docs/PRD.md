@@ -1,6 +1,6 @@
 # LinguaWorld — Product Requirements Document
 
-**Version:** 1.2
+**Version:** 1.3
 
 ## 1. Product overview
 
@@ -71,9 +71,11 @@ Learn. Play. Explore. Evolve.
 - Initial curriculum: HSK 3.0 Band 1; HSK 2.0 may be supported as a separate curriculum.
 - Support vocabulary, grammar, listening, reading and writing content.
 - MVP activity types:
-  - Flashcards.
-  - Word matching.
-  - Quiz.
+  - Flashcards (Thẻ từ 3D tương tác).
+  - Radical Strategy (Chiến thuật Bộ thủ — giải mã cấu trúc hình tượng, ngữ nghĩa và mẹo nhớ).
+  - Word matching (Nối từ và Pinyin).
+  - Hanzi Writing (Luyện viết chữ Hán theo nét chuẩn bút thuận, hỗ trợ kiểm tra sai nét theo thời gian thực).
+  - Quiz (Trắc nghiệm nghĩa và phát âm).
 - Persist learning sessions, answers, accuracy and completion.
 - Allow learning content access independently of RPG region unlocks.
 
@@ -154,7 +156,7 @@ Must have:
 - Authentication.
 - Character creation.
 - Initial Mandarin vocabulary dataset.
-- At least three learning activity types.
+- Five learning activity types (Flashcards, Radical Strategy, Word Matching, Hanzi Writing, Quiz).
 - Learning history.
 - SRS scheduling.
 - EXP and Gold reward processing.
