@@ -80,7 +80,7 @@ func _init() -> void:
 
 	var img := Image.load_from_file(ProjectSettings.globalize_path(TEXTURE_PATH))
 	_assert(img != null and not img.is_empty(), "Loaded atlas image: " + TEXTURE_PATH)
-	_assert(img.get_width() == 512 and img.get_height() == 1024, "Atlas image dimensions: 512x1024")
+	_assert((img.get_width() == 512 and img.get_height() == 1024) or (img.get_width() == 1024 and img.get_height() == 2048), "Atlas image dimensions: 512x1024 or 1024x2048 (%dx%d)" % [img.get_width(), img.get_height()])
 
 	var texture := ImageTexture.create_from_image(img)
 	_assert(texture != null, "Created ImageTexture from atlas image")

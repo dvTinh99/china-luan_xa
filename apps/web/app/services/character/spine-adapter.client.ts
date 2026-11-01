@@ -2,7 +2,13 @@
 // Official Spine v8 Adapter for PixiJS (CHIBI_CHARACTER.md §3, §5, §14)
 // ============================================================================
 
-import { Spine } from '@esotericsoftware/spine-pixi-v8';
+import {
+  Spine,
+  Skin,
+  TextureAtlas,
+  AtlasAttachmentLoader,
+  SkeletonJson,
+} from '@esotericsoftware/spine-pixi-v8';
 import { Assets } from 'pixi.js';
 
 export interface SpineAssetContract {
@@ -23,24 +29,41 @@ export class SpineCharacterAdapter {
   async loadProductionSpine(contract: SpineAssetContract): Promise<boolean> {
     try {
       // Check if skeleton file is accessible over HTTP
-      const checkRes = await fetch(contract.skeletonPath, { method: 'HEAD' });
+      const checkRes = await fetch(contract.skeletonPath);
       if (!checkRes.ok) {
         this.isAvailable = false;
         console.info('[SpineAdapter] Production Spine assets not found. Utilizing Phase 1 Vector Chibi Rig.');
         return false;
       }
 
-      // Load via PixiJS 8 Assets pipeline
-      Assets.add({ alias: 'chibi-skeleton', src: contract.skeletonPath });
-      Assets.add({ alias: 'chibi-atlas', src: contract.atlasPath });
+      // Register with PixiJS 8 Assets resolver if not registered yet
+      if (!Assets.resolver.hasKey('chibi-skeleton')) {
+        Assets.add({ alias: 'chibi-skeleton', src: contract.skeletonPath });
+      }
+      if (!Assets.resolver.hasKey('chibi-atlas')) {
+        Assets.add({ alias: 'chibi-atlas', src: contract.atlasPath });
+      }
       await Assets.load(['chibi-skeleton', 'chibi-atlas']);
 
-      this.spineInstance = Spine.from({
-        skeleton: 'chibi-skeleton',
-        atlas: 'chibi-atlas',
-      });
+      let spine: Spine;
+      try {
+        spine = Spine.from({
+          skeleton: 'chibi-skeleton',
+          atlas: 'chibi-atlas',
+        });
+      } catch (fromErr) {
+        console.warn('[SpineAdapter] Spine.from failed, using direct loader:', fromErr);
+        const atlasAsset = Assets.get('chibi-atlas') as TextureAtlas;
+        const skeletonAsset = Assets.get('chibi-skeleton');
+        const attachmentLoader = new AtlasAttachmentLoader(atlasAsset, true);
+        const parser = new SkeletonJson(attachmentLoader);
+        const skeletonData = parser.readSkeletonData(skeletonAsset);
+        spine = new Spine({ skeletonData });
+      }
 
+      this.spineInstance = spine;
       this.isAvailable = true;
+      console.info('[SpineAdapter] Production Spine 4.3 character loaded successfully!');
       return true;
     } catch (err) {
       this.isAvailable = false;
@@ -69,11 +92,22 @@ export class SpineCharacterAdapter {
   setSkin(skinName: string): void {
     if (!this.spineInstance) return;
     try {
-      this.spineInstance.skeleton.setSkinByName(skinName);
-      this.spineInstance.skeleton.setSlotsToSetupPose();
+      const skeleton = this.spineInstance.skeleton;
+      const skeletonData = skeleton.data;
+      const combinedSkin = new Skin('active-skin');
+
+      const defaultSkin = skeletonData.findSkin('default');
+      if (defaultSkin) combinedSkin.addSkin(defaultSkin);
+
+      const targetSkin = skeletonData.findSkin(skinName);
+      if (targetSkin && targetSkin !== defaultSkin) {
+        combinedSkin.addSkin(targetSkin);
+      }
+
+      skeleton.setSkin(combinedSkin);
+      skeleton.setupPoseSlots();
     } catch (e) {
       console.warn(`[SpineAdapter] Skin "${skinName}" missing:`, e);
     }
   }
 }
-

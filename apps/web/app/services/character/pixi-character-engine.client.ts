@@ -19,60 +19,66 @@
 
 import { Application, Container, Graphics } from 'pixi.js';
 import type { CharacterAppearanceState, CharacterEmote } from '../../types/character';
+import { SpineCharacterAdapter } from './spine-adapter.client';
 
-// ── Palette Constants (CHARACTER_CONCEPT.md Art Direction) ───────────────────
+// ── Palette Constants (CHARACTER_CONCEPT.md Art Direction 2.0 Super Deformed) ─
 const PALETTE = {
-  // Outlines & Creases (Soft Dark Brown, NEVER pure black)
-  OUTLINE_MAIN: 0x3d281d,
-  OUTLINE_SOFT: 0x5c3d2e,
-  OUTLINE_LIGHT: 0x8b5a2b,
+  // Outlines & Creases (Dark Plum Outline, NEVER pure black)
+  OUTLINE_MAIN: 0x493747,
+  OUTLINE_SOFT: 0x5c425a,
+  OUTLINE_LIGHT: 0x7c5d7a,
 
   // Skin Tones (Warm Anime Cel-Shading)
-  SKIN_BASE: 0xfff1e6,
-  SKIN_SHADOW: 0xfed7aa,
-  SKIN_NECK_SHADOW: 0xfbcfe8,
+  SKIN_BASE: 0xf5d9c4,
+  SKIN_SHADOW: 0xe8be9e,
+  SKIN_NECK_SHADOW: 0xdfb09e,
   BLUSH: 0xfca5a5,
   BLUSH_SPECULAR: 0xffffff,
 
-  // Hair Tones
-  HAIR_BASE: 0x4a3728,
-  HAIR_SHADOW: 0x332317,
-  HAIR_HIGHLIGHT: 0x6e523c,
+  // Hair Tones (Mystic Lavender Art Direction 2.0)
+  HAIR_BASE: 0xb9a0d9,
+  HAIR_SHADOW: 0x9d7ec4,
+  HAIR_HIGHLIGHT: 0xd8c5f0,
 
-  // Base & Equipment Colors
-  TUNIC_CREAM_BASE: 0xfdfbf7,
-  TUNIC_CREAM_SHADOW: 0xe5ded1,
-  JACKET_SAGE_BASE: 0x52796f,
-  JACKET_SAGE_SHADOW: 0x354f52,
-  JACKET_SAGE_HIGHLIGHT: 0x84a98c,
-  FOREST_GREEN_BASE: 0x2d6a4f,
-  FOREST_GREEN_SHADOW: 0x1b4332,
+  // Base & Equipment Colors (Soft Cream, Fantasy Blue, Nature Green)
+  TUNIC_CREAM_BASE: 0xf8ebd5,
+  TUNIC_CREAM_SHADOW: 0xe8d5ba,
+  JACKET_SAGE_BASE: 0x78a9d9,
+  JACKET_SAGE_SHADOW: 0x5584b5,
+  JACKET_SAGE_HIGHLIGHT: 0x9bc2e8,
+  FOREST_GREEN_BASE: 0x9cc8a1,
+  FOREST_GREEN_SHADOW: 0x76a77c,
   ACADEMY_NAVY_BASE: 0x1e3a8a,
   ACADEMY_NAVY_SHADOW: 0x172554,
 
-  // Leather & Hardware Accents
+  // Leather & Hardware Accents (Warm Gold)
   LEATHER_BASE: 0x8b5a2b,
   LEATHER_SHADOW: 0x5c3d1e,
-  BRASS_GOLD_BASE: 0xe0a96d,
-  BRASS_GOLD_SHADOW: 0xb07d4b,
-  BRASS_GOLD_SHINE: 0xfef08a,
+  BRASS_GOLD_BASE: 0xe8b76b,
+  BRASS_GOLD_SHADOW: 0xc89849,
+  BRASS_GOLD_SHINE: 0xfbe2a8,
 
-  // Eye Elements
+  // Eye Elements (Fantasy Blue Iris)
   EYE_SCLERA: 0xfbf9f5,
-  EYE_LID_SHADOW: 0x3d281d,
-  IRIS_TOP_SHADOW: 0x354f52,
-  IRIS_MID_SAGE: 0x52796f,
-  IRIS_LUMINOUS: 0x84a98c,
-  IRIS_PUPIL: 0x221711,
+  EYE_LID_SHADOW: 0x493747,
+  IRIS_TOP_SHADOW: 0x493747,
+  IRIS_MID_SAGE: 0x78a9d9,
+  IRIS_LUMINOUS: 0xb9a0d9,
+  IRIS_PUPIL: 0x251a24,
 
   // Floor Shadow
-  FLOOR_SHADOW: 0x2b1e17,
+  FLOOR_SHADOW: 0x332230,
 };
 
 export class PixiChibiCharacterEngine {
   private app: Application | null = null;
   private containerElement: HTMLElement | null = null;
   private isDestroyed = false;
+
+  // Spine Runtime Adapter
+  private spineAdapter = new SpineCharacterAdapter();
+  private usingSpine = false;
+  private spineContainer: Container | null = null;
 
   // Rig Hierarchy (Modular Skeletal Layering)
   private stageRoot: Container | null = null;
@@ -144,13 +150,121 @@ export class PixiChibiCharacterEngine {
     }
 
     container.appendChild(this.app.canvas);
-    this.setupScene(width, height);
 
-    // Setup 60 FPS ticker
-    this.app.ticker.add(this.updateAnimation, this);
+    // Attempt to load production Spine 4.3 Nanobanana character
+    const spineLoaded = await this.spineAdapter.loadProductionSpine({
+      skeletonPath: '/assets/spine/character/chibi_hero.json',
+      atlasPath: '/assets/spine/character/chibi_hero.atlas',
+      texturePath: '/assets/spine/character/luma.png',
+    });
+
+    if (spineLoaded && this.spineAdapter.hasProductionModel()) {
+      this.usingSpine = true;
+      this.setupSpineScene(width, height);
+    } else {
+      this.usingSpine = false;
+      this.setupScene(width, height);
+      // Setup 60 FPS ticker for procedural vector fallback
+      this.app.ticker.add(this.updateAnimation, this);
+    }
 
     // Dynamic resize handler
     window.addEventListener('resize', this.onResize);
+  }
+
+  /**
+   * Sets up production Spine 4.3 character scene
+   */
+  private setupSpineScene(width: number, height: number): void {
+    if (!this.app) return;
+
+    const spineDisplay = this.spineAdapter.getSpineDisplay();
+    if (!spineDisplay) return;
+
+    this.spineContainer = new Container();
+    this.app.stage.addChild(this.spineContainer);
+
+    // Soft Floor Shadow for Spine model
+    this.shadowGraphics = new Graphics();
+    this.shadowGraphics.ellipse(0, 5, 88, 20);
+    this.shadowGraphics.fill({ color: PALETTE.FLOOR_SHADOW, alpha: 0.28 });
+    this.spineContainer.addChild(this.shadowGraphics);
+
+    this.spineContainer.addChild(spineDisplay);
+    this.updateSpineLayout(width, height);
+
+    this.syncSpineSkin();
+    this.syncSpineAnimation();
+  }
+
+  /**
+   * Updates Spine character positioning and proportional scaling
+   */
+  private updateSpineLayout(width: number, height: number): void {
+    if (!this.spineContainer) return;
+    const spineDisplay = this.spineAdapter.getSpineDisplay();
+    if (!spineDisplay) return;
+
+    // Center horizontally, anchor feet near 90% of container height
+    this.spineContainer.x = width / 2;
+    this.spineContainer.y = height * 0.90;
+
+    // Chibi skeleton bounds: width ~379, height ~597
+    const targetHeight = Math.min(height * 0.78, 380);
+    const targetWidth = width * 0.75;
+    const scale = Math.min(targetHeight / 597, targetWidth / 379);
+
+    spineDisplay.scale.set(scale, scale);
+  }
+
+  /**
+   * Synchronizes current expression with production Spine keyframed animations
+   */
+  private syncSpineAnimation(): void {
+    if (!this.usingSpine) return;
+
+    let animName = 'idle_breathe';
+    switch (this.currentEmote) {
+      case 'happy':
+        animName = 'happy';
+        break;
+      case 'curious':
+        animName = 'curious';
+        break;
+      case 'surprised':
+        animName = 'surprised';
+        break;
+      case 'sleepy':
+        animName = 'sleepy';
+        break;
+      case 'proud':
+        animName = 'proud';
+        break;
+      case 'breathe':
+      case 'idle':
+      default:
+        animName = 'idle_breathe';
+        break;
+    }
+
+    this.spineAdapter.setAnimation(animName, true);
+  }
+
+  /**
+   * Synchronizes outfit variant with production Spine skins
+   */
+  private syncSpineSkin(): void {
+    if (!this.usingSpine) return;
+
+    const outfit = this.currentAppearance.outfitId;
+    let skinName = 'skin_explorer';
+    if (outfit?.includes('adventurer') || outfit?.includes('ranger')) {
+      skinName = 'skin_adventurer';
+    } else {
+      skinName = 'skin_explorer';
+    }
+
+    this.spineAdapter.setSkin(skinName);
   }
 
   /**
@@ -1195,7 +1309,12 @@ export class PixiChibiCharacterEngine {
   updateAppearance(newAppearance: CharacterAppearanceState): void {
     this.currentAppearance = { ...newAppearance };
     this.currentEmote = newAppearance.expression || this.currentEmote;
-    this.redrawAllSlots();
+    if (this.usingSpine) {
+      this.syncSpineSkin();
+      this.syncSpineAnimation();
+    } else {
+      this.redrawAllSlots();
+    }
   }
 
   /**
@@ -1203,10 +1322,14 @@ export class PixiChibiCharacterEngine {
    */
   setEmote(emote: CharacterEmote): void {
     this.currentEmote = emote;
-    this.drawEyes(false);
-    this.drawMouth();
-    this.drawFaceFeatures();
-    this.drawSparkles();
+    if (this.usingSpine) {
+      this.syncSpineAnimation();
+    } else {
+      this.drawEyes(false);
+      this.drawMouth();
+      this.drawFaceFeatures();
+      this.drawSparkles();
+    }
   }
 
   private onResize = (): void => {
@@ -1215,7 +1338,9 @@ export class PixiChibiCharacterEngine {
     const height = this.containerElement.clientHeight || 460;
 
     this.app.renderer.resize(width, height);
-    if (this.stageRoot) {
+    if (this.usingSpine) {
+      this.updateSpineLayout(width, height);
+    } else if (this.stageRoot) {
       this.stageRoot.x = width / 2;
       this.stageRoot.y = height * 0.74;
     }
@@ -1229,7 +1354,9 @@ export class PixiChibiCharacterEngine {
     window.removeEventListener('resize', this.onResize);
 
     if (this.app) {
-      this.app.ticker.remove(this.updateAnimation, this);
+      if (!this.usingSpine) {
+        this.app.ticker.remove(this.updateAnimation, this);
+      }
       this.app.destroy(true, { children: true });
       this.app = null;
     }

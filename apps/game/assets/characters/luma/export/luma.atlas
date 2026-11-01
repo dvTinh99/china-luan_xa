@@ -1,79 +1,107 @@
 luma.png
-size: 512, 1024
+size: 1024, 2048
 filter: Linear, Linear
 accessory_front_pendant
-bounds: 264, 764, 32, 30
+bounds: 762, 686, 195, 209
 accessory_front_satchel
-bounds: 358, 586, 84, 80
+bounds: 2, 958, 195, 209
 brow_l
-bounds: 2, 822, 36, 16
+bounds: 838, 1365, 55, 16
 brow_r
-bounds: 455, 764, 37, 16
+bounds: 770, 1365, 66, 19
 cape_back
-bounds: 2, 450, 176, 134
+bounds: 478, 392, 297, 275
 eye_blink_l
-bounds: 40, 822, 57, 16
+bounds: 78, 1365, 82, 60
 eye_blink_r
-bounds: 99, 822, 56, 16
+bounds: 162, 1365, 82, 60
+eye_happy_l
+bounds: 246, 1365, 82, 60
+eye_happy_r
+bounds: 330, 1365, 82, 60
 eye_l
-bounds: 101, 690, 63, 72
+bounds: 2, 1365, 74, 63
 eye_r
-bounds: 37, 690, 62, 72
+bounds: 587, 1281, 85, 66
+eye_smug_l
+bounds: 674, 1281, 82, 66
+eye_smug_r
+bounds: 758, 1281, 82, 66
+eye_star_l
+bounds: 888, 1169, 94, 82
+eye_star_r
+bounds: 2, 1281, 94, 82
+eye_surprised_l
+bounds: 98, 1281, 94, 82
+eye_surprised_r
+bounds: 194, 1281, 94, 82
 foot_l
-bounds: 468, 690, 40, 56
+bounds: 617, 1169, 83, 91
 foot_r
-bounds: 424, 690, 42, 56
+bounds: 516, 1169, 99, 91
 forearm_l
-bounds: 122, 764, 36, 52
+bounds: 401, 1169, 113, 104
 forearm_r
-bounds: 84, 764, 36, 52
+bounds: 87, 1169, 114, 107
 hair_back
-bounds: 2, 2, 276, 226
+bounds: 2, 2, 316, 388
 hair_front
-bounds: 266, 230, 230, 195
+bounds: 320, 2, 292, 297
 hair_short
-bounds: 260, 450, 216, 128
+bounds: 271, 686, 292, 223
 hair_side_l
-bounds: 220, 450, 38, 134
+bounds: 366, 392, 110, 289
 hair_side_r
-bounds: 180, 450, 38, 134
+bounds: 254, 392, 110, 289
+hand_fist
+bounds: 290, 1281, 58, 82
 hand_l
-bounds: 368, 764, 32, 28
+bounds: 350, 1281, 77, 69
+hand_open_l
+bounds: 429, 1281, 77, 69
+hand_open_r
+bounds: 842, 1281, 77, 66
+hand_point
+bounds: 921, 1281, 72, 66
 hand_r
-bounds: 334, 764, 32, 28
+bounds: 508, 1281, 77, 66
 hat_explorer
-bounds: 2, 586, 250, 102
+bounds: 199, 958, 346, 195
 head
-bounds: 2, 230, 262, 218
+bounds: 2, 686, 267, 270
 mouth
-bounds: 157, 822, 24, 13
+bounds: 716, 1365, 52, 28
 mouth_happy
-bounds: 402, 764, 29, 21
+bounds: 414, 1365, 72, 50
+mouth_smirk
+bounds: 654, 1365, 60, 38
 mouth_surprised
-bounds: 433, 764, 20, 20
+bounds: 488, 1365, 55, 50
+mouth_yawn
+bounds: 602, 1365, 50, 44
 neck
-bounds: 298, 764, 34, 28
-nose
-bounds: 183, 822, 11, 10
+bounds: 545, 1365, 55, 44
 outfit_adventurer
-bounds: 254, 586, 102, 96
+bounds: 2, 392, 250, 292
 pelvis
-bounds: 160, 764, 102, 47
+bounds: 728, 958, 195, 126
+satchel
+bounds: 565, 686, 195, 209
 shin_l
-bounds: 291, 690, 31, 62
+bounds: 2, 1169, 83, 110
 shin_r
-bounds: 258, 690, 31, 62
+bounds: 925, 958, 89, 110
 shoes_boots_l
-bounds: 166, 690, 43, 64
+bounds: 702, 1169, 83, 91
 shoes_boots_r
-bounds: 211, 690, 45, 64
+bounds: 787, 1169, 99, 91
 thigh_l
-bounds: 2, 690, 33, 72
+bounds: 638, 958, 88, 132
 thigh_r
-bounds: 444, 586, 33, 72
+bounds: 547, 958, 89, 132
 torso
-bounds: 324, 690, 98, 62
+bounds: 614, 2, 250, 292
 upperarm_l
-bounds: 43, 764, 39, 56
+bounds: 302, 1169, 97, 104
 upperarm_r
-bounds: 2, 764, 39, 56
+bounds: 203, 1169, 97, 104

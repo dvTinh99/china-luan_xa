@@ -1,0 +1,107 @@
+luma.png
+size: 1024, 2048
+filter: Linear, Linear
+accessory_front_pendant
+bounds: 762, 686, 195, 209
+accessory_front_satchel
+bounds: 2, 958, 195, 209
+brow_l
+bounds: 838, 1365, 55, 16
+brow_r
+bounds: 770, 1365, 66, 19
+cape_back
+bounds: 478, 392, 297, 275
+eye_blink_l
+bounds: 78, 1365, 82, 60
+eye_blink_r
+bounds: 162, 1365, 82, 60
+eye_happy_l
+bounds: 246, 1365, 82, 60
+eye_happy_r
+bounds: 330, 1365, 82, 60
+eye_l
+bounds: 2, 1365, 74, 63
+eye_r
+bounds: 587, 1281, 85, 66
+eye_smug_l
+bounds: 674, 1281, 82, 66
+eye_smug_r
+bounds: 758, 1281, 82, 66
+eye_star_l
+bounds: 888, 1169, 94, 82
+eye_star_r
+bounds: 2, 1281, 94, 82
+eye_surprised_l
+bounds: 98, 1281, 94, 82
+eye_surprised_r
+bounds: 194, 1281, 94, 82
+foot_l
+bounds: 617, 1169, 83, 91
+foot_r
+bounds: 516, 1169, 99, 91
+forearm_l
+bounds: 401, 1169, 113, 104
+forearm_r
+bounds: 87, 1169, 114, 107
+hair_back
+bounds: 2, 2, 316, 388
+hair_front
+bounds: 320, 2, 292, 297
+hair_short
+bounds: 271, 686, 292, 223
+hair_side_l
+bounds: 366, 392, 110, 289
+hair_side_r
+bounds: 254, 392, 110, 289
+hand_fist
+bounds: 290, 1281, 58, 82
+hand_l
+bounds: 350, 1281, 77, 69
+hand_open_l
+bounds: 429, 1281, 77, 69
+hand_open_r
+bounds: 842, 1281, 77, 66
+hand_point
+bounds: 921, 1281, 72, 66
+hand_r
+bounds: 508, 1281, 77, 66
+hat_explorer
+bounds: 199, 958, 346, 195
+head
+bounds: 2, 686, 267, 270
+mouth
+bounds: 716, 1365, 52, 28
+mouth_happy
+bounds: 414, 1365, 72, 50
+mouth_smirk
+bounds: 654, 1365, 60, 38
+mouth_surprised
+bounds: 488, 1365, 55, 50
+mouth_yawn
+bounds: 602, 1365, 50, 44
+neck
+bounds: 545, 1365, 55, 44
+outfit_adventurer
+bounds: 2, 392, 250, 292
+pelvis
+bounds: 728, 958, 195, 126
+satchel
+bounds: 565, 686, 195, 209
+shin_l
+bounds: 2, 1169, 83, 110
+shin_r
+bounds: 925, 958, 89, 110
+shoes_boots_l
+bounds: 702, 1169, 83, 91
+shoes_boots_r
+bounds: 787, 1169, 99, 91
+thigh_l
+bounds: 638, 958, 88, 132
+thigh_r
+bounds: 547, 958, 89, 132
+torso
+bounds: 614, 2, 250, 292
+upperarm_l
+bounds: 302, 1169, 97, 104
+upperarm_r
+bounds: 203, 1169, 97, 104

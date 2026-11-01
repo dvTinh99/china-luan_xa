@@ -1,0 +1,502 @@
+[
+  {
+    "name": "hair_back",
+    "left": 142,
+    "top": 90,
+    "width": 316,
+    "height": 388,
+    "center_x": 300.0,
+    "center_y": 284.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/hair_back.png"
+  },
+  {
+    "name": "cape_back",
+    "left": 150,
+    "top": 283,
+    "width": 297,
+    "height": 275,
+    "center_x": 298.5,
+    "center_y": 420.5,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/cape_back.png"
+  },
+  {
+    "name": "pelvis",
+    "left": 189,
+    "top": 462,
+    "width": 195,
+    "height": 126,
+    "center_x": 286.5,
+    "center_y": 525.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/pelvis.png"
+  },
+  {
+    "name": "thigh_r",
+    "left": 304,
+    "top": 396,
+    "width": 89,
+    "height": 132,
+    "center_x": 348.5,
+    "center_y": 462.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/thigh_r.png"
+  },
+  {
+    "name": "shin_r",
+    "left": 304,
+    "top": 511,
+    "width": 89,
+    "height": 110,
+    "center_x": 348.5,
+    "center_y": 566.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/shin_r.png"
+  },
+  {
+    "name": "foot_r",
+    "left": 304,
+    "top": 594,
+    "width": 99,
+    "height": 91,
+    "center_x": 353.5,
+    "center_y": 639.5,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/foot_r.png"
+  },
+  {
+    "name": "thigh_l",
+    "left": 219,
+    "top": 396,
+    "width": 88,
+    "height": 132,
+    "center_x": 263.0,
+    "center_y": 462.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/thigh_l.png"
+  },
+  {
+    "name": "shin_l",
+    "left": 219,
+    "top": 511,
+    "width": 83,
+    "height": 110,
+    "center_x": 260.5,
+    "center_y": 566.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/shin_l.png"
+  },
+  {
+    "name": "foot_l",
+    "left": 219,
+    "top": 594,
+    "width": 83,
+    "height": 91,
+    "center_x": 260.5,
+    "center_y": 639.5,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/foot_l.png"
+  },
+  {
+    "name": "upperarm_r",
+    "left": 362,
+    "top": 374,
+    "width": 97,
+    "height": 104,
+    "center_x": 410.5,
+    "center_y": 426.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/upperarm_r.png"
+  },
+  {
+    "name": "forearm_r",
+    "left": 364,
+    "top": 456,
+    "width": 114,
+    "height": 107,
+    "center_x": 421.0,
+    "center_y": 509.5,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/forearm_r.png"
+  },
+  {
+    "name": "hand_r",
+    "left": 411,
+    "top": 506,
+    "width": 77,
+    "height": 66,
+    "center_x": 449.5,
+    "center_y": 539.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/hand_r.png"
+  },
+  {
+    "name": "upperarm_l",
+    "left": 135,
+    "top": 374,
+    "width": 97,
+    "height": 104,
+    "center_x": 183.5,
+    "center_y": 426.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/upperarm_l.png"
+  },
+  {
+    "name": "forearm_l",
+    "left": 114,
+    "top": 456,
+    "width": 113,
+    "height": 104,
+    "center_x": 170.5,
+    "center_y": 508.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/forearm_l.png"
+  },
+  {
+    "name": "hand_l",
+    "left": 109,
+    "top": 506,
+    "width": 77,
+    "height": 69,
+    "center_x": 147.5,
+    "center_y": 540.5,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/hand_l.png"
+  },
+  {
+    "name": "torso",
+    "left": 164,
+    "top": 327,
+    "width": 250,
+    "height": 292,
+    "center_x": 289.0,
+    "center_y": 473.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/torso.png"
+  },
+  {
+    "name": "neck",
+    "left": 274,
+    "top": 324,
+    "width": 55,
+    "height": 44,
+    "center_x": 301.5,
+    "center_y": 346.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/neck.png"
+  },
+  {
+    "name": "satchel",
+    "left": 230,
+    "top": 407,
+    "width": 195,
+    "height": 209,
+    "center_x": 327.5,
+    "center_y": 511.5,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/satchel.png"
+  },
+  {
+    "name": "head",
+    "left": 169,
+    "top": 99,
+    "width": 267,
+    "height": 270,
+    "center_x": 302.5,
+    "center_y": 234.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/head.png"
+  },
+  {
+    "name": "eye_r",
+    "left": 307,
+    "top": 236,
+    "width": 85,
+    "height": 66,
+    "center_x": 349.5,
+    "center_y": 269.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/eye_r.png"
+  },
+  {
+    "name": "eye_l",
+    "left": 180,
+    "top": 239,
+    "width": 74,
+    "height": 63,
+    "center_x": 217.0,
+    "center_y": 270.5,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/eye_l.png"
+  },
+  {
+    "name": "brow_r",
+    "left": 312,
+    "top": 212,
+    "width": 66,
+    "height": 19,
+    "center_x": 345.0,
+    "center_y": 221.5,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/brow_r.png"
+  },
+  {
+    "name": "brow_l",
+    "left": 186,
+    "top": 214,
+    "width": 55,
+    "height": 16,
+    "center_x": 213.5,
+    "center_y": 222.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/brow_l.png"
+  },
+  {
+    "name": "mouth",
+    "left": 255,
+    "top": 291,
+    "width": 52,
+    "height": 28,
+    "center_x": 281.0,
+    "center_y": 305.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/mouth.png"
+  },
+  {
+    "name": "hair_side_r",
+    "left": 326,
+    "top": 104,
+    "width": 110,
+    "height": 289,
+    "center_x": 381.0,
+    "center_y": 248.5,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/hair_side_r.png"
+  },
+  {
+    "name": "hair_side_l",
+    "left": 164,
+    "top": 104,
+    "width": 110,
+    "height": 289,
+    "center_x": 219.0,
+    "center_y": 248.5,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/hair_side_l.png"
+  },
+  {
+    "name": "hair_front",
+    "left": 131,
+    "top": 88,
+    "width": 292,
+    "height": 297,
+    "center_x": 277.0,
+    "center_y": 236.5,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/hair_front.png"
+  },
+  {
+    "name": "eye_blink_l",
+    "left": 180,
+    "top": 239,
+    "width": 82,
+    "height": 60,
+    "center_x": 221.0,
+    "center_y": 269.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/eye_blink_l.png"
+  },
+  {
+    "name": "eye_blink_r",
+    "left": 307,
+    "top": 236,
+    "width": 82,
+    "height": 60,
+    "center_x": 348.0,
+    "center_y": 266.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/eye_blink_r.png"
+  },
+  {
+    "name": "eye_happy_l",
+    "left": 180,
+    "top": 239,
+    "width": 82,
+    "height": 60,
+    "center_x": 221.0,
+    "center_y": 269.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/eye_happy_l.png"
+  },
+  {
+    "name": "eye_happy_r",
+    "left": 307,
+    "top": 236,
+    "width": 82,
+    "height": 60,
+    "center_x": 348.0,
+    "center_y": 266.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/eye_happy_r.png"
+  },
+  {
+    "name": "eye_star_l",
+    "left": 180,
+    "top": 239,
+    "width": 94,
+    "height": 82,
+    "center_x": 227.0,
+    "center_y": 280.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/eye_star_l.png"
+  },
+  {
+    "name": "eye_star_r",
+    "left": 307,
+    "top": 236,
+    "width": 94,
+    "height": 82,
+    "center_x": 354.0,
+    "center_y": 277.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/eye_star_r.png"
+  },
+  {
+    "name": "eye_smug_l",
+    "left": 180,
+    "top": 239,
+    "width": 82,
+    "height": 66,
+    "center_x": 221.0,
+    "center_y": 272.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/eye_smug_l.png"
+  },
+  {
+    "name": "eye_smug_r",
+    "left": 307,
+    "top": 236,
+    "width": 82,
+    "height": 66,
+    "center_x": 348.0,
+    "center_y": 269.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/eye_smug_r.png"
+  },
+  {
+    "name": "eye_surprised_l",
+    "left": 180,
+    "top": 239,
+    "width": 94,
+    "height": 82,
+    "center_x": 227.0,
+    "center_y": 280.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/eye_surprised_l.png"
+  },
+  {
+    "name": "eye_surprised_r",
+    "left": 307,
+    "top": 236,
+    "width": 94,
+    "height": 82,
+    "center_x": 354.0,
+    "center_y": 277.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/eye_surprised_r.png"
+  },
+  {
+    "name": "mouth_happy",
+    "left": 255,
+    "top": 291,
+    "width": 72,
+    "height": 50,
+    "center_x": 291.0,
+    "center_y": 316.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/mouth_happy.png"
+  },
+  {
+    "name": "mouth_yawn",
+    "left": 255,
+    "top": 291,
+    "width": 50,
+    "height": 44,
+    "center_x": 280.0,
+    "center_y": 313.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/mouth_yawn.png"
+  },
+  {
+    "name": "mouth_smirk",
+    "left": 255,
+    "top": 291,
+    "width": 60,
+    "height": 38,
+    "center_x": 285.0,
+    "center_y": 310.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/mouth_smirk.png"
+  },
+  {
+    "name": "mouth_surprised",
+    "left": 255,
+    "top": 291,
+    "width": 55,
+    "height": 50,
+    "center_x": 282.5,
+    "center_y": 316.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/mouth_surprised.png"
+  },
+  {
+    "name": "hand_open_l",
+    "left": 109,
+    "top": 506,
+    "width": 77,
+    "height": 69,
+    "center_x": 147.5,
+    "center_y": 540.5,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/hand_open_l.png"
+  },
+  {
+    "name": "hand_open_r",
+    "left": 411,
+    "top": 506,
+    "width": 77,
+    "height": 66,
+    "center_x": 449.5,
+    "center_y": 539.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/hand_open_r.png"
+  },
+  {
+    "name": "hand_point",
+    "left": 411,
+    "top": 506,
+    "width": 72,
+    "height": 66,
+    "center_x": 447.0,
+    "center_y": 539.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/hand_point.png"
+  },
+  {
+    "name": "hand_fist",
+    "left": 109,
+    "top": 506,
+    "width": 58,
+    "height": 82,
+    "center_x": 138.0,
+    "center_y": 547.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/hand_fist.png"
+  },
+  {
+    "name": "hat_explorer",
+    "left": 130,
+    "top": 62,
+    "width": 346,
+    "height": 195,
+    "center_x": 303.0,
+    "center_y": 159.5,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/hat_explorer.png"
+  },
+  {
+    "name": "hair_short",
+    "left": 131,
+    "top": 88,
+    "width": 292,
+    "height": 223,
+    "center_x": 277.0,
+    "center_y": 199.5,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/hair_short.png"
+  },
+  {
+    "name": "outfit_adventurer",
+    "left": 164,
+    "top": 327,
+    "width": 250,
+    "height": 292,
+    "center_x": 289.0,
+    "center_y": 473.0,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/outfit_adventurer.png"
+  },
+  {
+    "name": "shoes_boots_l",
+    "left": 219,
+    "top": 594,
+    "width": 83,
+    "height": 91,
+    "center_x": 260.5,
+    "center_y": 639.5,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/shoes_boots_l.png"
+  },
+  {
+    "name": "shoes_boots_r",
+    "left": 304,
+    "top": 594,
+    "width": 99,
+    "height": 91,
+    "center_x": 353.5,
+    "center_y": 639.5,
+    "file": "/Users/dvtinh99/Documents/learn/china/linguaworld/scripts/luna_real_layers/shoes_boots_r.png"
+  }
+]
