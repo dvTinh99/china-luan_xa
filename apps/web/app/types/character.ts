@@ -4,7 +4,14 @@
 
 export type CharacterCustomizationCategory = 'hair' | 'hat' | 'outfit' | 'shoes' | 'accessory';
 
-export type CharacterEmote = 'idle' | 'happy' | 'surprised' | 'breathe';
+export type CharacterEmote =
+  | 'idle'
+  | 'happy'
+  | 'curious'
+  | 'surprised'
+  | 'sleepy'
+  | 'proud'
+  | 'breathe';
 
 export interface CharacterAppearanceState {
   hairId: string;

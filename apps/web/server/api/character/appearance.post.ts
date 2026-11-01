@@ -23,8 +23,33 @@ export default defineEventHandler(async (event) => {
 
   const ownedCodes = new Set(userInventory.map((inv) => inv.item.code));
 
-  // Starter free items
-  const freeStarterCodes = new Set(['hair_topknot', 'shoes_cloth', 'hair_wanderer', 'outfit_novice']);
+  // Starter free items (Luma original concept, beginner sets, & modular equipment sheet)
+  const freeStarterCodes = new Set([
+    'hair_luma_adventurer',
+    'outfit_luma_tunic',
+    'shoes_luma_boots',
+    'accessory_luma_satchel',
+    'hair_topknot',
+    'shoes_cloth',
+    'hair_wanderer',
+    'outfit_novice',
+    // Modular 2D RPG Equipment Sheet Items
+    'hair_short_layered',
+    'hair_medium_wavy',
+    'hair_long_fantasy',
+    'hat_fantasy_beret',
+    'hat_adventurer_hood',
+    'hat_nature_themed',
+    'outfit_explorer_tunic',
+    'outfit_forest_ranger',
+    'outfit_academy_robe',
+    'shoes_adventure_boots',
+    'shoes_fantasy_cloth',
+    'shoes_nature_sandals',
+    'acc_round_glasses',
+    'acc_small_scarf',
+    'acc_decorative_necklace',
+  ]);
 
   // Validate equipped items
   const itemsToVerify = [

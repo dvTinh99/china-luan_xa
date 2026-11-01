@@ -14,43 +14,70 @@
         <span class="text-[10px] text-amber-200/50 font-bold hidden sm:inline">PixiJS 8 Rig</span>
       </div>
 
-      <!-- Emote Reaction Controls -->
-      <div class="flex items-center gap-1 bg-wood-950/80 border border-wood-800 p-1 rounded-2xl">
+      <!-- Emote Reaction Controls (CHARACTER_CONCEPT.md 6 Canonical Expressions) -->
+      <div class="flex items-center gap-1 bg-wood-950/80 border border-wood-800 p-1 rounded-2xl overflow-x-auto max-w-full">
+        <button
+          type="button"
+          @click="handleEmote('idle')"
+          title="Tự nhiên (Neutral)"
+          class="px-2 py-1 rounded-xl text-xs transition-all cursor-pointer hover:bg-wood-800"
+          :class="activeEmote === 'idle' ? 'bg-gold-500 text-wood-950 font-bold shadow-sm' : 'text-amber-200/70'"
+        >
+          ✨
+        </button>
         <button
           type="button"
           @click="handleEmote('happy')"
-          title="Vui vẻ"
-          class="px-2.5 py-1 rounded-xl text-xs transition-all cursor-pointer hover:bg-wood-800"
+          title="Vui vẻ (Happy)"
+          class="px-2 py-1 rounded-xl text-xs transition-all cursor-pointer hover:bg-wood-800"
           :class="activeEmote === 'happy' ? 'bg-gold-500 text-wood-950 font-bold shadow-sm' : 'text-amber-200/70'"
         >
           😊
         </button>
         <button
           type="button"
+          @click="handleEmote('curious')"
+          title="Tò mò - Nghiêng đầu (Curious)"
+          class="px-2 py-1 rounded-xl text-xs transition-all cursor-pointer hover:bg-wood-800"
+          :class="activeEmote === 'curious' ? 'bg-gold-500 text-wood-950 font-bold shadow-sm' : 'text-amber-200/70'"
+        >
+          🧐
+        </button>
+        <button
+          type="button"
           @click="handleEmote('surprised')"
-          title="Ngạc nhiên"
-          class="px-2.5 py-1 rounded-xl text-xs transition-all cursor-pointer hover:bg-wood-800"
+          title="Ngạc nhiên (Surprised)"
+          class="px-2 py-1 rounded-xl text-xs transition-all cursor-pointer hover:bg-wood-800"
           :class="activeEmote === 'surprised' ? 'bg-gold-500 text-wood-950 font-bold shadow-sm' : 'text-amber-200/70'"
         >
           😮
         </button>
         <button
           type="button"
-          @click="handleEmote('breathe')"
-          title="Tĩnh tâm thở nhẹ"
-          class="px-2.5 py-1 rounded-xl text-xs transition-all cursor-pointer hover:bg-wood-800"
-          :class="activeEmote === 'breathe' ? 'bg-gold-500 text-wood-950 font-bold shadow-sm' : 'text-amber-200/70'"
+          @click="handleEmote('sleepy')"
+          title="Buồn ngủ (Sleepy)"
+          class="px-2 py-1 rounded-xl text-xs transition-all cursor-pointer hover:bg-wood-800"
+          :class="activeEmote === 'sleepy' ? 'bg-gold-500 text-wood-950 font-bold shadow-sm' : 'text-amber-200/70'"
         >
-          🧘
+          😴
         </button>
         <button
           type="button"
-          @click="handleEmote('idle')"
-          title="Mặc định"
-          class="px-2.5 py-1 rounded-xl text-xs transition-all cursor-pointer hover:bg-wood-800"
-          :class="activeEmote === 'idle' ? 'bg-gold-500 text-wood-950 font-bold shadow-sm' : 'text-amber-200/70'"
+          @click="handleEmote('proud')"
+          title="Tự hào - Ánh sao (Proud)"
+          class="px-2 py-1 rounded-xl text-xs transition-all cursor-pointer hover:bg-wood-800"
+          :class="activeEmote === 'proud' ? 'bg-gold-500 text-wood-950 font-bold shadow-sm' : 'text-amber-200/70'"
         >
-          ✨
+          ⭐
+        </button>
+        <button
+          type="button"
+          @click="handleEmote('breathe')"
+          title="Tĩnh tâm thở nhẹ (Breathe)"
+          class="px-2 py-1 rounded-xl text-xs transition-all cursor-pointer hover:bg-wood-800"
+          :class="activeEmote === 'breathe' ? 'bg-gold-500 text-wood-950 font-bold shadow-sm' : 'text-amber-200/70'"
+        >
+          🧘
         </button>
       </div>
     </div>
@@ -75,7 +102,7 @@
 
     <!-- Stage Bottom Info & Hint -->
     <div class="relative z-10 flex items-center justify-between text-[11px] text-amber-200/50 pt-2 border-t border-wood-800/60">
-      <span>Bộ xương 2D chuyển động mượt mà (60 FPS)</span>
+      <span>Luma Chibi • Cel-Shading 2D • 60 FPS</span>
       <span class="font-mono text-gold-400 font-bold">Thao tác trực tiếp</span>
     </div>
   </div>
