@@ -22,17 +22,21 @@ export default defineEventHandler(async (event) => {
   // 2. Dev / Demo fallback if not authenticated and not explicitly calling auth endpoints
   const isAuthEndpoint = event.path.startsWith('/api/auth/login') || event.path.startsWith('/api/auth/register');
   if (!isAuthEndpoint) {
-    const demoUser = await prisma.user.findUnique({
-      where: { id: 'demo-user-001' },
-      include: {
-        character: true,
-        wallet: true,
-        settings: true,
-      },
-    });
+    try {
+      const demoUser = await prisma.user.findUnique({
+        where: { id: 'demo-user-001' },
+        include: {
+          character: true,
+          wallet: true,
+          settings: true,
+        },
+      });
 
-    if (demoUser) {
-      event.context.user = demoUser;
+      if (demoUser) {
+        event.context.user = demoUser;
+      }
+    } catch (err: any) {
+      console.warn('[auth-middleware] DB fallback skipped (DB offline or uninitialized):', err.message);
     }
   }
 });
