@@ -1,5 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { fileURLToPath } from 'url';
+
 export default defineNuxtConfig({
+  alias: {
+    '@linguaworld/database/sqlite': fileURLToPath(new URL('../../database/prisma/generated/sqlite', import.meta.url)),
+    '@linguaworld/database/postgresql': fileURLToPath(new URL('../../database/prisma/generated/postgresql', import.meta.url)),
+  },
   // ---------------------------------------------------------------------------
   // Nuxt 4 compatibility
   // ---------------------------------------------------------------------------

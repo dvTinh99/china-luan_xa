@@ -2,9 +2,9 @@
 // Seed Regions for Phase 3 Adventure World
 // ============================================================================
 
-import { PrismaClient } from '@prisma/client';
+import { getPrismaClient } from './client.mjs';
 
-const prisma = new PrismaClient();
+const prisma = await getPrismaClient();
 
 const REGIONS = [
   {

@@ -2,9 +2,9 @@
 // LinguaWorld — RPG Foundation Seeder (Phase 2: Items & Quests)
 // ============================================================================
 
-import { PrismaClient } from '@prisma/client';
+import { getPrismaClient } from './client.mjs';
 
-const prisma = new PrismaClient();
+const prisma = await getPrismaClient();
 
 const ITEMS = [
   // HEAD
@@ -242,10 +242,14 @@ async function main() {
 
   // 1. Seed Items
   for (const item of ITEMS) {
+    const payload = {
+      ...item,
+      stats: item.stats ? JSON.stringify(item.stats) : null,
+    };
     await prisma.item.upsert({
       where: { code: item.code },
-      update: item,
-      create: item,
+      update: payload,
+      create: payload,
     });
     console.log(`✓ Item: ${item.name} (${item.priceGold} Gold)`);
   }

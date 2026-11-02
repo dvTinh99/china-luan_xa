@@ -7,7 +7,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -78,7 +78,7 @@ model Character {
   exp       Int      @default(0)
   hp        Int      @default(100)
   maxHp     Int      @default(100) @map("max_hp")
-  appearance Json?
+  appearance String?
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -176,7 +176,7 @@ model Vocabulary {
   audioUrl     String?  @map("audio_url")
   languageCode String   @default("zh") @map("language_code")
   strokeCount  Int?     @map("stroke_count")  // Total stroke count
-  strokeOrder  Json?    @map("stroke_order")   // Stroke order data for HanziWriter
+  strokeOrder String?    @map("stroke_order")   // Stroke order data for HanziWriter
   createdAt    DateTime @default(now()) @map("created_at")
 
   readings           VocabularyReading[]
@@ -411,38 +411,17 @@ model WalletTransaction {
 // 7b. Items, Inventory, Equipment & Daily Quests (Phase 2 RPG Foundation)
 // ---------------------------------------------------------------------------
 
-enum ItemType {
-  EQUIPMENT
-  CONSUMABLE
-  COSMETIC
-}
-
-enum EquipmentSlot {
-  HEAD
-  WEAPON
-  ARMOR
-  ACCESSORY
-  AURA
-}
-
-enum ItemRarity {
-  COMMON
-  RARE
-  EPIC
-  LEGENDARY
-}
-
 model Item {
   id          String         @id @default(cuid())
   code        String         @unique // e.g. "item_bamboo_brush", "item_silk_robe"
   name        String         // "Bút Lông Trúc Lâm (Bamboo Brush)"
   description String
-  itemType    ItemType       @default(EQUIPMENT) @map("item_type")
-  slot        EquipmentSlot?
-  rarity      ItemRarity     @default(COMMON)
+  itemType String @default("EQUIPMENT") @map("item_type")
+  slot String?
+  rarity String @default("COMMON")
   priceGold   Int            @default(50) @map("price_gold")
   icon        String         @default("Package")
-  stats       Json?          // { hpBonus: 10, bonusExpPercent: 5 }
+  stats String?          // { hpBonus: 10, bonusExpPercent: 5 }
   isShopItem  Boolean        @default(true) @map("is_shop_item")
   createdAt   DateTime       @default(now()) @map("created_at")
   updatedAt   DateTime       @updatedAt @map("updated_at")
@@ -469,25 +448,13 @@ model InventoryItem {
   @@map("inventory_items")
 }
 
-enum QuestCategory {
-  DAILY
-  ACHIEVEMENT
-}
-
-enum QuestTargetType {
-  COMPLETE_LESSON
-  REVIEW_FLASHCARDS
-  EARN_EXP
-  PERFECT_QUIZ
-}
-
 model Quest {
   id          String          @id @default(cuid())
   code        String          @unique // e.g. "daily_complete_1_lesson"
   title       String          // "Vượt ải đầu ngày"
   description String          // "Hoàn thành 1 bài học tiếng Trung bất kỳ"
-  category    QuestCategory   @default(DAILY)
-  targetType  QuestTargetType @map("target_type")
+  category String @default("DAILY")
+  targetType String @map("target_type")
   targetCount Int             @default(1) @map("target_count")
   rewardGold  Int             @default(50) @map("reward_gold")
   rewardExp   Int             @default(30) @map("reward_exp")
@@ -524,34 +491,6 @@ model UserQuest {
 // 8. Audio Infrastructure & Voice System (Audio_system.md)
 // ---------------------------------------------------------------------------
 
-enum AudioContentType {
-  VOCABULARY
-  EXAMPLE_SENTENCE
-  CONVERSATION_LINE
-  NPC_DIALOGUE
-  SYSTEM_UI
-}
-
-enum AudioReviewStatus {
-  PENDING
-  NEEDS_REVIEW
-  APPROVED
-  REJECTED
-}
-
-enum AudioPublicationStatus {
-  DRAFT
-  PUBLISHED
-  ARCHIVED
-}
-
-enum AudioJobStatus {
-  PENDING
-  PROCESSING
-  COMPLETED
-  FAILED
-}
-
 model VoiceProfile {
   id              String   @id @default(cuid())
   code            String   @unique // e.g. "vp_learning_standard", "vp_village_guide"
@@ -576,7 +515,7 @@ model VoiceProfile {
 
 model AudioAsset {
   id                String                 @id @default(cuid())
-  contentType       AudioContentType       @map("content_type")
+  contentType String       @map("content_type")
   contentId         String                 @map("content_id")
   language          String                 @default("zh-CN")
   sourceText        String                 @map("source_text")
@@ -589,9 +528,9 @@ model AudioAsset {
   fileSizeBytes     Int                    @default(0) @map("file_size_bytes")
   checksum          String                 @default("") // SHA-256 hash
   version           Int                    @default(1)
-  generationParams  Json?                  @map("generation_params")
-  reviewStatus      AudioReviewStatus      @default(NEEDS_REVIEW) @map("review_status")
-  publicationStatus AudioPublicationStatus @default(DRAFT) @map("publication_status")
+  generationParams String?                  @map("generation_params")
+  reviewStatus String @default("NEEDS_REVIEW") @map("review_status")
+  publicationStatus String @default("DRAFT") @map("publication_status")
   isPrimary         Boolean                @default(false) @map("is_primary")
   reviewedBy        String?                @map("reviewed_by")
   reviewedAt        DateTime?              @map("reviewed_at")
@@ -610,13 +549,13 @@ model AudioAsset {
 
 model AudioGenerationJob {
   id             String           @id @default(cuid())
-  contentType    AudioContentType @map("content_type")
+  contentType String @map("content_type")
   contentId      String           @map("content_id")
   sourceText     String           @map("source_text")
   pinyin         String?
   voiceProfileId String           @map("voice_profile_id")
   provider       String           @default("cosyvoice")
-  status         AudioJobStatus   @default(PENDING)
+  status String @default("PENDING")
   attempts       Int              @default(0)
   maxAttempts    Int              @default(3) @map("max_attempts")
   errorMessage   String?          @map("error_message")
@@ -653,13 +592,6 @@ model Region {
   @@map("regions")
 }
 
-enum CombatState {
-  IN_PROGRESS
-  VICTORY
-  DEFEAT
-  FLED
-}
-
 model CombatSession {
   id             String      @id @default(cuid())
   userId         String      @map("user_id")
@@ -669,9 +601,9 @@ model CombatSession {
   enemyAtk       Int         @default(15) @map("enemy_atk")
   playerHp       Int         @map("player_hp")
   playerMaxHp    Int         @map("player_max_hp")
-  status         CombatState @default(IN_PROGRESS)
+  status String @default("IN_PROGRESS")
   currentTurn    Int         @default(1) @map("current_turn")
-  turnQuestions  Json        @map("turn_questions") // Stored question list with correct answers for validation
+  turnQuestions String        @map("turn_questions") // Stored question list with correct answers for validation
   expReward      Int         @default(40) @map("exp_reward")
   goldReward     Int         @default(25) @map("gold_reward")
   createdAt      DateTime    @default(now()) @map("created_at")

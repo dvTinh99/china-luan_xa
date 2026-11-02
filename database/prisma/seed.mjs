@@ -2,7 +2,7 @@
 // LinguaWorld — Database Seeder (Phase 1: HSK 3.0 Band 1 Data)
 // ============================================================================
 
-import { PrismaClient } from '@prisma/client';
+import { getPrismaClient, resolveDriver } from './client.mjs';
 import bcrypt from 'bcryptjs';
 import fs from 'fs';
 import path from 'path';
@@ -11,7 +11,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const prisma = new PrismaClient();
+const prisma = await getPrismaClient();
 
 async function main() {
   console.log('🌱 Starting LinguaWorld database seeding...');

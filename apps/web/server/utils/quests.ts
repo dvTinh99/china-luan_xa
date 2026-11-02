@@ -2,7 +2,7 @@
 // Quest Progression Tracker Utility (Phase 2 RPG Foundation)
 // ============================================================================
 
-import { QuestTargetType } from '@prisma/client';
+import type { QuestTargetType } from '@linguaworld/shared-types';
 import { prisma as defaultPrisma } from './prisma';
 
 export interface QuestProgressResult {

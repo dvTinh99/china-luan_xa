@@ -6,7 +6,7 @@ import { defineEventHandler, getQuery } from 'h3';
 import { prisma } from '../../utils/prisma';
 import { sendApiSuccess, sendApiError } from '../../utils/response';
 import { getAudioStorageProvider } from '../../utils/audio/storage';
-import { AudioContentType } from '@prisma/client';
+import type { AudioContentType } from '@linguaworld/shared-types';
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);

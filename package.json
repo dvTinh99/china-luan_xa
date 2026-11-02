@@ -15,11 +15,14 @@
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f",
-    "db:generate": "prisma generate --schema=./database/prisma/schema.prisma",
-    "db:push": "prisma db push --schema=./database/prisma/schema.prisma",
-    "db:migrate": "prisma migrate dev --schema=./database/prisma/schema.prisma",
+    "db:provider": "node database/prisma/dbProvider.mjs",
+    "db:switch:sqlite": "node database/prisma/dbProvider.mjs sqlite",
+    "db:switch:postgres": "node database/prisma/dbProvider.mjs postgresql",
+    "db:generate": "node database/prisma/dbProvider.mjs prepare && prisma generate --schema=./database/prisma/schema.prisma",
+    "db:push": "node database/prisma/dbProvider.mjs prepare && prisma db push --schema=./database/prisma/schema.prisma",
+    "db:migrate": "node database/prisma/dbProvider.mjs prepare && prisma migrate dev --schema=./database/prisma/schema.prisma",
     "db:studio": "prisma studio --schema=./database/prisma/schema.prisma",
-    "db:seed": "node database/prisma/seed.mjs",
+    "db:seed": "node database/prisma/seed.mjs && node database/prisma/seed_rpg_phase2.mjs && node database/prisma/seed_regions.mjs",
     "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {

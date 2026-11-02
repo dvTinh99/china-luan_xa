@@ -164,11 +164,11 @@ export async function ensureChakraRewardItems(tx: any = prisma) {
         slot: 'AURA',
         rarity: def.tier >= 6 ? 'LEGENDARY' : def.tier >= 3 ? 'EPIC' : 'RARE',
         icon: 'Sparkles',
-        stats: {
+        stats: JSON.stringify({
           chakraTier: def.tier,
           auraColorHex: def.colorHex,
           bonusExpPercent: 5 + def.tier,
-        },
+        }),
       },
       create: {
         code: def.rewardItemCode,
@@ -180,11 +180,11 @@ export async function ensureChakraRewardItems(tx: any = prisma) {
         priceGold: 0,
         icon: 'Sparkles',
         isShopItem: false,
-        stats: {
+        stats: JSON.stringify({
           chakraTier: def.tier,
           auraColorHex: def.colorHex,
           bonusExpPercent: 5 + def.tier,
-        },
+        }),
       },
     });
   }
