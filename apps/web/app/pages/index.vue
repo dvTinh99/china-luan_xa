@@ -123,7 +123,7 @@
             </div>
 
             <RpgButton
-              :to="`/learn/lesson/${nextRecommendedLesson?.id || 'default'}`"
+              :to="nextRecommendedLesson ? `/learn/lesson/${nextRecommendedLesson.id}` : '/learn'"
               variant="dragon"
               size="md"
               class="shrink-0"

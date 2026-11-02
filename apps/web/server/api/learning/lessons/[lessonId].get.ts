@@ -14,28 +14,43 @@ export default defineEventHandler(async (event) => {
     return sendApiError(event, 400, 'BAD_REQUEST', 'Missing lessonId parameter.');
   }
 
-  const lesson = await prisma.lesson.findUnique({
-    where: { id: lessonId },
-    include: {
-      unit: {
-        include: {
-          course: true,
-        },
+  const lessonInclude = {
+    unit: {
+      include: {
+        course: true,
       },
-      vocabulary: {
-        orderBy: { sequenceNumber: 'asc' },
-        include: {
-          vocabulary: {
-            include: {
-              readings: true,
-              meanings: true,
-              examples: true,
-            },
+    },
+    vocabulary: {
+      orderBy: { sequenceNumber: 'asc' as const },
+      include: {
+        vocabulary: {
+          include: {
+            readings: true,
+            meanings: true,
+            examples: true,
           },
         },
       },
     },
-  });
+  };
+
+  let lesson = lessonId === 'default' || lessonId === '1'
+    ? await prisma.lesson.findFirst({
+        orderBy: { orderIndex: 'asc' },
+        include: lessonInclude,
+      })
+    : await prisma.lesson.findUnique({
+        where: { id: lessonId },
+        include: lessonInclude,
+      });
+
+  // If specific ID not found, fallback to first lesson rather than crashing
+  if (!lesson) {
+    lesson = await prisma.lesson.findFirst({
+      orderBy: { orderIndex: 'asc' },
+      include: lessonInclude,
+    });
+  }
 
   if (!lesson) {
     return sendApiError(event, 404, 'NOT_FOUND', 'Lesson not found.');
