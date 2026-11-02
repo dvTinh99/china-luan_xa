@@ -127,17 +127,18 @@ export function syncSchemaProvider(driver) {
  */
 export function configureEnvForDriver(driver) {
   const isSqlite = driver === 'sqlite';
+  const rootEnv = parseEnv(rootEnvPath);
 
-  const defaultUrl = isSqlite
-    ? 'file:./dev.db'
-    : 'postgresql://postgres:password@localhost:5432/linguaworld?schema=public';
-  const activeUrl = process.env.DATABASE_URL || defaultUrl;
+  const sqliteUrl = process.env.SQLITE_DATABASE_URL || rootEnv.SQLITE_DATABASE_URL || 'file:./dev.db';
+  const postgresUrl = process.env.POSTGRES_DATABASE_URL || rootEnv.POSTGRES_DATABASE_URL || 'postgresql://postgres:password@localhost:5432/linguaworld?schema=public';
+
+  const activeUrl = isSqlite ? sqliteUrl : postgresUrl;
 
   updateEnvFile(rootEnvPath, {
     DB_DRIVER: driver,
     DATABASE_URL: activeUrl,
-    SQLITE_DATABASE_URL: process.env.SQLITE_DATABASE_URL || 'file:./dev.db',
-    POSTGRES_DATABASE_URL: process.env.POSTGRES_DATABASE_URL || activeUrl,
+    SQLITE_DATABASE_URL: sqliteUrl,
+    POSTGRES_DATABASE_URL: postgresUrl,
   });
 
   // Ensure apps/web/.env is a symlink
@@ -151,7 +152,8 @@ export function configureEnvForDriver(driver) {
     fs.symlinkSync('../../.env', webEnvPath);
   }
 
-  console.log(`[dbProvider] ✓ Updated .env with DB_DRIVER="${driver}" & DATABASE_URL="${activeUrl}"`);
+  const maskedUrl = activeUrl.includes('@') ? activeUrl.replace(/:[^:@]+@/, ':****@') : activeUrl;
+  console.log(`[dbProvider] ✓ Updated .env with DB_DRIVER="${driver}" & DATABASE_URL="${maskedUrl}"`);
 }
 
 /**
@@ -231,7 +233,11 @@ async function main() {
     configureEnvForDriver(driver);
   } else {
     const rootEnv = parseEnv(rootEnvPath);
-    if (!rootEnv.DB_DRIVER || rootEnv.DB_DRIVER !== driver) {
+    const expectedUrl = driver === 'sqlite'
+      ? (process.env.SQLITE_DATABASE_URL || rootEnv.SQLITE_DATABASE_URL || 'file:./dev.db')
+      : (process.env.POSTGRES_DATABASE_URL || rootEnv.POSTGRES_DATABASE_URL || 'postgresql://postgres:password@localhost:5432/linguaworld?schema=public');
+
+    if (!rootEnv.DB_DRIVER || rootEnv.DB_DRIVER !== driver || rootEnv.DATABASE_URL !== expectedUrl) {
       configureEnvForDriver(driver);
     }
   }
