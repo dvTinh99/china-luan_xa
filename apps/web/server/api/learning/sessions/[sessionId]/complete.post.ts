@@ -7,6 +7,7 @@ import { defineEventHandler, getRouterParam } from 'h3';
 import { prisma } from '../../../../utils/prisma';
 import { sendApiSuccess, sendApiError } from '../../../../utils/response';
 import { trackQuestProgress } from '../../../../utils/quests';
+import { evaluateUserChakraProgress } from '../../../../utils/chakra';
 
 export default defineEventHandler(async (event) => {
   const user = event.context.user;
@@ -190,6 +191,14 @@ export default defineEventHandler(async (event) => {
     };
   });
 
+  // 7. Server-authoritative Chakra Milestone Evaluation
+  let chakraUpdate = null;
+  try {
+    chakraUpdate = await evaluateUserChakraProgress(user.id, prisma);
+  } catch (err) {
+    console.warn('[Session Complete] Failed to evaluate chakra progress:', err);
+  }
+
   return sendApiSuccess(event, {
     completed: true,
     accuracy: session.accuracy,
@@ -208,6 +217,7 @@ export default defineEventHandler(async (event) => {
     },
     walletGold: result.walletBalance,
     questsCompleted: result.questUpdates.filter((q) => q.justCompleted),
+    chakra: chakraUpdate,
   });
 });
 

@@ -196,12 +196,14 @@
       </div>
     </div>
 
+
+
     <!-- ===================================================================== -->
     <!-- 3. VIEW MODE SWITCHER & UNIT FILTER TABS                              -->
     <!-- ===================================================================== -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2 border-t border-wood-800">
-      <!-- Unit Tabs Filter -->
-      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full scrollbar-none">
+      <!-- Unit Tabs Filter (Visible in Codex view) -->
+      <div v-if="viewMode === 'codex'" class="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full scrollbar-none">
         <button
           type="button"
           @click="selectedUnitId = 'all'"
@@ -228,22 +230,28 @@
         </button>
       </div>
 
-      <!-- View Mode Toggle: Journey Map vs Codex Grid -->
+      <!-- Tagline for Unified Chakra Journey -->
+      <div v-else class="flex items-center gap-2 text-xs font-bold text-amber-300 py-1">
+        <Sparkles :size="14" class="text-gold-400" />
+        <span>Bản Đồ Hành Trình Luân Xa • 7 Tầng Cảnh Giới Tu Luyện (HSK 3.0 & FSRS)</span>
+      </div>
+
+      <!-- View Mode Toggle: Unified Chakra Journey vs Codex Grid -->
       <div class="flex items-center gap-1 bg-wood-950/90 border border-wood-800 p-1 rounded-2xl shrink-0 self-end sm:self-auto">
         <button
           type="button"
           @click="viewMode = 'journey'"
-          class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
-          :class="viewMode === 'journey' ? 'bg-gold-500 text-wood-950 shadow-sm' : 'text-amber-200/60 hover:text-white'"
-          title="Bản đồ Lộ trình Phiêu lưu (S-Curve Adventure Map)"
+          class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+          :class="viewMode === 'journey' ? 'bg-gradient-to-r from-red-600 via-amber-500 to-gold-400 text-wood-950 font-black shadow-sm' : 'text-amber-200/60 hover:text-white'"
+          title="Bản Đồ Hành Trình Luân Xa (7-Chakra Ascension Journey)"
         >
-          <Compass :size="13" />
-          <span>Bản Đồ Hành Trình</span>
+          <Zap :size="13" class="fill-current text-wood-950" />
+          <span>Hành Trình Luân Xa</span>
         </button>
         <button
           type="button"
           @click="viewMode = 'codex'"
-          class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+          class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
           :class="viewMode === 'codex' ? 'bg-gold-500 text-wood-950 shadow-sm' : 'text-amber-200/60 hover:text-white'"
           title="Tàng Kinh Các (Lưới thẻ bài chi tiết)"
         >
@@ -254,166 +262,16 @@
     </div>
 
     <!-- ===================================================================== -->
-    <!-- 4. VIEW MODE 1: THE XIANXIA ADVENTURE JOURNEY (MAP)                   -->
+    <!-- 4. VIEW MODE 1: UNIFIED CHAKRA ASCENSION JOURNEY (MAP + CHAKRA)       -->
     <!-- ===================================================================== -->
-    <div v-if="viewMode === 'journey'" class="space-y-12 py-4">
-      <div
-        v-for="unit in filteredUnits"
-        :key="unit.id"
-        class="relative unit-container"
-      >
-        <!-- Unit Chapter Landmark Header -->
-        <div class="flex items-center justify-between mb-8 p-4 rounded-2xl bg-gradient-to-r from-wood-900 via-wood-850 to-wood-900 border border-wood-750 shadow-sm">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-gold-500/20 border border-gold-500/40 flex items-center justify-center text-gold-400 font-heading font-black text-base shadow-sm">
-              {{ unit.orderIndex }}
-            </div>
-            <div>
-              <h2 class="text-base sm:text-lg font-black font-heading text-white flex items-center gap-2">
-                <span>{{ unit.title }}</span>
-              </h2>
-              <p class="text-[11px] text-amber-200/60">Gồm {{ unit.lessons.length }} trạm dừng chân tu luyện</p>
-            </div>
-          </div>
-          <span class="text-[11px] font-bold text-gold-400/80 bg-wood-950 px-3 py-1 rounded-full border border-wood-800">
-            Chương {{ unit.orderIndex }}
-          </span>
-        </div>
-
-        <!-- S-Curve Interactive Nodes Path -->
-        <div class="relative max-w-xl mx-auto py-6">
-          <!-- Background SVG Connecting Path (Animated via GSAP) -->
-          <svg class="absolute inset-0 w-full h-full pointer-events-none stroke-current text-gold-500/25" viewBox="0 0 400 600" preserveAspectRatio="none">
-            <path
-              d="M 200,40 C 290,120 310,220 200,300 C 90,380 110,480 200,560"
-              fill="none"
-              stroke-width="5"
-              stroke-dasharray="8 8"
-              class="journey-svg-path"
-            />
-          </svg>
-
-          <!-- Lesson Nodes Along the Path -->
-          <div class="space-y-14 relative z-10">
-            <div
-              v-for="(lesson, lIdx) in unit.lessons"
-              :key="lesson.id"
-              class="flex items-center journey-node"
-              :class="lIdx % 2 === 0 ? 'justify-start sm:pl-16' : 'justify-end sm:pr-16'"
-            >
-              <!-- Node Card -->
-              <div
-                class="w-full sm:w-80 rounded-2xl p-4 border-2 transition-all relative flex flex-col justify-between gap-3 group"
-                :class="[
-                  lesson.isCompleted
-                    ? 'bg-wood-900/90 border-emerald-500/50 shadow-rpg-card hover:border-emerald-400'
-                    : isNextLesson(lesson)
-                    ? 'bg-wood-850 border-gold-400 shadow-rpg-glow-gold scale-[1.02]'
-                    : 'bg-wood-950/70 border-wood-800 opacity-80 hover:opacity-100 hover:border-wood-700'
-                ]"
-              >
-                <!-- Node Header: Status & Rewards -->
-                <div class="flex items-center justify-between">
-                  <!-- Node Badge -->
-                  <div class="flex items-center gap-2">
-                    <div
-                      class="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs border"
-                      :class="[
-                        lesson.isCompleted
-                          ? 'bg-emerald-500/20 text-emerald-300 border-emerald-400/50 shadow-sm'
-                          : isNextLesson(lesson)
-                          ? 'bg-gold-500 text-wood-950 border-gold-300 font-black shadow-rpg-glow-gold'
-                          : 'bg-wood-800 text-amber-200/50 border-wood-700'
-                      ]"
-                    >
-                      <CheckCircle2 v-if="lesson.isCompleted" :size="16" />
-                      <Play v-else-if="isNextLesson(lesson)" :size="13" class="fill-current" />
-                      <span v-else>{{ lIdx + 1 }}</span>
-                    </div>
-
-                    <span class="text-xs font-bold text-slate-200 group-hover:text-gold-300 transition-colors">
-                      Trạm {{ unit.orderIndex }}.{{ lIdx + 1 }}
-                    </span>
-                  </div>
-
-                  <!-- 3-Star Rating or Rewards -->
-                  <div v-if="lesson.isCompleted" class="flex items-center gap-0.5 text-gold-400">
-                    <Star :size="12" class="fill-current" />
-                    <Star :size="12" class="fill-current" />
-                    <Star :size="12" class="fill-current" />
-                  </div>
-                  <div v-else class="text-[10px] font-bold text-gold-400 bg-wood-950 px-2 py-0.5 rounded-full border border-gold-500/20">
-                    +{{ lesson.expReward }} EXP
-                  </div>
-                </div>
-
-                <!-- Lesson Info -->
-                <div>
-                  <h3 class="text-sm font-bold font-heading text-white line-clamp-1 mb-1">
-                    {{ lesson.title }}
-                  </h3>
-                  <p class="text-[11px] text-amber-200/60 line-clamp-2 leading-relaxed">
-                    {{ lesson.description }}
-                  </p>
-                </div>
-
-                <!-- Hanzi Mini Chips Preview -->
-                <div v-if="lesson.hanziPreview?.length" class="flex items-center gap-1.5 flex-wrap pt-1">
-                  <span
-                    v-for="(hz, hIdx) in lesson.hanziPreview.slice(0, 5)"
-                    :key="hIdx"
-                    class="px-2 py-0.5 rounded-lg bg-wood-950 border border-wood-750 font-hanzi text-xs text-gold-300 font-bold shadow-sm"
-                  >
-                    {{ hz }}
-                  </span>
-                </div>
-
-                <!-- Action Button -->
-                <div class="pt-2 border-t border-wood-800/80 flex items-center justify-between text-xs">
-                  <span class="text-[10px] text-amber-200/50">
-                    {{ lesson.vocabularyCount }} Từ vựng
-                  </span>
-
-                  <NuxtLink
-                    :to="`/learn/lesson/${lesson.id}`"
-                    class="px-3.5 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
-                    :class="[
-                      lesson.isCompleted
-                        ? 'bg-wood-800 hover:bg-wood-750 text-emerald-300 border border-wood-700'
-                        : isNextLesson(lesson)
-                        ? 'bg-gold-500 hover:bg-gold-400 text-wood-950 font-black shadow-rpg-glow-gold'
-                        : 'bg-wood-850 hover:bg-wood-800 text-amber-200/70 border border-wood-750'
-                    ]"
-                  >
-                    <span>{{ lesson.isCompleted ? 'Ôn Lại' : 'Bắt Đầu' }}</span>
-                    <ChevronRight :size="13" />
-                  </NuxtLink>
-                </div>
-              </div>
-            </div>
-
-            <!-- Unit Milestone Boss Chest -->
-            <div class="flex items-center justify-center pt-4">
-              <div class="p-4 rounded-2xl bg-gradient-to-r from-wood-950 via-wood-900 to-wood-950 border-2 border-gold-500/40 text-center max-w-sm shadow-rpg-glow-gold flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-gold-500/20 border border-gold-500/40 flex items-center justify-center text-gold-400 shrink-0">
-                  <Trophy :size="24" />
-                </div>
-                <div class="text-left">
-                  <div class="text-xs font-black text-gold-300 font-heading">Bí Cảnh Khảo Hạch Chương {{ unit.orderIndex }}</div>
-                  <div class="text-[11px] text-amber-200/60 mt-0.5">Vượt qua toàn bộ bài học để nhận Rương Báu Hoàng Gia!</div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
+    <div v-if="viewMode === 'journey'" class="space-y-6">
+      <ChakraJourneyMap />
     </div>
 
     <!-- ===================================================================== -->
     <!-- 5. VIEW MODE 2: THE IMPERIAL CODEX GRID                               -->
     <!-- ===================================================================== -->
-    <div v-else class="space-y-10 py-2">
+    <div v-else-if="viewMode === 'codex'" class="space-y-10 py-2">
       <div v-for="unit in filteredUnits" :key="unit.id" class="space-y-4">
         <!-- Unit Header -->
         <div class="flex items-center justify-between border-b border-wood-800 pb-3">
@@ -510,7 +368,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick } from 'vue';
+import { ref, computed, onMounted, nextTick, watch } from 'vue';
 import {
   Sparkles,
   BookOpen,
@@ -525,16 +383,23 @@ import {
   Compass,
   Layers,
   Star,
+  Zap,
 } from 'lucide-vue-next';
 import { gsap } from 'gsap';
+import ChakraJourneyMap from '~/components/chakra/ChakraJourneyMap.vue';
 
 definePageMeta({
   layout: 'default',
 });
 
-// View mode state: 'journey' (Adventure Map) or 'codex' (Grid)
+// View mode state: 'journey' (Unified 7-Chakra Ascension Map) or 'codex' (Grid)
 const viewMode = ref<'journey' | 'codex'>('journey');
 const selectedUnitId = ref<string>('all');
+
+// Fetch server-authoritative Chakra milestone progress
+const { data: chakraRes } = await useFetch<any>('/api/chakra/status');
+const chakraStatus = computed(() => chakraRes.value?.data);
+const currentMuladhara = computed(() => chakraStatus.value?.chakras?.[0]);
 
 // Luma Dialogue cycle
 const lumaDialogues = [
@@ -701,12 +566,11 @@ watch(viewMode, async (val) => {
       ease: 'power2.out',
     });
   } else if (val === 'journey') {
-    gsap.from('.journey-node', {
-      scale: 0.9,
+    gsap.from('.chakra-journey-container', {
+      y: 16,
       opacity: 0,
-      duration: 0.35,
-      stagger: 0.06,
-      ease: 'back.out(1.4)',
+      duration: 0.45,
+      ease: 'power2.out',
     });
   }
 });

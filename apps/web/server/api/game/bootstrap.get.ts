@@ -6,6 +6,7 @@ import { defineEventHandler } from 'h3';
 import { BRIDGE_VERSION } from '@linguaworld/shared-types';
 import type { GameBootstrapResponse } from '@linguaworld/api-contracts';
 import { prisma } from '../../utils/prisma';
+import { evaluateUserChakraProgress } from '../../utils/chakra';
 import { sendApiSuccess, sendApiError } from '../../utils/response';
 
 export default defineEventHandler(async (event) => {
@@ -42,12 +43,20 @@ export default defineEventHandler(async (event) => {
     include: { item: true },
   });
 
+  // Fetch chakra progress & active aura
+  let chakraData = null;
+  try {
+    chakraData = await evaluateUserChakraProgress(user.id, prisma);
+  } catch (err) {
+    console.warn('[GameBootstrap] Failed to evaluate chakra:', err);
+  }
+
   const regions = dbRegions.map((r) => ({
     id: r.code,
     name: r.name,
     description: r.description,
     requiredLevel: r.requiredLevel,
-    unlocked: r.isUnlocked || character.level >= r.requiredLevel,
+    unlocked: r.isUnlocked || (chakraData ? chakraData.unlockedRegions.includes(r.code) : character.level >= r.requiredLevel),
   }));
 
   const bootstrapData: any = {
@@ -69,6 +78,12 @@ export default defineEventHandler(async (event) => {
         name: inv.item.name,
         icon: inv.item.icon,
       })),
+    },
+    chakra: {
+      activeChakraTier: chakraData?.activeChakraTier || 1,
+      auraColorHex: chakraData?.activeAuraColorHex || '#EF4444',
+      highestUnlockedTier: chakraData?.highestUnlockedTier || 0,
+      unlockedRegions: chakraData?.unlockedRegions || ['region_novice_village'],
     },
     world: {
       regions,

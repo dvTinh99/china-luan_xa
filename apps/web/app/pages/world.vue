@@ -282,6 +282,70 @@
         </div>
       </div>
     </div>
+
+    <!-- NPC STORY & CHAKRA DIALOGUE MODAL -->
+    <div
+      v-if="isNpcDialogueOpen"
+      class="fixed inset-0 bg-surface-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fade-in"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="bg-wood-900/95 border-2 border-gold-500/50 rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl relative overflow-hidden space-y-4">
+        <!-- Ambient glow -->
+        <div class="absolute -right-12 -top-12 w-48 h-48 bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div class="flex items-center justify-between border-b border-wood-800 pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-xl bg-gold-500/20 border border-gold-400/40 flex items-center justify-center text-gold-300">
+              <MessageSquare :size="20" />
+            </div>
+            <div>
+              <h3 class="text-base font-bold text-white font-heading">{{ npcDialogueData?.name || 'Trần Lão (Elder Chen)' }}</h3>
+              <p class="text-[11px] text-amber-200/60">Trưởng Lão Tân Khởi Thôn • Cốt Truyện Luân Xa</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            @click="isNpcDialogueOpen = false"
+            class="text-amber-200/60 hover:text-white p-1 rounded-lg hover:bg-wood-800 transition-colors"
+          >
+            <X :size="18" />
+          </button>
+        </div>
+
+        <!-- Chakra Status Pill -->
+        <div class="flex items-center justify-between p-3 rounded-2xl bg-wood-950 border border-wood-800 text-xs">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-500 shadow-sm animate-pulse" />
+            <span class="font-bold text-white">Khí Tức: Luân Xa Gốc (Muladhara)</span>
+          </div>
+          <span class="font-mono font-bold text-gold-400">{{ chakraProgressPercent }}% Khai Mở</span>
+        </div>
+
+        <!-- Dialogue Message Body -->
+        <div class="p-4 rounded-2xl bg-wood-950/80 border border-wood-800/80 text-sm leading-relaxed text-amber-100/90 font-medium">
+          {{ npcDialogueData?.message }}
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-end gap-3 pt-2">
+          <button
+            type="button"
+            @click="isNpcDialogueOpen = false"
+            class="px-4 py-2.5 rounded-xl bg-wood-800 hover:bg-wood-750 text-amber-200/70 text-xs font-bold border border-wood-700 transition-colors"
+          >
+            Đóng
+          </button>
+          <NuxtLink
+            to="/learn"
+            class="px-5 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-wood-950 text-xs font-black shadow-rpg-glow-gold transition-all flex items-center gap-1.5"
+          >
+            <Sparkles :size="14" />
+            <span>Đến Đài Tu Luyện (/learn)</span>
+          </NuxtLink>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -298,6 +362,9 @@ import {
   Flame,
   ChevronRight,
   Trophy,
+  MessageSquare,
+  Sparkles,
+  X,
 } from 'lucide-vue-next';
 import { NuxtToGodotEvent, GodotToNuxtEvent } from '@linguaworld/shared-types';
 
@@ -321,6 +388,11 @@ const combatOutcome = ref<'VICTORY' | 'DEFEAT' | null>(null);
 const victoryRewards = ref<any>(null);
 const battleMessage = ref<string | null>(null);
 const battleMessageClass = ref('bg-wood-800 text-amber-200 border-wood-700');
+
+// NPC Story & Chakra Dialogue State
+const isNpcDialogueOpen = ref(false);
+const npcDialogueData = ref<any>(null);
+const chakraProgressPercent = ref(49.3);
 
 async function startCombat() {
   combatLoading.value = true;
@@ -420,6 +492,25 @@ function closeCombat() {
 onMounted(() => {
   bridge.on(GodotToNuxtEvent.INTERACT_NPC, async (payload: any) => {
     console.log('[World] Player interacted with NPC:', payload);
+
+    try {
+      // 1. Fetch live Chakra progression status from server
+      const chakraRes = await $fetch<any>('/api/chakra/status');
+      const muladhara = chakraRes?.data?.chakras?.[0];
+      chakraProgressPercent.value = muladhara?.progressPercent || 0;
+
+      const isUnlocked = muladhara?.isUnlocked || (muladhara?.progressPercent >= 100);
+      npcDialogueData.value = {
+        name: 'Trần Lão (Elder Chen)',
+        message: isUnlocked
+          ? '🌟 Chúc mừng đại hiệp! Luân Xa Gốc (Muladhara) của ngươi đã bừng sáng với khí tức Xích Diễm vững như bàn thạch! Căn cơ tiếng Trung Band 1 đã thông suốt, cánh cổng đến Trúc Lâm Thôn (Bamboo Grove) đã sẵn sàng mở ra!'
+          : `Chào mừng tiểu hữu đến Tân Khởi Thôn! Muốn tiến vào giang hồ hiểm trở, trước tiên ngươi phải đả thông Luân Xa Gốc (Muladhara - HSK 3.0 Band 1). Hiện tại ngươi đã đạt ${muladhara?.progressPercent || 0}% tiến độ (${muladhara?.retainedVocabCount || 0}/${muladhara?.targetVocabCount || 20} từ FSRS). Hãy tiếp tục tu luyện tại Lộ Trình Học!`,
+      };
+      isNpcDialogueOpen.value = true;
+    } catch (e) {
+      console.warn('Failed to load chakra for NPC dialogue:', e);
+    }
+
     try {
       // Safely resolve published NPC audio through backend API (§9)
       const res = await $fetch<any>(`/api/audio/resolve?contentType=NPC_DIALOGUE&contentId=npc_village_chief_intro`);

@@ -27,6 +27,8 @@ export enum NuxtToGodotEvent {
   PLAY_AUDIO = 'PLAY_AUDIO',
   /** Stop active audio in game */
   STOP_AUDIO = 'STOP_AUDIO',
+  /** Chakra milestone and aura sync payload */
+  CHAKRA_DATA = 'CHAKRA_DATA',
 }
 
 /** Events sent from Godot → Nuxt */
@@ -72,6 +74,12 @@ export interface GameInitPayload {
       name: string;
       unlocked: boolean;
     }>;
+  };
+  chakra?: {
+    active_chakra_tier: number;
+    aura_color_hex: string;
+    highest_unlocked_tier: number;
+    unlocked_regions: string[];
   };
   config: {
     bridgeVersion: number;
@@ -171,6 +179,14 @@ export interface AudioStatusPayload {
   error?: string;
 }
 
+/** CHAKRA_DATA payload (Nuxt → Godot) */
+export interface ChakraDataPayload {
+  active_chakra_tier: number;
+  aura_color_hex: string;
+  highest_unlocked_tier: number;
+  unlocked_regions: string[];
+}
+
 // ---------------------------------------------------------------------------
 // Payload map — maps event types to their payload shapes
 // ---------------------------------------------------------------------------
@@ -185,6 +201,7 @@ export interface BridgePayloadMap {
   [NuxtToGodotEvent.RESUME_GAME]: undefined;
   [NuxtToGodotEvent.PLAY_AUDIO]: PlayAudioPayload;
   [NuxtToGodotEvent.STOP_AUDIO]: StopAudioPayload;
+  [NuxtToGodotEvent.CHAKRA_DATA]: ChakraDataPayload;
 
   // Godot → Nuxt
   [GodotToNuxtEvent.GAME_READY]: GameReadyPayload;

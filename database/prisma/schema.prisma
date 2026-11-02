@@ -34,6 +34,7 @@ model User {
   inventoryItems     InventoryItem[]
   userQuests         UserQuest[]
   combatSessions     CombatSession[]
+  chakraProgress     UserChakraProgress[]
 
   @@map("users")
 }
@@ -421,6 +422,7 @@ enum EquipmentSlot {
   WEAPON
   ARMOR
   ACCESSORY
+  AURA
 }
 
 enum ItemRarity {
@@ -679,4 +681,35 @@ model CombatSession {
 
   @@index([userId, status])
   @@map("combat_sessions")
+}
+
+// ---------------------------------------------------------------------------
+// 10. Chakra Learning Milestones (7-Chakra Proficiency Model)
+// ---------------------------------------------------------------------------
+
+model UserChakraProgress {
+  id                 String    @id @default(cuid())
+  userId             String    @map("user_id")
+  chakraTier         Int       @map("chakra_tier") // 1: Muladhara, 2: Svadhisthana, ... 7: Sahasrara
+  progressPercent    Float     @default(0.0) @map("progress_percent") // 0.0 - 100.0
+  retainedVocabCount Int       @default(0) @map("retained_vocab_count") // Words with stability >= threshold
+  targetVocabCount   Int       @default(50) @map("target_vocab_count") // Target threshold for this tier
+  avgStability       Float     @default(0.0) @map("avg_stability") // Average FSRS stability across words
+  listeningAccuracy  Float     @default(0.0) @map("listening_accuracy") // Accuracy in listening activities
+  readingAccuracy    Float     @default(0.0) @map("reading_accuracy") // Accuracy in reading/matching activities
+  writingAccuracy    Float     @default(0.0) @map("writing_accuracy") // Accuracy in writing/stroke activities
+  characterAccuracy  Float     @default(0.0) @map("character_accuracy") // Accuracy in radical/hanzi quiz activities
+  isUnlocked         Boolean   @default(false) @map("is_unlocked")
+  unlockedAt         DateTime? @map("unlocked_at")
+  rewardClaimed      Boolean   @default(false) @map("reward_claimed")
+  rewardClaimedAt    DateTime? @map("reward_claimed_at")
+  bottleneckSkill    String?   @map("bottleneck_skill") // "listening" | "reading" | "writing" | "character" | "retention"
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, chakraTier])
+  @@index([userId, chakraTier])
+  @@map("user_chakra_progress")
 }

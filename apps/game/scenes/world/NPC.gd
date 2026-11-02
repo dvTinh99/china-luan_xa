@@ -55,6 +55,12 @@ func _on_body_exited(body: Node2D) -> void:
 
 func _interact() -> void:
 	print("NPC: Player interacted with '%s' (%s)" % [npc_name, npc_id])
+
+	# Check player's Chakra milestone status for region story NPC
+	var active_tier: int = Bridge.get_active_chakra_tier()
+	var is_village_unlocked: bool = Bridge.is_region_unlocked("region_novice_village")
+	print("NPC: Story check — Active Chakra Tier: %d | Novice Village Unlocked: %s" % [active_tier, str(is_village_unlocked)])
+
 	Bridge.send_interact_npc(npc_id)
 
 	# Bounce feedback

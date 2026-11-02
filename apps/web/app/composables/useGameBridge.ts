@@ -164,6 +164,12 @@ export function useGameBridge(iframeRef: Ref<HTMLIFrameElement | null>) {
         world: {
           regions: bootstrap.world.regions,
         },
+        chakra: {
+          active_chakra_tier: (bootstrap as any).chakra?.activeChakraTier || 1,
+          aura_color_hex: (bootstrap as any).chakra?.auraColorHex || '#EF4444',
+          highest_unlocked_tier: (bootstrap as any).chakra?.highestUnlockedTier || 0,
+          unlocked_regions: (bootstrap as any).chakra?.unlockedRegions || ['region_novice_village'],
+        },
         config: {
           bridgeVersion: bootstrap.config.bridgeVersion,
           audioEnabled: true,

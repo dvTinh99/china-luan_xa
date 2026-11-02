@@ -9,6 +9,7 @@ import { prisma } from '../../utils/prisma';
 import { calculateSrsNextReview, SrsRating, SrsState, SRS_ALGORITHM_VERSION } from '../../utils/srs';
 import { sendApiSuccess, sendApiError } from '../../utils/response';
 import { trackQuestProgress } from '../../utils/quests';
+import { evaluateUserChakraProgress } from '../../utils/chakra';
 
 const reviewSchema = z.object({
   vocabularyId: z.string().min(1),
@@ -166,6 +167,14 @@ export default defineEventHandler(async (event) => {
     };
   });
 
+  // 6. Server-authoritative Chakra Milestone Evaluation
+  let chakraUpdate = null;
+  try {
+    chakraUpdate = await evaluateUserChakraProgress(user.id, prisma);
+  } catch (err) {
+    console.warn('[SRS Review] Failed to evaluate chakra progress:', err);
+  }
+
   return sendApiSuccess(event, {
     progress: {
       vocabularyId,
@@ -182,6 +191,7 @@ export default defineEventHandler(async (event) => {
       walletGold: result.walletBalance,
     },
     questsCompleted: result.questUpdates.filter((q) => q.justCompleted),
+    chakra: chakraUpdate,
   });
 });
 
