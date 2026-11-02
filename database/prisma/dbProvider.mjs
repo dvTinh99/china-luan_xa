@@ -128,15 +128,16 @@ export function syncSchemaProvider(driver) {
 export function configureEnvForDriver(driver) {
   const isSqlite = driver === 'sqlite';
 
-  const activeUrl = isSqlite
+  const defaultUrl = isSqlite
     ? 'file:./dev.db'
     : 'postgresql://postgres:password@localhost:5432/linguaworld?schema=public';
+  const activeUrl = process.env.DATABASE_URL || defaultUrl;
 
   updateEnvFile(rootEnvPath, {
     DB_DRIVER: driver,
     DATABASE_URL: activeUrl,
-    SQLITE_DATABASE_URL: 'file:./dev.db',
-    POSTGRES_DATABASE_URL: 'postgresql://postgres:password@localhost:5432/linguaworld?schema=public',
+    SQLITE_DATABASE_URL: process.env.SQLITE_DATABASE_URL || 'file:./dev.db',
+    POSTGRES_DATABASE_URL: process.env.POSTGRES_DATABASE_URL || activeUrl,
   });
 
   // Ensure apps/web/.env is a symlink
@@ -172,12 +173,13 @@ export function generateClients(driver) {
   });
 
   // Also update default @prisma/client
+  const activeUrl = process.env.DATABASE_URL || (driver === 'sqlite' ? 'file:./dev.db' : 'postgresql://postgres:password@localhost:5432/linguaworld?schema=public');
   execSync(`npx prisma generate --schema="${schemaPath}"`, {
     stdio: 'inherit',
     cwd: rootDir,
     env: {
       ...process.env,
-      DATABASE_URL: driver === 'sqlite' ? 'file:./dev.db' : 'postgresql://postgres:password@localhost:5432/linguaworld?schema=public',
+      DATABASE_URL: activeUrl,
     },
   });
 }
