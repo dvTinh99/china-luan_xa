@@ -182,6 +182,26 @@ export function generateClients(driver) {
       DATABASE_URL: activeUrl,
     },
   });
+
+  // Patch generated clients to prevent '__dirname is not defined in ES module scope'
+  const generatedClients = [
+    path.resolve(__dirname, 'generated/sqlite/index.js'),
+    path.resolve(__dirname, 'generated/postgresql/index.js'),
+  ];
+  for (const clientFile of generatedClients) {
+    if (fs.existsSync(clientFile)) {
+      let code = fs.readFileSync(clientFile, 'utf8');
+      if (code.includes('config.dirname = __dirname')) {
+        code = code.replace(
+          'config.dirname = __dirname',
+          'const __prisma_dirname = typeof __dirname !== "undefined" ? __dirname : process.cwd();\nconfig.dirname = __prisma_dirname'
+        );
+        code = code.replaceAll('path.join(__dirname,', 'path.join(config.dirname,');
+        fs.writeFileSync(clientFile, code, 'utf8');
+        console.log(`[dbProvider] ✓ Patched ${path.basename(path.dirname(clientFile))} for ES module __dirname safety`);
+      }
+    }
+  }
 }
 
 /**

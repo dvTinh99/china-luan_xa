@@ -184,6 +184,28 @@ for (const funcDir of funcDirs) {
       fs.copyFileSync(sch, path.join(destDir, baseName));
     }
   }
+
+  // F. Patch any ESM chunks that use __dirname or __filename without declaration
+  function patchEsmDirname(targetPath) {
+    if (!fs.existsSync(targetPath)) return;
+    const stat = fs.statSync(targetPath);
+    if (stat.isDirectory()) {
+      for (const entry of fs.readdirSync(targetPath)) {
+        patchEsmDirname(path.join(targetPath, entry));
+      }
+    } else if (targetPath.endsWith('.mjs')) {
+      let code = fs.readFileSync(targetPath, 'utf8');
+      const usesDirname = code.includes('__dirname') && !code.includes('const __dirname') && !code.includes('let __dirname') && !code.includes('var __dirname');
+      const usesFilename = code.includes('__filename') && !code.includes('const __filename') && !code.includes('let __filename') && !code.includes('var __filename');
+      if (usesDirname || usesFilename) {
+        const polyfill = `import { fileURLToPath as __f2p_es } from 'node:url';import { dirname as __dnm_es } from 'node:path';const __filename = __f2p_es(import.meta.url);const __dirname = __dnm_es(__filename);\n`;
+        fs.writeFileSync(targetPath, polyfill + code, 'utf8');
+        console.log(`[vercel-prep]   ✓ Injected ESM __dirname polyfill into ${path.relative(funcDir, targetPath)}`);
+      }
+    }
+  }
+  patchEsmDirname(path.join(funcDir, 'chunks'));
+  patchEsmDirname(path.join(funcDir, 'index.mjs'));
 }
 
 console.log('[vercel-prep] 🎉 All serverless functions successfully prepared with ZERO broken symlinks!\n');
