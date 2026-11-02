@@ -8,12 +8,12 @@
         </div>
         <div>
           <h2 class="text-base font-bold font-heading text-white">{{ stats.name }}</h2>
-          <span class="text-xs font-bold text-gold-400">Hiệp Khách Cấp {{ stats.level }}</span>
+          <span class="text-xs font-bold text-gold-400">{{ tDual('nav.level', '等级') }} {{ stats.level }}</span>
         </div>
       </div>
 
       <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-wood-800 text-amber-200/70 border border-wood-700">
-        Chỉ số RPG
+        {{ tDual('characterDetail.rpgStats', 'RPG 数值') }}
       </span>
     </div>
 
@@ -22,7 +22,7 @@
       <div class="flex justify-between text-xs font-bold mb-1">
         <span class="text-amber-200/80 flex items-center gap-1.5">
           <Heart :size="13" class="text-emerald-400" />
-          <span>Sinh lực (HP)</span>
+          <span>{{ tDual('characterDetail.hp', '生命值 (HP)') }}</span>
         </span>
         <span class="text-emerald-400 font-mono">{{ stats.hp }} / {{ stats.effectiveMaxHp }}</span>
       </div>
@@ -39,7 +39,7 @@
       <div class="flex justify-between text-xs font-bold mb-1">
         <span class="text-amber-200/80 flex items-center gap-1.5">
           <Zap :size="13" class="text-purple-400" />
-          <span>Kinh nghiệm (EXP)</span>
+          <span>{{ tDual('characterDetail.exp', '经验值 (EXP)') }}</span>
         </span>
         <span class="text-purple-400 font-mono">{{ stats.exp }} / {{ stats.nextLevelExp }}</span>
       </div>
@@ -56,7 +56,7 @@
       <div class="p-3 rounded-2xl bg-wood-950 border border-wood-800 text-center">
         <div class="text-[10px] text-amber-200/50 uppercase font-bold flex items-center justify-center gap-1">
           <Sword :size="11" class="text-red-400" />
-          <span>Tấn công</span>
+          <span>{{ tDual('characterDetail.atk', '攻击力') }}</span>
         </div>
         <div class="text-base font-black font-heading text-red-300 mt-0.5">
           {{ stats.atk }}
@@ -66,7 +66,7 @@
       <div class="p-3 rounded-2xl bg-wood-950 border border-wood-800 text-center">
         <div class="text-[10px] text-amber-200/50 uppercase font-bold flex items-center justify-center gap-1">
           <ShieldAlert :size="11" class="text-sky-400" />
-          <span>Phòng thủ</span>
+          <span>{{ tDual('characterDetail.def', '防御力') }}</span>
         </div>
         <div class="text-base font-black font-heading text-sky-300 mt-0.5">
           {{ stats.def }}
@@ -76,7 +76,7 @@
       <div class="p-3 rounded-2xl bg-wood-950 border border-wood-800 text-center">
         <div class="text-[10px] text-amber-200/50 uppercase font-bold flex items-center justify-center gap-1">
           <Sparkle :size="11" class="text-gold-400" />
-          <span>May mắn</span>
+          <span>{{ tDual('characterDetail.luck', '幸运值') }}</span>
         </div>
         <div class="text-base font-black font-heading text-gold-300 mt-0.5">
           {{ stats.luck }}
@@ -91,7 +91,7 @@
     >
       <span class="text-purple-300 font-bold flex items-center gap-1.5">
         <Sparkles :size="14" class="text-purple-400" />
-        <span>Cộng hưởng từ trang bị</span>
+        <span>{{ tDual('characterDetail.gearResonance', '装备共鸣加成') }}</span>
       </span>
       <span class="text-gold-300 font-bold font-heading">
         +{{ stats.gearBonusExpPercent }}% EXP / +{{ stats.gearHpBonus }} HP
@@ -111,6 +111,9 @@ import {
   Sparkles,
 } from 'lucide-vue-next';
 import type { CharacterStats } from '../../types/character';
+import { useOriginLanguage } from '~/composables/useOriginLanguage';
+
+const { tDual } = useOriginLanguage();
 
 defineProps<{
   stats: CharacterStats;

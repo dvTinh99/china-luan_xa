@@ -13,140 +13,212 @@ import { prisma } from './prisma';
 export interface ChakraTierConfig {
   tier: number; // 1 to 7
   code: string;
+  nameZh: string;
   nameVi: string;
+  nameEn: string;
   sanskritName: string;
   hskBand: string;
+  elementZh: string;
   elementVi: string;
+  elementEn: string;
   colorHex: string;
   bgGradient: string;
   targetVocabCount: number; // Target number of retained words
   requiredStabilityDays: number; // FSRS stability threshold
   rewardItemCode: string;
   rewardItemName: string;
+  rewardItemNameZh: string;
   regionCode: string;
+  regionNameZh: string;
   regionNameVi: string;
+  regionNameEn: string;
+  descriptionZh: string;
   descriptionVi: string;
+  descriptionEn: string;
 }
 
 export const CHAKRA_DEFINITIONS: ChakraTierConfig[] = [
   {
     tier: 1,
     code: 'muladhara',
-    nameVi: 'Muladhara (Luân Xa Gốc)',
+    nameZh: '海底轮',
+    nameVi: 'Luân Xa Gốc (Muladhara)',
+    nameEn: 'Root Chakra (Muladhara)',
     sanskritName: 'Mūlādhāra',
     hskBand: 'HSK 3.0 Band 1',
+    elementZh: '地 (土轮)',
     elementVi: 'Đất (Địa Luân)',
+    elementEn: 'Earth (Prithvi)',
     colorHex: '#EF4444', // Red
     bgGradient: 'from-red-600 via-rose-600 to-amber-700',
     targetVocabCount: 20, // Baseline for MVP HSK Band 1 core
     requiredStabilityDays: 2.5, // FSRS stability >= 2.5 days
     rewardItemCode: 'item_aura_muladhara_red',
     rewardItemName: 'Hào Quang Muladhara (Xích Diễm Luân)',
+    rewardItemNameZh: '赤焰轮光环',
     regionCode: 'region_novice_village',
+    regionNameZh: '新启村',
     regionNameVi: 'Tân Khởi Thôn (Novice Village)',
+    regionNameEn: 'Novice Village',
+    descriptionZh: '生存根基，掌握汉语拼音声调与前100个核心汉字。',
     descriptionVi: 'Căn cơ sinh tồn, làm chủ ngữ âm Pinyin và 100 chữ Hán căn bản đầu tiên.',
+    descriptionEn: 'Survival foundation: master Pinyin tones and the first 100 core Hanzi characters.',
   },
   {
     tier: 2,
     code: 'svadhisthana',
-    nameVi: 'Svadhisthana (Luân Xa Xương Cùng)',
+    nameZh: '生殖轮',
+    nameVi: 'Luân Xa Xương Cùng (Svadhisthana)',
+    nameEn: 'Sacral Chakra (Svadhisthana)',
     sanskritName: 'Svādhiṣṭhāna',
     hskBand: 'HSK 3.0 Band 2',
+    elementZh: '水 (水轮)',
     elementVi: 'Nước (Thủy Luân)',
+    elementEn: 'Water (Jala)',
     colorHex: '#F97316', // Orange
     bgGradient: 'from-orange-600 via-amber-600 to-yellow-600',
     targetVocabCount: 50,
     requiredStabilityDays: 5.0,
     rewardItemCode: 'item_aura_svadhisthana_orange',
     rewardItemName: 'Hào Quang Svadhisthana (Trừng Hà Luân)',
+    rewardItemNameZh: '澄霞轮光环',
     regionCode: 'region_bamboo_grove',
+    regionNameZh: '竹林雅苑',
     regionNameVi: 'Trúc Lâm Thôn (Bamboo Grove)',
+    regionNameEn: 'Bamboo Grove',
+    descriptionZh: '情感表达，描述日常生活习惯、饮食作息与日常社交互动。',
     descriptionVi: 'Biểu đạt cảm xúc, diễn tả thói quen sinh hoạt và tương tác thường nhật.',
+    descriptionEn: 'Emotional expression: describe daily routines, dining, and casual social interactions.',
   },
   {
     tier: 3,
     code: 'manipura',
-    nameVi: 'Manipura (Luân Xa Đám Rối Dương)',
+    nameZh: '脐轮',
+    nameVi: 'Luân Xa Đám Rối Mặt Trời (Manipura)',
+    nameEn: 'Solar Plexus Chakra (Manipura)',
     sanskritName: 'Maṇipūra',
     hskBand: 'HSK 3.0 Band 3',
+    elementZh: '火 (火轮)',
     elementVi: 'Lửa (Hỏa Luân)',
+    elementEn: 'Fire (Tejas)',
     colorHex: '#EAB308', // Yellow / Gold
     bgGradient: 'from-yellow-500 via-amber-500 to-gold-600',
     targetVocabCount: 100,
     requiredStabilityDays: 7.0,
     rewardItemCode: 'item_aura_manipura_yellow',
     rewardItemName: 'Hào Quang Manipura (Kim Dương Luân)',
+    rewardItemNameZh: '金阳轮光环',
     regionCode: 'region_ancient_market',
+    regionNameZh: '古街市集',
     regionNameVi: 'Cổ Nhai Thị Thành (Ancient Market)',
+    regionNameEn: 'Ancient Market',
+    descriptionZh: '自主意志，自信应对商旅交涉、出行问路与生活实际场景。',
     descriptionVi: 'Tự chủ giao tiếp thương nghiệp, du lịch và giải quyết các tình huống thực tế.',
+    descriptionEn: 'Willpower & confidence: navigate commerce, travel navigation, and practical scenarios.',
   },
   {
     tier: 4,
     code: 'anahata',
-    nameVi: 'Anahata (Luân Xa Tim)',
+    nameZh: '心轮',
+    nameVi: 'Luân Xa Tim (Anahata)',
+    nameEn: 'Heart Chakra (Anahata)',
     sanskritName: 'Anāhata',
     hskBand: 'HSK 3.0 Band 4',
+    elementZh: '风 (风轮)',
     elementVi: 'Khí (Phong Luân)',
+    elementEn: 'Air (Vayu)',
     colorHex: '#10B981', // Green
     bgGradient: 'from-emerald-500 via-teal-600 to-green-700',
     targetVocabCount: 200,
     requiredStabilityDays: 10.0,
     rewardItemCode: 'item_aura_anahata_green',
     rewardItemName: 'Hào Quang Anahata (Thúy Phong Luân)',
+    rewardItemNameZh: '翠风轮光环',
     regionCode: 'region_cloud_pavilion',
+    regionNameZh: '云阁书院',
     regionNameVi: 'Vân Các Thư Viện (Cloud Pavilion)',
+    regionNameEn: 'Cloud Pavilion',
+    descriptionZh: '共情与文化深意，流利表达中级观点、文学鉴赏与社会议题。',
     descriptionVi: 'Thấu hiểu chiều sâu văn hóa, xã hội và biểu đạt quan điểm trung cấp.',
+    descriptionEn: 'Empathy & cultural depth: articulate intermediate perspectives, society, and literature.',
   },
   {
     tier: 5,
     code: 'vishuddha',
-    nameVi: 'Vishuddha (Luân Xa Cổ Họng)',
+    nameZh: '喉轮',
+    nameVi: 'Luân Xa Cổ Họng (Vishuddha)',
+    nameEn: 'Throat Chakra (Vishuddha)',
     sanskritName: 'Viśuddha',
     hskBand: 'HSK 3.0 Band 5',
+    elementZh: '空 (虚空轮)',
     elementVi: 'Không Gian (Hư Luân)',
+    elementEn: 'Ether / Space (Akasha)',
     colorHex: '#06B6D4', // Cyan
     bgGradient: 'from-cyan-500 via-sky-600 to-blue-700',
     targetVocabCount: 350,
     requiredStabilityDays: 14.0,
     rewardItemCode: 'item_aura_vishuddha_cyan',
     rewardItemName: 'Hào Quang Vishuddha (Bích Không Luân)',
+    rewardItemNameZh: '碧空轮光环',
     regionCode: 'region_dragons_peak',
+    regionNameZh: '龙巅仙山',
     regionNameVi: 'Long Đỉnh Sơn (Dragon Peak)',
+    regionNameEn: 'Dragon Peak',
+    descriptionZh: '辩才无碍，能进行论辩演讲、深度评析与正式新闻评论。',
     descriptionVi: 'Hùng biện, thuyết phục, đọc hiểu bình luận báo chí và văn bản chính luận.',
+    descriptionEn: 'Eloquent articulation: debate persuasively, analyze editorials, and critique formal essays.',
   },
   {
     tier: 6,
     code: 'ajna',
-    nameVi: 'Ajna (Luân Xa Mắt Thứ Ba)',
+    nameZh: '眉心轮',
+    nameVi: 'Luân Xa Con Mắt Thứ Ba (Ajna)',
+    nameEn: 'Third Eye Chakra (Ajna)',
     sanskritName: 'Ājñā',
     hskBand: 'HSK 3.0 Band 6',
+    elementZh: '光 (明光轮)',
     elementVi: 'Ánh Sáng (Quang Luân)',
+    elementEn: 'Light / Intuition (Jyoti)',
     colorHex: '#6366F1', // Indigo
     bgGradient: 'from-indigo-600 via-blue-700 to-purple-800',
     targetVocabCount: 500,
     requiredStabilityDays: 21.0,
     rewardItemCode: 'item_aura_ajna_indigo',
     rewardItemName: 'Hào Quang Ajna (Minh Quang Luân)',
+    rewardItemNameZh: '明光法印光环',
     regionCode: 'region_celestial_temple',
+    regionNameZh: '太极圣殿',
     regionNameVi: 'Thái Cực Thánh Điện (Celestial Temple)',
+    regionNameEn: 'Celestial Temple',
+    descriptionZh: '直觉敏锐，融会贯通成语典故、微言大义与文言精粹。',
     descriptionVi: 'Trực giác ngôn ngữ sâu sắc, lĩnh hội thành ngữ (thành ngữ), ẩn ý và điển cố.',
+    descriptionEn: 'Deep linguistic intuition: master idioms (Chengyu), metaphors, and classical allusions.',
   },
   {
     tier: 7,
     code: 'sahasrara',
-    nameVi: 'Sahasrara (Luân Xa Vương Miện)',
+    nameZh: '顶轮',
+    nameVi: 'Luân Xa Vương Miện (Sahasrara)',
+    nameEn: 'Crown Chakra (Sahasrara)',
     sanskritName: 'Sahasrāra',
     hskBand: 'HSK 3.0 Band 7-9',
+    elementZh: '纯粹意识 (圆满轮)',
     elementVi: 'Tư Tưởng (Viên Mãn Luân)',
+    elementEn: 'Pure Consciousness (Sahasrara)',
     colorHex: '#A855F7', // Violet
     bgGradient: 'from-purple-600 via-fuchsia-600 to-violet-800',
     targetVocabCount: 750,
     requiredStabilityDays: 30.0,
     rewardItemCode: 'item_aura_sahasrara_purple',
     rewardItemName: 'Hào Quang Sahasrara (Tử Khí Đông Lai)',
+    rewardItemNameZh: '紫气东来法身',
     regionCode: 'region_immortal_realm',
+    regionNameZh: '虚空仙界',
     regionNameVi: 'Hư Không Tiên Giới (Immortal Realm)',
+    regionNameEn: 'Immortal Realm',
+    descriptionZh: '语言大彻大悟，掌握深度学术研究，通达古今经典文史。',
     descriptionVi: 'Đại ngộ ngôn ngữ, làm chủ học thuật chuyên sâu và đàm đạo văn chương kinh điển.',
+    descriptionEn: 'Supreme linguistic mastery: native-tier academic research and classical literature.',
   },
 ];
 

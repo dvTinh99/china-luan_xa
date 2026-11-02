@@ -10,7 +10,7 @@
             class="px-3 py-1.5 rounded-xl bg-wood-900 border border-wood-750 text-xs font-bold text-amber-200/80 hover:text-gold-300 hover:border-gold-500/50 transition-colors flex items-center gap-1.5"
           >
             <ArrowLeft :size="14" />
-            <span>Trang chủ</span>
+            <span>{{ tDual('adminAudio.home', '主页') }}</span>
           </NuxtLink>
           <span class="text-xs font-bold text-gold-400/80 uppercase tracking-widest bg-gold-500/10 px-2.5 py-0.5 rounded-full border border-gold-500/20">
             Audio Infrastructure
@@ -24,7 +24,7 @@
             class="px-3.5 py-1.5 rounded-xl bg-wood-850 border border-wood-700 text-xs font-bold text-amber-200 hover:text-gold-300 hover:border-gold-500 transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
           >
             <RefreshCw :size="13" :class="{ 'animate-spin': isLoading }" />
-            <span>Làm mới</span>
+            <span>{{ tDual('adminAudio.refresh', '刷新') }}</span>
           </button>
         </div>
       </div>
@@ -36,10 +36,10 @@
           <div>
             <h1 class="text-2xl sm:text-3xl font-black font-heading text-white tracking-wide flex items-center gap-2.5">
               <Volume2 :size="28" class="text-gold-400" />
-              <span>LinguaWorld Audio Studio</span>
+              <span>{{ tDual('adminAudio.title', '音频控制台') }}</span>
             </h1>
             <p class="text-amber-200/70 text-xs sm:text-sm mt-1 max-w-xl">
-              Hệ thống quản trị hạ tầng âm thanh: sinh giọng đọc AI đa nhân vật, quy trình kiểm duyệt (Human Review), xuất bản đa phiên bản và tích hợp Godot Bridge.
+              {{ t('adminAudio.desc') }}
             </p>
           </div>
 
@@ -47,19 +47,19 @@
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div class="px-4 py-2.5 rounded-2xl bg-wood-950/80 border border-wood-800 text-center">
               <div class="text-2xl font-black font-heading text-emerald-400">{{ publishedCount }}</div>
-              <div class="text-[11px] font-bold text-amber-200/60 uppercase">Đã xuất bản</div>
+              <div class="text-[11px] font-bold text-amber-200/60 uppercase">{{ tDual('adminAudio.published', '已发布') }}</div>
             </div>
             <div class="px-4 py-2.5 rounded-2xl bg-wood-950/80 border border-wood-800 text-center">
               <div class="text-2xl font-black font-heading text-amber-400">{{ needsReviewCount }}</div>
-              <div class="text-[11px] font-bold text-amber-200/60 uppercase">Chờ duyệt</div>
+              <div class="text-[11px] font-bold text-amber-200/60 uppercase">{{ tDual('adminAudio.needsReview', '待审核') }}</div>
             </div>
             <div class="px-4 py-2.5 rounded-2xl bg-wood-950/80 border border-wood-800 text-center">
               <div class="text-2xl font-black font-heading text-gold-400">{{ totalJobsCount }}</div>
-              <div class="text-[11px] font-bold text-amber-200/60 uppercase">Tác vụ Jobs</div>
+              <div class="text-[11px] font-bold text-amber-200/60 uppercase">{{ tDual('adminAudio.totalJobs', '生成任务') }}</div>
             </div>
             <div class="px-4 py-2.5 rounded-2xl bg-wood-950/80 border border-wood-800 text-center">
               <div class="text-2xl font-black font-heading text-purple-400">{{ voiceProfiles.length }}</div>
-              <div class="text-[11px] font-bold text-amber-200/60 uppercase">Hồ sơ giọng</div>
+              <div class="text-[11px] font-bold text-amber-200/60 uppercase">{{ tDual('adminAudio.voiceProfiles', '音色画像') }}</div>
             </div>
           </div>
         </div>
@@ -95,7 +95,7 @@
       <div v-if="currentTab === 'assets'" class="space-y-4">
         <div class="flex items-center justify-between flex-wrap gap-3">
           <div class="text-sm font-bold text-amber-200">
-            Danh sách file âm thanh ({{ filteredAssets.length }} assets)
+            {{ tDual('adminAudio.audioList', '音频文件列表') }} ({{ filteredAssets.length }} assets)
           </div>
           <!-- Filter Buttons -->
           <div class="flex items-center gap-1.5 bg-wood-900/80 p-1 rounded-xl border border-wood-800 text-xs">
@@ -113,11 +113,11 @@
 
         <div v-if="isLoading" class="text-center py-12 text-amber-200/50">
           <Loader2 :size="24" class="animate-spin mx-auto mb-2 text-gold-400" />
-          <span>Đang tải dữ liệu âm thanh...</span>
+          <span>{{ t('adminAudio.loading') }}</span>
         </div>
 
         <div v-else-if="filteredAssets.length === 0" class="text-center py-12 rounded-2xl bg-wood-900/40 border border-wood-800/60 text-amber-200/50">
-          Không có tài nguyên âm thanh nào phù hợp với bộ lọc.
+          {{ t('adminAudio.emptyFilter') }}
         </div>
 
         <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -169,10 +169,10 @@
                   type="button"
                   @click="handleApprove(asset.id)"
                   class="px-2.5 py-1 rounded-lg bg-emerald-600/80 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors shadow-sm"
-                  title="Duyệt chất lượng âm thanh"
+                  :title="t('adminAudio.tipApprove')"
                 >
                   <Check :size="12" />
-                  <span>Duyệt</span>
+                  <span>{{ tDual('adminAudio.btnApprove', '审核') }}</span>
                 </button>
 
                 <!-- Publish Button -->
@@ -181,10 +181,10 @@
                   type="button"
                   @click="handlePublish(asset.id)"
                   class="px-2.5 py-1 rounded-lg bg-gold-500 hover:bg-gold-400 text-wood-950 text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors shadow-sm"
-                  title="Xuất bản làm audio chính thức"
+                  :title="t('adminAudio.tipPublish')"
                 >
                   <UploadCloud :size="12" />
-                  <span>Xuất bản</span>
+                  <span>{{ tDual('adminAudio.btnPublish', '发布') }}</span>
                 </button>
 
                 <!-- Regenerate Button -->
@@ -192,10 +192,10 @@
                   type="button"
                   @click="handleRegenerate(asset.id)"
                   class="px-2.5 py-1 rounded-lg bg-wood-800 hover:bg-wood-750 text-amber-200/80 hover:text-gold-300 text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors"
-                  title="Tạo phiên bản mới (v+1) không gián đoạn bản cũ"
+                  :title="t('adminAudio.tipRegenerate')"
                 >
                   <Sparkles :size="12" />
-                  <span>Tái tạo</span>
+                  <span>{{ tDual('adminAudio.btnRegenerate', '重新生成') }}</span>
                 </button>
               </div>
             </div>
@@ -207,12 +207,12 @@
       <div v-if="currentTab === 'jobs'" class="space-y-4">
         <div class="flex items-center justify-between">
           <div class="text-sm font-bold text-amber-200">
-            Lịch sử tác vụ Audio Generation Jobs ({{ jobs.length }})
+            {{ tDual('adminAudio.jobsHistory', '任务执行历史') }} ({{ jobs.length }})
           </div>
         </div>
 
         <div v-if="jobs.length === 0" class="text-center py-12 rounded-2xl bg-wood-900/40 border border-wood-800/60 text-amber-200/50">
-          Chưa có tác vụ sinh âm thanh nào.
+          {{ t('adminAudio.emptyJobs') }}
         </div>
 
         <div v-else class="space-y-2.5">
@@ -244,7 +244,7 @@
                 <div class="text-[11px] text-amber-200/60 flex items-center gap-2 mt-0.5">
                   <span>Voice: {{ job.voiceProfile?.name }}</span>
                   <span>•</span>
-                  <span>Thử: {{ job.attempts }}/{{ job.maxAttempts }}</span>
+                  <span>{{ t('adminAudio.attempts', { attempts: job.attempts, max: job.maxAttempts }) }}</span>
                   <span>•</span>
                   <span v-if="job.errorMessage" class="text-red-400 font-semibold">{{ job.errorMessage }}</span>
                   <span v-else class="text-amber-200/40">{{ new Date(job.createdAt).toLocaleTimeString() }}</span>
@@ -260,7 +260,7 @@
                 class="px-3 py-1.5 rounded-xl bg-wood-800 hover:bg-wood-750 text-xs font-bold text-amber-200 hover:text-gold-300 transition-colors flex items-center gap-1 cursor-pointer"
               >
                 <RotateCcw :size="12" />
-                <span>Thử lại</span>
+                <span>{{ tDual('adminAudio.retryBtn', '重试') }}</span>
               </button>
               <SpeakerButton
                 v-if="job.resultAsset"
@@ -300,11 +300,11 @@
               <div class="font-bold text-white mt-0.5">{{ voice.provider }}</div>
             </div>
             <div class="p-2 rounded-xl bg-wood-950/60 border border-wood-800/80">
-              <div class="text-amber-200/50 text-[10px] uppercase font-bold">Tốc độ</div>
+              <div class="text-amber-200/50 text-[10px] uppercase font-bold">{{ tDual('adminAudio.speed', '语速') }}</div>
               <div class="font-bold text-gold-400 mt-0.5">{{ voice.speed }}x</div>
             </div>
             <div class="p-2 rounded-xl bg-wood-950/60 border border-wood-800/80">
-              <div class="text-amber-200/50 text-[10px] uppercase font-bold">Cao độ</div>
+              <div class="text-amber-200/50 text-[10px] uppercase font-bold">{{ tDual('adminAudio.pitch', '音调') }}</div>
               <div class="font-bold text-emerald-400 mt-0.5">{{ voice.pitch }}</div>
             </div>
           </div>
@@ -315,41 +315,41 @@
       <div v-if="currentTab === 'generator'" class="rounded-3xl bg-wood-900/90 border border-wood-750 p-6 space-y-4">
         <h3 class="text-lg font-bold text-white flex items-center gap-2">
           <Sparkles :size="18" class="text-gold-400" />
-          <span>Sinh giọng đọc mới (TTS Generation Job)</span>
+          <span>{{ tDual('adminAudio.newJobTitle', '合成新语音 (TTS)') }}</span>
         </h3>
         <p class="text-xs text-amber-200/70">
-          Tạo tác vụ sinh âm thanh qua Edge-TTS / CosyVoice. Tác vụ sẽ tự động ghi vào hàng đợi, sinh file MP3 và chuyển sang trạng thái Chờ duyệt (NEEDS_REVIEW).
+          {{ t('adminAudio.newJobDesc') }}
         </p>
 
         <form @submit.prevent="handleCreateJob" class="space-y-4 max-w-xl">
           <div>
-            <label class="block text-xs font-bold text-amber-200/80 mb-1">Văn bản tiếng Trung (Chữ Hán)*</label>
+            <label class="block text-xs font-bold text-amber-200/80 mb-1">{{ tDual('adminAudio.labelChinese', '中文文本 (汉字)*') }}</label>
             <input
               v-model="newJob.sourceText"
               type="text"
               required
-              placeholder="ví dụ: 欢迎来到灵界！"
+              :placeholder="t('adminAudio.placeholderChinese')"
               class="w-full px-4 py-2.5 rounded-xl bg-wood-950 border border-wood-750 text-white font-hanzi text-base focus:border-gold-500 focus:outline-none"
             />
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-bold text-amber-200/80 mb-1">Phiên âm Pinyin (Tùy chọn)</label>
+              <label class="block text-xs font-bold text-amber-200/80 mb-1">{{ tDual('adminAudio.labelPinyin', '拼音标注 (可选)') }}</label>
               <input
                 v-model="newJob.pinyin"
                 type="text"
-                placeholder="ví dụ: Huānyíng lái dào língjiè!"
+                :placeholder="t('adminAudio.placeholderPinyin')"
                 class="w-full px-4 py-2 rounded-xl bg-wood-950 border border-wood-750 text-sm text-white focus:border-gold-500 focus:outline-none"
               />
             </div>
             <div>
-              <label class="block text-xs font-bold text-amber-200/80 mb-1">Mã định danh nội dung (Content ID)*</label>
+              <label class="block text-xs font-bold text-amber-200/80 mb-1">{{ tDual('adminAudio.labelContentId', '内容唯一标识 (Content ID)*') }}</label>
               <input
                 v-model="newJob.contentId"
                 type="text"
                 required
-                placeholder="ví dụ: npc_storyteller_legend_1"
+                :placeholder="t('adminAudio.placeholderContentId')"
                 class="w-full px-4 py-2 rounded-xl bg-wood-950 border border-wood-750 text-sm text-white focus:border-gold-500 focus:outline-none"
               />
             </div>
@@ -357,19 +357,19 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-bold text-amber-200/80 mb-1">Loại nội dung</label>
+              <label class="block text-xs font-bold text-amber-200/80 mb-1">{{ tDual('adminAudio.labelContentType', '内容类型') }}</label>
               <select
                 v-model="newJob.contentType"
                 class="w-full px-3 py-2 rounded-xl bg-wood-950 border border-wood-750 text-sm text-white focus:border-gold-500 focus:outline-none"
               >
-                <option value="VOCABULARY">VOCABULARY (Từ vựng HSK)</option>
-                <option value="EXAMPLE_SENTENCE">EXAMPLE_SENTENCE (Câu ví dụ)</option>
-                <option value="NPC_DIALOGUE">NPC_DIALOGUE (Đối thoại NPC)</option>
-                <option value="CONVERSATION_LINE">CONVERSATION_LINE (Hội thoại)</option>
+                <option value="VOCABULARY">{{ t('adminAudio.optVocab') }}</option>
+                <option value="EXAMPLE_SENTENCE">{{ t('adminAudio.optExample') }}</option>
+                <option value="NPC_DIALOGUE">{{ t('adminAudio.optNpc') }}</option>
+                <option value="CONVERSATION_LINE">{{ t('adminAudio.optConvo') }}</option>
               </select>
             </div>
             <div>
-              <label class="block text-xs font-bold text-amber-200/80 mb-1">Hồ sơ giọng đọc</label>
+              <label class="block text-xs font-bold text-amber-200/80 mb-1">{{ tDual('adminAudio.labelVoiceProfile', '音色角色') }}</label>
               <select
                 v-model="newJob.voiceProfileCode"
                 class="w-full px-3 py-2 rounded-xl bg-wood-950 border border-wood-750 text-sm text-white focus:border-gold-500 focus:outline-none"
@@ -389,7 +389,7 @@
               class="w-4 h-4 rounded text-gold-500 bg-wood-950 border-wood-700"
             />
             <label for="autoExecute" class="text-xs text-amber-200 font-bold select-none cursor-pointer">
-              Xử lý và sinh audio ngay lập tức (Auto Execute Job)
+              {{ tDual('adminAudio.autoExecute', '立即执行并合成音频') }}
             </label>
           </div>
 
@@ -399,7 +399,7 @@
             class="px-6 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-wood-950 font-bold text-sm shadow-rpg-glow-gold transition-all cursor-pointer flex items-center gap-2 disabled:opacity-50"
           >
             <Sparkles :size="15" />
-            <span>{{ isSubmitting ? 'Đang khởi tạo...' : 'Tạo tác vụ sinh Audio' }}</span>
+            <span>{{ isSubmitting ? tDual('adminAudio.creatingJob', '生成中...') : tDual('adminAudio.btnCreateJob', '创建合成任务') }}</span>
           </button>
         </form>
       </div>
@@ -429,6 +429,8 @@ definePageMeta({
   layout: 'default',
 });
 
+const { t, tDual } = useOriginLanguage();
+
 const currentTab = ref<'assets' | 'jobs' | 'voices' | 'generator'>('assets');
 const assetFilter = ref<'all' | 'needs_review' | 'published'>('all');
 const isLoading = ref(false);
@@ -438,17 +440,17 @@ const assets = ref<any[]>([]);
 const jobs = ref<any[]>([]);
 const voiceProfiles = ref<any[]>([]);
 
-const assetFilters = [
-  { id: 'all', label: 'Tất cả' },
-  { id: 'needs_review', label: 'Chờ duyệt' },
-  { id: 'published', label: 'Đã xuất bản' },
-];
+const assetFilters = computed(() => [
+  { id: 'all', label: tDual('adminAudio.tabAll', '全部') },
+  { id: 'needs_review', label: tDual('adminAudio.tabNeedsReview', '待审核') },
+  { id: 'published', label: tDual('adminAudio.tabPublished', '已发布') },
+]);
 
 const tabs = computed(() => [
-  { id: 'assets', label: 'Tài nguyên âm thanh', icon: FileAudio, badge: needsReviewCount.value > 0 ? `${needsReviewCount.value} mới` : null },
-  { id: 'jobs', label: 'Tác vụ Jobs', icon: ListOrdered, badge: null },
-  { id: 'voices', label: 'Hồ sơ giọng đọc', icon: Users, badge: `${voiceProfiles.value.length}` },
-  { id: 'generator', label: 'Sinh Audio mới', icon: Sparkles, badge: null },
+  { id: 'assets', label: tDual('adminAudio.tabAssets', '音频资产'), icon: FileAudio, badge: needsReviewCount.value > 0 ? `${needsReviewCount.value} ${t('adminAudio.badgeNew')}` : null },
+  { id: 'jobs', label: tDual('adminAudio.tabJobs', '任务列表'), icon: ListOrdered, badge: null },
+  { id: 'voices', label: tDual('adminAudio.tabVoices', '发音音色'), icon: Users, badge: `${voiceProfiles.value.length}` },
+  { id: 'generator', label: tDual('adminAudio.tabGenerator', '合成音频'), icon: Sparkles, badge: null },
 ]);
 
 const publishedCount = computed(() => assets.value.filter((a) => a.publicationStatus === 'PUBLISHED').length);
@@ -501,7 +503,7 @@ async function handleApprove(assetId: string) {
     });
     await refreshData();
   } catch (e: any) {
-    alert(`Lỗi phê duyệt: ${e.message}`);
+    alert(t('adminAudio.errApprove', { err: e.message }));
   }
 }
 
@@ -512,12 +514,12 @@ async function handlePublish(assetId: string) {
     });
     await refreshData();
   } catch (e: any) {
-    alert(`Lỗi xuất bản: ${e.message}`);
+    alert(t('adminAudio.errPublish', { err: e.message }));
   }
 }
 
 async function handleRegenerate(assetId: string) {
-  if (!confirm('Bạn có chắc muốn tái tạo phiên bản mới cho asset này?')) return;
+  if (!confirm(t('adminAudio.confirmRegen'))) return;
   try {
     await $fetch(`/api/audio/assets/${assetId}/regenerate`, {
       method: 'POST',
@@ -525,7 +527,7 @@ async function handleRegenerate(assetId: string) {
     });
     await refreshData();
   } catch (e: any) {
-    alert(`Lỗi tái tạo: ${e.message}`);
+    alert(t('adminAudio.errRegen', { err: e.message }));
   }
 }
 
@@ -536,7 +538,7 @@ async function handleRetryJob(jobId: string) {
     });
     await refreshData();
   } catch (e: any) {
-    alert(`Lỗi thử lại: ${e.message}`);
+    alert(t('adminAudio.errRetry', { err: e.message }));
   }
 }
 
@@ -553,7 +555,7 @@ async function handleCreateJob() {
     currentTab.value = 'assets';
     await refreshData();
   } catch (e: any) {
-    alert(`Lỗi tạo job: ${e.message}`);
+    alert(t('adminAudio.errJob', { err: e.message }));
   } finally {
     isSubmitting.value = false;
   }

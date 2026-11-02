@@ -15,22 +15,22 @@
         <button
           type="button"
           @click="stageMode = 'art'"
-          title="Minh họa 2D Anime chuẩn nghệ thuật (Official HD Art)"
+          :title="tDual('characterDetail.official2DArt', '2D 官方立绘')"
           class="px-2.5 py-1 rounded-xl text-[11px] font-bold transition-all flex items-center gap-1.5 cursor-pointer"
           :class="stageMode === 'art' ? 'bg-gold-500 text-wood-950 shadow-sm' : 'text-amber-200/60 hover:text-white'"
         >
           <Palette :size="12" />
-          <span>Minh Họa 2D</span>
+          <span>{{ tDual('characterDetail.art2D', '2D 立绘') }}</span>
         </button>
         <button
           type="button"
           @click="stageMode = 'rig'"
-          title="Live Rig Chibi hoạt họa WebGL (PixiJS 8)"
+          :title="tDual('characterDetail.webglLiveRig', 'WebGL 动态骨骼')"
           class="px-2.5 py-1 rounded-xl text-[11px] font-bold transition-all flex items-center gap-1.5 cursor-pointer"
           :class="stageMode === 'rig' ? 'bg-gold-500 text-wood-950 shadow-sm' : 'text-amber-200/60 hover:text-white'"
         >
           <Layers :size="12" />
-          <span>Chibi Rig Live</span>
+          <span>{{ tDual('characterDetail.chibiRigLive', 'Q版动态') }}</span>
         </button>
       </div>
 
@@ -39,7 +39,7 @@
         <button
           type="button"
           @click="handleEmote('idle')"
-          title="Tự nhiên (Neutral)"
+          :title="tDual('characterDetail.neutral', '自然')"
           class="px-2 py-1 rounded-xl text-xs transition-all cursor-pointer hover:bg-wood-800"
           :class="activeEmote === 'idle' ? 'bg-gold-500 text-wood-950 font-bold shadow-sm' : 'text-amber-200/70'"
         >
@@ -48,7 +48,7 @@
         <button
           type="button"
           @click="handleEmote('happy')"
-          title="Vui vẻ (Happy)"
+          :title="tDual('characterDetail.happy', '开心')"
           class="px-2 py-1 rounded-xl text-xs transition-all cursor-pointer hover:bg-wood-800"
           :class="activeEmote === 'happy' ? 'bg-gold-500 text-wood-950 font-bold shadow-sm' : 'text-amber-200/70'"
         >
@@ -57,7 +57,7 @@
         <button
           type="button"
           @click="handleEmote('curious')"
-          title="Tò mò - Nghiêng đầu (Curious)"
+          :title="tDual('characterDetail.curious', '好奇')"
           class="px-2 py-1 rounded-xl text-xs transition-all cursor-pointer hover:bg-wood-800"
           :class="activeEmote === 'curious' ? 'bg-gold-500 text-wood-950 font-bold shadow-sm' : 'text-amber-200/70'"
         >
@@ -66,7 +66,7 @@
         <button
           type="button"
           @click="handleEmote('surprised')"
-          title="Ngạc nhiên (Surprised)"
+          :title="tDual('characterDetail.surprised', '惊讶')"
           class="px-2 py-1 rounded-xl text-xs transition-all cursor-pointer hover:bg-wood-800"
           :class="activeEmote === 'surprised' ? 'bg-gold-500 text-wood-950 font-bold shadow-sm' : 'text-amber-200/70'"
         >
@@ -75,7 +75,7 @@
         <button
           type="button"
           @click="handleEmote('sleepy')"
-          title="Buồn ngủ (Sleepy)"
+          :title="tDual('characterDetail.sleepy', '困倦')"
           class="px-2 py-1 rounded-xl text-xs transition-all cursor-pointer hover:bg-wood-800"
           :class="activeEmote === 'sleepy' ? 'bg-gold-500 text-wood-950 font-bold shadow-sm' : 'text-amber-200/70'"
         >
@@ -84,7 +84,7 @@
         <button
           type="button"
           @click="handleEmote('proud')"
-          title="Tự hào - Ánh sao (Proud)"
+          :title="tDual('characterDetail.proud', '自豪')"
           class="px-2 py-1 rounded-xl text-xs transition-all cursor-pointer hover:bg-wood-800"
           :class="activeEmote === 'proud' ? 'bg-gold-500 text-wood-950 font-bold shadow-sm' : 'text-amber-200/70'"
         >
@@ -93,7 +93,7 @@
         <button
           type="button"
           @click="handleEmote('breathe')"
-          title="Tĩnh tâm thở nhẹ (Breathe)"
+          :title="tDual('characterDetail.breathe', '调息')"
           class="px-2 py-1 rounded-xl text-xs transition-all cursor-pointer hover:bg-wood-800"
           :class="activeEmote === 'breathe' ? 'bg-gold-500 text-wood-950 font-bold shadow-sm' : 'text-amber-200/70'"
         >
@@ -129,15 +129,15 @@
       <!-- Loading Indicator -->
       <div v-if="isInitializing" class="absolute inset-0 flex flex-col items-center justify-center text-amber-200/60 space-y-2">
         <Loader2 :size="28" class="animate-spin text-gold-400" />
-        <span class="text-xs font-bold">Đang khởi tạo Chibi Rig...</span>
+        <span class="text-xs font-bold">{{ tDual('characterDetail.initRig', '正在初始化 Q版 Rig...') }}</span>
       </div>
 
       <!-- WebGL Fallback State -->
       <div v-if="hasError" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-wood-950/90 rounded-2xl border border-red-500/30 text-amber-200/80">
         <AlertTriangle :size="32" class="text-red-400 mb-2" />
-        <div class="text-sm font-bold text-white mb-1">Không thể khởi tạo WebGL</div>
+        <div class="text-sm font-bold text-white mb-1">{{ tDual('characterDetail.webglFail', '无法启动 WebGL 画布') }}</div>
         <p class="text-xs text-amber-200/60 max-w-xs">
-          Trình duyệt của bạn có thể đang tắt tính năng tăng tốc phần cứng WebGL.
+          {{ tDual('characterDetail.webglHint', '浏览器可能禁用了 WebGL 硬件加速。') }}
         </p>
       </div>
     </div>
@@ -160,6 +160,9 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { Sparkles, Loader2, AlertTriangle, Palette, Layers } from 'lucide-vue-next';
 import type { CharacterAppearanceState, CharacterEmote } from '../../types/character';
 import { PixiChibiCharacterEngine } from '../../services/character/pixi-character-engine.client';
+import { useOriginLanguage } from '~/composables/useOriginLanguage';
+
+const { t, tDual } = useOriginLanguage();
 
 const props = defineProps<{
   appearance: CharacterAppearanceState;
@@ -180,36 +183,36 @@ let engine: PixiChibiCharacterEngine | null = null;
 // Registry of approved official artworks
 const ART_MAPPING: Record<string, { src: string; name: string }> = {
   // Canonical Expressions
-  'emote_happy': { src: '/assets/character/expressions/expression_happy.png', name: 'Luma • Biểu cảm Vui Vẻ (Happy 😊)' },
-  'emote_curious': { src: '/assets/character/expressions/expression_curious.png', name: 'Luma • Biểu cảm Tò Mò (Curious 🧐)' },
-  'emote_surprised': { src: '/assets/character/expressions/expression_surprised.png', name: 'Luma • Biểu cảm Ngạc Nhiên (Surprised 😮)' },
-  'emote_sleepy': { src: '/assets/character/expressions/expression_sleepy.png', name: 'Luma • Biểu cảm Buồn Ngủ (Sleepy 😴)' },
-  'emote_proud': { src: '/assets/character/expressions/expression_proud.png', name: 'Luma • Biểu cảm Tự Hào (Proud ⭐)' },
-  'emote_idle': { src: '/assets/character/expressions/expression_idle.png', name: 'Luma • Trạng thái Tự Nhiên (Idle ✨)' },
-  'emote_breathe': { src: '/assets/character/expressions/expression_idle.png', name: 'Luma • Tĩnh Tâm Thở Nhẹ (Breathe 🧘)' },
+  'emote_happy': { src: '/assets/character/expressions/expression_happy.png', name: 'Luma • 开心 (Happy 😊)' },
+  'emote_curious': { src: '/assets/character/expressions/expression_curious.png', name: 'Luma • 好奇 (Curious 🧐)' },
+  'emote_surprised': { src: '/assets/character/expressions/expression_surprised.png', name: 'Luma • 惊讶 (Surprised 😮)' },
+  'emote_sleepy': { src: '/assets/character/expressions/expression_sleepy.png', name: 'Luma • 困倦 (Sleepy 😴)' },
+  'emote_proud': { src: '/assets/character/expressions/expression_proud.png', name: 'Luma • 自豪 (Proud ⭐)' },
+  'emote_idle': { src: '/assets/character/expressions/expression_idle.png', name: 'Luma • 自然 (Idle ✨)' },
+  'emote_breathe': { src: '/assets/character/expressions/expression_idle.png', name: 'Luma • 调息 (Breathe 🧘)' },
 
   // Hats & Headgear
-  'item_phoenix_crown': { src: '/assets/character/art/luma_equip_phoenix_crown_transparent.png', name: 'Trang Bị: Mão Phượng Hoàng (Phoenix Crown 👑)' },
-  'item_straw_hat': { src: '/assets/character/art/luma_equip_straw_hat_transparent.png', name: 'Trang Bị: Nón Lá Tiêu Dao (Straw Hat 🌾)' },
-  'item_scholar_hat': { src: '/assets/character/art/luma_equip_scholar_hat_transparent.png', name: 'Trang Bị: Mũ Nho Sinh (Scholar’s Cap 🎓)' },
+  'item_phoenix_crown': { src: '/assets/character/art/luma_equip_phoenix_crown_transparent.png', name: '装备: 凤凰金冠 (Phoenix Crown 👑)' },
+  'item_straw_hat': { src: '/assets/character/art/luma_equip_straw_hat_transparent.png', name: '装备: 逍遥斗笠 (Straw Hat 🌾)' },
+  'item_scholar_hat': { src: '/assets/character/art/luma_equip_scholar_hat_transparent.png', name: '装备: 儒生冠帽 (Scholar’s Cap 🎓)' },
 
   // Outfits & Robes
-  'item_dragon_armor': { src: '/assets/character/art/luma_equip_dragon_armor_transparent.png', name: 'Trang Bị: Chiến Bào Kim Long (Golden Dragon Armor 🐉)' },
-  'item_silk_robe': { src: '/assets/character/art/luma_equip_silk_robe_transparent.png', name: 'Trang Bị: Trường Bào Lam Điền (Scholar Silk Robe 👘)' },
-  'item_leather_vest': { src: '/assets/character/art/luma_equip_leather_vest_transparent.png', name: 'Trang Bị: Áo Da Lữ Khách (Wanderer Leather Vest 🦺)' },
+  'item_dragon_armor': { src: '/assets/character/art/luma_equip_dragon_armor_transparent.png', name: '装备: 金龙战甲 (Dragon Armor 🐉)' },
+  'item_silk_robe': { src: '/assets/character/art/luma_equip_silk_robe_transparent.png', name: '装备: 蓝田儒袍 (Silk Robe 👘)' },
+  'item_leather_vest': { src: '/assets/character/art/luma_equip_leather_vest_transparent.png', name: '装备: 游侠皮甲 (Leather Vest 🦺)' },
 
   // Hairstyle Variations
-  'hair_wanderer': { src: '/assets/character/art/luma_hair_wanderer_transparent.png', name: 'Kiểu Tóc: Kiếm Khách Lãng Tử (Wanderer Hair 🗡️)' },
-  'hair_topknot': { src: '/assets/character/art/luma_hair_topknot_transparent.png', name: 'Kiểu Tóc: Búi Tóc Nho Sinh (Scholar Topknot 📜)' },
-  'hair_long_fantasy': { src: '/assets/character/art/luma_hair_long_fantasy_transparent.png', name: 'Kiểu Tóc: Tóc Tiên Tung Bay (Long Fairy Hair 🧚)' },
+  'hair_wanderer': { src: '/assets/character/art/luma_hair_wanderer_transparent.png', name: '发型: 随风游侠 (Wanderer Hair 🗡️)' },
+  'hair_topknot': { src: '/assets/character/art/luma_hair_topknot_transparent.png', name: '发型: 儒生发髻 (Scholar Topknot 📜)' },
+  'hair_long_fantasy': { src: '/assets/character/art/luma_hair_long_fantasy_transparent.png', name: '发型: 银发飞舞 (Long Fairy Hair 🧚)' },
 
   // Accessories & Weapons
-  'acc_round_glasses': { src: '/assets/character/art/luma_equip_round_glasses_transparent.png', name: 'Phụ Kiện: Kính Tròn Học Giả (Round Glasses 👓)' },
-  'acc_small_scarf': { src: '/assets/character/art/luma_equip_small_scarf_transparent.png', name: 'Phụ Kiện: Khăn Len Ấm Áp (Cozy Scarf 🧣)' },
-  'acc_decorative_necklace': { src: '/assets/character/art/luma_equip_amber_necklace_transparent.png', name: 'Phụ Kiện: Dây Chuyền Ngọc Hổ Phách (Amber Necklace 📿)' },
-  'item_jade_pendant': { src: '/assets/character/art/luma_equip_jade_pendant_transparent.png', name: 'Phụ Kiện: Ngọc Bội Bình An (Peace Jade Pendant 🟢)' },
-  'item_wooden_sword': { src: '/assets/character/art/luma_equip_wooden_sword_transparent.png', name: 'Vũ Khí: Mộc Kiếm Tân Thủ (Wooden Sword 🗡️)' },
-  'item_bamboo_brush': { src: '/assets/character/art/luma_equip_bamboo_brush_transparent.png', name: 'Phụ Kiện: Bút Lông Trúc Lâm (Bamboo Brush 🖌️)' },
+  'acc_round_glasses': { src: '/assets/character/art/luma_equip_round_glasses_transparent.png', name: '配饰: 琉璃圆镜 (Round Glasses 👓)' },
+  'acc_small_scarf': { src: '/assets/character/art/luma_equip_small_scarf_transparent.png', name: '配饰: 暖意丝巾 (Cozy Scarf 🧣)' },
+  'acc_decorative_necklace': { src: '/assets/character/art/luma_equip_amber_necklace_transparent.png', name: '配饰: 琥珀吊坠 (Amber Necklace 📿)' },
+  'item_jade_pendant': { src: '/assets/character/art/luma_equip_jade_pendant_transparent.png', name: '法宝: 平安温玉 (Jade Pendant 🟢)' },
+  'item_wooden_sword': { src: '/assets/character/art/luma_equip_wooden_sword_transparent.png', name: '武器: 初心木剑 (Wooden Sword 🗡️)' },
+  'item_bamboo_brush': { src: '/assets/character/art/luma_equip_bamboo_brush_transparent.png', name: '文房: 灵竹毛笔 (Bamboo Brush 🖌️)' },
 };
 
 // Intelligently compute the most specific active visual artwork
@@ -238,7 +241,7 @@ const currentArt = computed(() => {
   // Default master portrait
   return {
     src: '/assets/character/ui/avatar_luma_portrait.png',
-    name: 'Luma (The Little Wanderer) • Chân Dung Gốc',
+    name: 'Luma (The Little Wanderer) • 原版立绘 (Original Portrait)',
   };
 });
 

@@ -5,8 +5,8 @@
         <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-600 via-brand-500 to-gold-500 flex items-center justify-center font-hanzi font-black text-2xl text-white mx-auto mb-3.5 shadow-glow-brand ring-1 ring-white/20">
           龙
         </div>
-        <h1 class="text-2xl font-black font-heading text-white">Tạo Tài Khoản LinguaWorld</h1>
-        <p class="text-xs text-slate-400 mt-1">Bắt đầu học tiếng Trung HSK 3.0 và tạo nhân vật võ hiệp</p>
+        <h1 class="text-2xl font-black font-heading text-white">{{ tDual('authDetail.registerTitle', '注册 LinguaWorld') }}</h1>
+        <p class="text-xs text-slate-400 mt-1">{{ t('authDetail.registerDesc') }}</p>
       </div>
 
       <div
@@ -20,19 +20,19 @@
 
       <form @submit.prevent="handleRegister" class="space-y-4">
         <div>
-          <label class="block text-xs font-bold text-slate-300 mb-1.5" for="reg-char">Tên nhân vật trong game</label>
+          <label class="block text-xs font-bold text-slate-300 mb-1.5" for="reg-char">{{ tDual('authDetail.charName', '侠客名号') }}</label>
           <input
             id="reg-char"
             v-model="form.characterName"
             type="text"
             required
-            placeholder="Ví dụ: Tiểu Long (小龙)"
+            :placeholder="t('authDetail.charNamePlaceholder')"
             class="w-full min-h-[46px] px-4 py-2.5 rounded-xl bg-surface-950 border border-surface-750 text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent transition-all"
           />
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-300 mb-1.5" for="reg-user">Tên đăng nhập</label>
+          <label class="block text-xs font-bold text-slate-300 mb-1.5" for="reg-user">{{ tDual('authDetail.regUsername', '登录账号') }}</label>
           <input
             id="reg-user"
             v-model="form.username"
@@ -56,7 +56,7 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-300 mb-1.5" for="reg-pw">Mật khẩu (tối thiểu 6 ký tự)</label>
+          <label class="block text-xs font-bold text-slate-300 mb-1.5" for="reg-pw">{{ tDual('authDetail.passwordMin', '密码') }}</label>
           <input
             id="reg-pw"
             v-model="form.password"
@@ -74,13 +74,13 @@
           class="w-full min-h-[48px] py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-amber-600 hover:from-brand-500 hover:to-amber-500 text-white font-extrabold text-sm shadow-glow-brand disabled:opacity-50 transition-all mt-2 cursor-pointer flex items-center justify-center gap-2"
         >
           <UserPlus v-if="!loading" :size="16" aria-hidden="true" />
-          <span>{{ loading ? 'Đang khởi tạo tài khoản & nhân vật...' : 'Đăng Ký & Khởi Tạo Nhân Vật' }}</span>
+          <span>{{ loading ? tDual('authDetail.creating', '正在创建角色...') : tDual('authDetail.btnRegister', '立即启程修仙') }}</span>
         </button>
       </form>
 
       <div class="mt-6 text-center text-xs text-slate-400">
-        Đã có tài khoản?
-        <NuxtLink to="/login" class="text-gold-400 font-bold hover:underline ml-1">Đăng nhập</NuxtLink>
+        {{ t('authDetail.haveAccount') }}
+        <NuxtLink to="/login" class="text-gold-400 font-bold hover:underline ml-1">{{ tDual('authDetail.loginNow', '立即登录') }}</NuxtLink>
       </div>
     </div>
   </div>
@@ -88,10 +88,13 @@
 
 <script setup lang="ts">
 import { AlertCircle, UserPlus } from 'lucide-vue-next';
+import { useOriginLanguage } from '~/composables/useOriginLanguage';
 
 definePageMeta({
   layout: 'default',
 });
+
+const { t, tDual } = useOriginLanguage();
 
 const router = useRouter();
 
@@ -116,7 +119,7 @@ async function handleRegister() {
     });
     router.push('/learn');
   } catch (err: any) {
-    errorMessage.value = err?.data?.message || 'Đăng ký không thành công.';
+    errorMessage.value = err?.data?.message || t('authDetail.registerFail');
   } finally {
     loading.value = false;
   }

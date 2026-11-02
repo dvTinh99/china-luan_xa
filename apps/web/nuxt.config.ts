@@ -18,7 +18,29 @@ export default defineNuxtConfig({
   // ---------------------------------------------------------------------------
   // Modules
   // ---------------------------------------------------------------------------
-  modules: ['@nuxtjs/tailwindcss'],
+  modules: [
+    '@nuxtjs/tailwindcss',
+    '@nuxtjs/i18n',
+  ],
+
+  // ---------------------------------------------------------------------------
+  // i18n Configuration (Origin Language Subtitle Engine)
+  // ---------------------------------------------------------------------------
+  i18n: {
+    locales: [
+      { code: 'vi', language: 'vi-VN', name: 'Tiếng Việt', file: 'vi.ts' },
+      { code: 'en', language: 'en-US', name: 'English', file: 'en.ts' },
+    ],
+    defaultLocale: 'vi',
+    strategy: 'no_prefix',
+    lazy: false,
+    langDir: 'locales',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'linguaworld_origin_language',
+      redirectOn: 'root',
+    },
+  },
 
   // ---------------------------------------------------------------------------
   // Runtime config

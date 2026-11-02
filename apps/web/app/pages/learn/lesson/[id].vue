@@ -7,7 +7,7 @@
         class="flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors py-2 px-2.5 rounded-xl hover:bg-surface-850"
       >
         <ArrowLeft :size="14" aria-hidden="true" />
-        <span>Thoát bài học</span>
+        <span>{{ tDual('lessonDetail.exitLesson', '退出课程') }}</span>
       </NuxtLink>
 
       <!-- Step / Activity Tabs -->
@@ -19,7 +19,7 @@
           :class="currentActivity === 'flashcard' ? 'bg-brand-600 text-white shadow-glow-brand' : 'text-slate-400 hover:text-white'"
         >
           <Layers :size="14" aria-hidden="true" />
-          <span class="hidden sm:inline">1.</span> Thẻ từ
+          <span class="hidden sm:inline">1.</span> {{ tDual('lessonDetail.stepFlashcards', '生词卡片') }}
         </button>
         <button
           type="button"
@@ -28,7 +28,7 @@
           :class="currentActivity === 'radical' ? 'bg-amber-600 text-white shadow-glow-gold' : 'text-slate-400 hover:text-white'"
         >
           <Sparkles :size="14" aria-hidden="true" />
-          <span class="hidden sm:inline">2.</span> Bộ thủ
+          <span class="hidden sm:inline">2.</span> {{ tDual('lessonDetail.stepRadicals', '部首拆解') }}
         </button>
         <button
           type="button"
@@ -37,7 +37,7 @@
           :class="currentActivity === 'matching' ? 'bg-brand-600 text-white shadow-glow-brand' : 'text-slate-400 hover:text-white'"
         >
           <Sparkles :size="14" aria-hidden="true" />
-          <span class="hidden sm:inline">3.</span> Nối từ
+          <span class="hidden sm:inline">3.</span> {{ tDual('lessonDetail.stepMatching', '连连看') }}
         </button>
         <button
           type="button"
@@ -46,7 +46,7 @@
           :class="currentActivity === 'writing' ? 'bg-emerald-600 text-white shadow-glow-jade' : 'text-slate-400 hover:text-white'"
         >
           <PenTool :size="14" aria-hidden="true" />
-          <span class="hidden sm:inline">4.</span> Viết chữ
+          <span class="hidden sm:inline">4.</span> {{ tDual('lessonDetail.stepWriting', '汉字书写') }}
         </button>
         <button
           type="button"
@@ -55,12 +55,12 @@
           :class="currentActivity === 'quiz' ? 'bg-brand-600 text-white shadow-glow-brand' : 'text-slate-400 hover:text-white'"
         >
           <HelpCircle :size="14" aria-hidden="true" />
-          <span class="hidden sm:inline">5.</span> Trắc nghiệm
+          <span class="hidden sm:inline">5.</span> {{ tDual('lessonDetail.stepQuiz', '仙道小试') }}
         </button>
       </div>
 
       <div class="text-xs font-bold text-slate-400 hidden sm:block">
-        {{ vocabulary.length }} từ vựng
+        {{ t('lessonDetail.vocabListCount', { count: vocabulary.length }) }}
       </div>
     </div>
 
@@ -69,7 +69,7 @@
       <div class="w-12 h-12 rounded-2xl bg-surface-850 border border-surface-750 flex items-center justify-center animate-bounce mb-3 text-gold-400">
         <BookOpen :size="24" aria-hidden="true" />
       </div>
-      <p class="text-slate-400 text-sm font-medium">Đang chuẩn bị nội dung bài học...</p>
+      <p class="text-slate-400 text-sm font-medium">{{ t('lessonDetail.preparing') }}</p>
     </div>
 
     <!-- Main Activity Area -->
@@ -78,7 +78,7 @@
       <div v-if="currentActivity === 'flashcard'" class="flex-1 flex flex-col items-center justify-center py-4">
         <!-- Progress Bar & Card Counter -->
         <div class="w-full max-w-md mb-4 flex items-center justify-between text-xs font-semibold text-slate-400">
-          <span>Thẻ {{ currentCardIndex + 1 }} / {{ vocabulary.length }}</span>
+          <span>{{ t('lessonDetail.cardOf', { current: currentCardIndex + 1, total: vocabulary.length }) }}</span>
           <div class="w-36 h-2 bg-surface-850 rounded-full overflow-hidden border border-surface-750">
             <div
               class="h-full bg-gradient-to-r from-brand-500 to-gold-400 transition-all duration-300"
@@ -94,7 +94,7 @@
         >
           <div class="absolute top-4 right-4 text-xs font-semibold text-slate-500 flex items-center gap-1.5 group-hover:text-gold-400 transition-colors">
             <RotateCcw :size="13" aria-hidden="true" />
-            <span>Bấm để lật</span>
+            <span>{{ tDual('lessonDetail.tapToFlip', '点击翻转') }}</span>
           </div>
 
           <!-- Front Face -->
@@ -143,14 +143,14 @@
             class="min-h-[44px] px-4 py-2.5 rounded-xl bg-surface-850 hover:bg-surface-800 text-slate-300 disabled:opacity-40 text-xs font-bold border border-surface-750 transition-colors flex items-center gap-1 cursor-pointer"
           >
             <ChevronLeft :size="16" aria-hidden="true" />
-            <span>Trước</span>
+            <span>{{ tDual('common.prev', '上一张') }}</span>
           </button>
           <button
             type="button"
             @click="recordCardRecall(false)"
             class="min-h-[44px] px-5 py-2.5 rounded-xl bg-surface-850 hover:bg-brand-950/60 text-brand-300 border border-surface-700 hover:border-brand-700 text-xs font-bold transition-all cursor-pointer"
           >
-            Chưa nhớ (Again)
+            {{ tDual('reviewDetail.rateAgain', '没记住') }}
           </button>
           <button
             type="button"
@@ -158,7 +158,7 @@
             class="min-h-[44px] px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-glow-jade transition-all flex items-center gap-1.5 cursor-pointer"
           >
             <Check :size="16" aria-hidden="true" />
-            <span>Đã nhớ (Good)</span>
+            <span>{{ tDual('reviewDetail.rateGood', '已记住') }}</span>
           </button>
           <button
             type="button"
@@ -166,26 +166,26 @@
             :disabled="currentCardIndex === vocabulary.length - 1"
             class="min-h-[44px] px-4 py-2.5 rounded-xl bg-surface-850 hover:bg-surface-800 text-slate-300 disabled:opacity-40 text-xs font-bold border border-surface-750 transition-colors flex items-center gap-1 cursor-pointer"
           >
-            <span>Tiếp</span>
+            <span>{{ tDual('common.next', '下一张') }}</span>
             <ChevronRight :size="16" aria-hidden="true" />
           </button>
         </div>
 
         <!-- Hotkey hints -->
         <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-4">
-          <span><kbd class="px-1 py-0.5 bg-surface-850 rounded border border-surface-700 font-mono">Space</kbd> Lật thẻ</span>
+          <span><kbd class="px-1 py-0.5 bg-surface-850 rounded border border-surface-700 font-mono">Space</kbd> {{ tDual('lessonDetail.flipCard', '翻转') }}</span>
           <span>•</span>
-          <span><kbd class="px-1 py-0.5 bg-surface-850 rounded border border-surface-700 font-mono">P</kbd> Phát âm</span>
+          <span><kbd class="px-1 py-0.5 bg-surface-850 rounded border border-surface-700 font-mono">P</kbd> {{ tDual('lessonDetail.audioPlay', '发音') }}</span>
           <span>•</span>
-          <span><kbd class="px-1 py-0.5 bg-surface-850 rounded border border-surface-700 font-mono">← / →</kbd> Chuyển thẻ</span>
+          <span><kbd class="px-1 py-0.5 bg-surface-850 rounded border border-surface-700 font-mono">← / →</kbd> {{ tDual('lessonDetail.switchCard', '切换') }}</span>
         </div>
       </div>
 
       <!-- 2. WORD MATCHING ACTIVITY -->
       <div v-else-if="currentActivity === 'matching'" class="flex-1 flex flex-col justify-center py-6">
         <div class="text-center mb-6">
-          <h3 class="text-xl font-bold font-heading text-white">Nối Chữ Hán với Nghĩa & Pinyin</h3>
-          <p class="text-xs text-slate-400 mt-1">Chọn 1 ô chữ Hán (hệ thống sẽ phát âm) và 1 ô nghĩa tiếng Việt để ghép đôi.</p>
+          <h3 class="text-xl font-bold font-heading text-white">{{ tDual('lessonDetail.matchTitle', '汉字与释义连连看') }}</h3>
+          <p class="text-xs text-slate-400 mt-1">{{ t('lessonDetail.matchDesc') }}</p>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto w-full">
@@ -214,14 +214,14 @@
         <div v-if="matchingComplete" class="text-center mt-8 p-6 bg-surface-900 border border-emerald-500/40 rounded-3xl max-w-md mx-auto shadow-card-elevated">
           <div class="flex items-center justify-center gap-2 text-emerald-400 font-bold mb-3">
             <CheckCircle2 :size="20" aria-hidden="true" />
-            <span>Xuất sắc! Bạn đã nối đúng tất cả các từ.</span>
+            <span>{{ t('lessonDetail.matchComplete') }}</span>
           </div>
           <button
             type="button"
             @click="currentActivity = 'writing'"
             class="min-h-[48px] px-7 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-glow-jade transition-all flex items-center gap-2 mx-auto cursor-pointer"
           >
-            <span>Tiếp tục: Phần Luyện Viết Chữ</span>
+            <span>{{ tDual('lessonDetail.continueWriting', '下一关: 汉字临摹') }}</span>
             <ArrowRight :size="16" aria-hidden="true" />
           </button>
         </div>
@@ -248,19 +248,19 @@
       <!-- 3. QUIZ ACTIVITY -->
       <div v-else-if="currentActivity === 'quiz'" class="flex-1 flex flex-col items-center justify-center py-6">
         <div class="text-xs font-semibold text-slate-400 mb-3">
-          Câu hỏi {{ currentQuizIndex + 1 }} / {{ quizQuestions.length }}
+          {{ t('lessonDetail.quizQuestionOf', { current: currentQuizIndex + 1, total: quizQuestions.length }) }}
         </div>
 
         <div class="w-full max-w-md bg-surface-900/95 border border-surface-750 rounded-3xl p-7 shadow-card-elevated">
           <div class="text-center mb-6">
-            <span class="text-[11px] uppercase text-gold-400 font-extrabold tracking-wider">Từ vựng cần chọn</span>
+            <span class="text-[11px] uppercase text-gold-400 font-extrabold tracking-wider">{{ tDual('lessonDetail.quizTarget', '目标词汇') }}</span>
             <div class="flex items-center justify-center gap-3 mt-3 mb-2">
               <div class="text-6xl font-bold font-hanzi text-white">
                 {{ currentQuiz.question }}
               </div>
               <SpeakerButton :text="currentQuiz.question" :audio-url="currentQuiz.audioUrl" size="md" />
             </div>
-            <div class="text-xs text-slate-400">Chọn nghĩa tiếng Việt chính xác nhất:</div>
+            <div class="text-xs text-slate-400">{{ tDual('lessonDetail.quizPrompt', '选择最准确的含义') }}:</div>
           </div>
 
           <!-- Options -->
@@ -291,7 +291,7 @@
               @click="nextQuizQuestion"
               class="min-h-[48px] px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-sm shadow-glow-brand transition-all flex items-center gap-2 cursor-pointer"
             >
-              <span>{{ currentQuizIndex < quizQuestions.length - 1 ? 'Câu tiếp theo' : 'Hoàn thành bài học' }}</span>
+              <span>{{ currentQuizIndex < quizQuestions.length - 1 ? tDual('lessonDetail.quizNext', '下一题') : tDual('lessonDetail.quizFinish', '完成课程') }}</span>
               <ArrowRight :size="16" aria-hidden="true" />
             </button>
           </div>
@@ -310,25 +310,25 @@
         <div class="w-16 h-16 rounded-2xl bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-400 mx-auto mb-4">
           <Trophy :size="32" aria-hidden="true" />
         </div>
-        <h2 class="text-2xl font-black font-heading text-white mb-1">Hoàn Thành Bài Học!</h2>
+        <h2 class="text-2xl font-black font-heading text-white mb-1">{{ tDual('lessonDetail.congratsTitle', '恭喜通关！') }}</h2>
         <p class="text-xs text-slate-400 mb-6">{{ lesson?.title }}</p>
 
         <!-- Stats Grid -->
         <div class="grid grid-cols-2 gap-3 mb-6">
           <div class="p-3.5 bg-surface-950/80 rounded-2xl border border-surface-750">
-            <div class="text-xs text-slate-400 font-medium">Độ chính xác</div>
+            <div class="text-xs text-slate-400 font-medium">{{ tDual('lessonDetail.accuracy', '正确率') }}</div>
             <div class="text-2xl font-black text-emerald-400 font-heading">{{ Math.round((completionData?.accuracy || 1) * 100) }}%</div>
           </div>
           <div class="p-3.5 bg-surface-950/80 rounded-2xl border border-surface-750">
-            <div class="text-xs text-slate-400 font-medium">EXP nhận được</div>
+            <div class="text-xs text-slate-400 font-medium">{{ tDual('characterDetail.exp', '获得经验') }}</div>
             <div class="text-2xl font-black text-purple-400 font-heading">+{{ completionData?.expEarned || 0 }}</div>
           </div>
           <div class="p-3.5 bg-surface-950/80 rounded-2xl border border-surface-750">
-            <div class="text-xs text-slate-400 font-medium">Gold nhận được</div>
+            <div class="text-xs text-slate-400 font-medium">{{ tDual('characterDetail.luck', '获得金币') }}</div>
             <div class="text-2xl font-black text-gold-400 font-heading">+{{ completionData?.goldEarned || 0 }}</div>
           </div>
           <div class="p-3.5 bg-surface-950/80 rounded-2xl border border-surface-750">
-            <div class="text-xs text-slate-400 font-medium">Cấp nhân vật</div>
+            <div class="text-xs text-slate-400 font-medium">{{ tDual('characterDetail.swordsman', '角色境界') }}</div>
             <div class="text-2xl font-black text-sky-400 font-heading">Lv.{{ completionData?.character?.level || 1 }}</div>
           </div>
         </div>
@@ -339,7 +339,7 @@
           class="p-2.5 bg-purple-500/15 border border-purple-500/30 rounded-xl text-purple-300 text-xs font-bold mb-4 flex items-center justify-center gap-2"
         >
           <Sparkles :size="14" class="text-purple-400" />
-          <span>+{{ completionData.gearBonusExp }} EXP thưởng từ trang bị đang kích hoạt (+{{ completionData.bonusExpPercent }}%)</span>
+          <span>{{ t('lessonDetail.gearBonus', { bonus: completionData.gearBonusExp, percent: completionData.bonusExpPercent }) }}</span>
         </div>
 
         <!-- Daily Quests Completed Banner -->
@@ -349,7 +349,7 @@
         >
           <div class="flex items-center gap-1.5 font-black uppercase text-[11px] text-emerald-200">
             <Trophy :size="13" />
-            <span>Nhiệm vụ hoàn thành!</span>
+            <span>{{ tDual('lessonDetail.questComplete', '宗门任务达成！') }}</span>
           </div>
           <div v-for="q in completionData.questsCompleted" :key="q.questId" class="text-emerald-100 flex items-center justify-between">
             <span>• {{ q.title }}</span>
@@ -359,7 +359,7 @@
 
         <div v-if="completionData?.leveledUp" class="p-3 bg-gold-500/20 border border-gold-500/40 rounded-xl text-gold-300 text-xs font-bold mb-6 flex items-center justify-center gap-2">
           <Sparkles :size="16" aria-hidden="true" />
-          <span>CHÚC MỪNG: Nhân vật của bạn đã lên cấp!</span>
+          <span>{{ tDual('lessonDetail.levelUp', '境界提升！') }}</span>
         </div>
 
         <div class="flex gap-3">
@@ -367,13 +367,13 @@
             to="/learn"
             class="flex-1 min-h-[48px] py-3 rounded-xl bg-surface-800 hover:bg-surface-750 text-slate-200 font-bold text-sm border border-surface-700 flex items-center justify-center"
           >
-            Về danh sách bài
+            {{ tDual('lessonDetail.backToList', '返回典籍列表') }}
           </NuxtLink>
           <NuxtLink
             to="/world"
             class="flex-1 min-h-[48px] py-3 rounded-xl bg-gradient-to-r from-brand-600 to-amber-600 hover:from-brand-500 hover:to-amber-500 text-white font-bold text-sm shadow-glow-brand flex items-center justify-center gap-1.5"
           >
-            <span>Vào thế giới 2D</span>
+            <span>{{ tDual('lessonDetail.enterWorld', '进入大千世界') }}</span>
             <ArrowRight :size="16" aria-hidden="true" />
           </NuxtLink>
         </div>
@@ -402,6 +402,9 @@ import {
 } from 'lucide-vue-next';
 import RadicalStrategyActivity from '~/components/learning/RadicalStrategyActivity.vue';
 import HanziWritingActivity from '~/components/learning/HanziWritingActivity.vue';
+import { useOriginLanguage } from '~/composables/useOriginLanguage';
+
+const { t, tDual } = useOriginLanguage();
 
 definePageMeta({
   layout: 'default',

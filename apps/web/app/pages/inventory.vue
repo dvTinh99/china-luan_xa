@@ -5,10 +5,10 @@
       <div>
         <h1 class="text-3xl font-black font-heading text-white flex items-center gap-3">
           <Briefcase :size="28" class="text-gold-400" />
-          <span>Hành Trang & Trang Bị</span>
+          <span>{{ tDual('inventoryDetail.title', '行囊与装备') }}</span>
         </h1>
         <p class="text-amber-200/70 text-xs sm:text-sm mt-1">
-          Quản lý các trang bị gia tăng điểm kinh nghiệm, hồi phục sinh lực và nâng cao phẩm chất nhân vật.
+          {{ t('inventoryDetail.desc') }}
         </p>
       </div>
 
@@ -17,7 +17,7 @@
         class="px-4 py-2 rounded-2xl bg-wood-850 hover:bg-wood-800 border border-wood-700 hover:border-gold-500/50 text-xs font-bold text-amber-200 hover:text-gold-300 transition-all flex items-center gap-2 self-start sm:self-auto cursor-pointer"
       >
         <Store :size="15" />
-        <span>Ghé Thương Điếm</span>
+        <span>{{ tDual('inventoryDetail.visitShop', '前往珍宝阁') }}</span>
       </NuxtLink>
     </div>
 
@@ -47,9 +47,9 @@
         <div class="flex items-center justify-between">
           <h2 class="text-lg font-bold font-heading text-white flex items-center gap-2">
             <Shield :size="18" class="text-gold-400" />
-            <span>Trang Bị Trên Người (Equipped Gear)</span>
+            <span>{{ tDual('inventoryDetail.equippedGear', '已穿戴装备') }}</span>
           </h2>
-          <span class="text-xs text-amber-200/60 font-bold">4 Vị Trí</span>
+          <span class="text-xs text-amber-200/60 font-bold">4 {{ t('inventoryDetail.slotCount') }}</span>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -63,9 +63,9 @@
                 <GraduationCap :size="24" />
               </div>
               <div>
-                <div class="text-[10px] uppercase font-bold text-amber-200/50">Nón / Mũ</div>
+                <div class="text-[10px] uppercase font-bold text-amber-200/50">{{ tDual('inventoryDetail.slotHead', '头部装备') }}</div>
                 <div v-if="equipped.HEAD" class="text-sm font-bold text-white">{{ equipped.HEAD.item.name }}</div>
-                <div v-else class="text-xs text-amber-200/40 italic">Chưa trang bị</div>
+                <div v-else class="text-xs text-amber-200/40 italic">{{ tDual('inventoryDetail.emptySlot', '未装备') }}</div>
               </div>
             </div>
             <button
@@ -74,7 +74,7 @@
               @click="handleUnequip(equipped.HEAD.id)"
               class="px-2.5 py-1 rounded-lg bg-wood-800 hover:bg-wood-750 text-amber-200/70 hover:text-red-300 text-xs font-bold transition-colors cursor-pointer"
             >
-              Tháo
+              {{ tDual('inventoryDetail.unequip', '卸下') }}
             </button>
           </div>
 
@@ -88,9 +88,9 @@
                 <Sword :size="24" />
               </div>
               <div>
-                <div class="text-[10px] uppercase font-bold text-amber-200/50">Vũ Khí / Bút Lông</div>
+                <div class="text-[10px] uppercase font-bold text-amber-200/50">{{ tDual('inventoryDetail.slotWeapon', '武器法宝') }}</div>
                 <div v-if="equipped.WEAPON" class="text-sm font-bold text-white">{{ equipped.WEAPON.item.name }}</div>
-                <div v-else class="text-xs text-amber-200/40 italic">Chưa trang bị</div>
+                <div v-else class="text-xs text-amber-200/40 italic">{{ tDual('inventoryDetail.emptySlot', '未装备') }}</div>
               </div>
             </div>
             <button
@@ -99,7 +99,7 @@
               @click="handleUnequip(equipped.WEAPON.id)"
               class="px-2.5 py-1 rounded-lg bg-wood-800 hover:bg-wood-750 text-amber-200/70 hover:text-red-300 text-xs font-bold transition-colors cursor-pointer"
             >
-              Tháo
+              {{ tDual('inventoryDetail.unequip', '卸下') }}
             </button>
           </div>
 
@@ -113,9 +113,9 @@
                 <Shirt :size="24" />
               </div>
               <div>
-                <div class="text-[10px] uppercase font-bold text-amber-200/50">Trường Bào / Áo Giáp</div>
+                <div class="text-[10px] uppercase font-bold text-amber-200/50">{{ tDual('inventoryDetail.slotArmor', '防御道袍') }}</div>
                 <div v-if="equipped.ARMOR" class="text-sm font-bold text-white">{{ equipped.ARMOR.item.name }}</div>
-                <div v-else class="text-xs text-amber-200/40 italic">Chưa trang bị</div>
+                <div v-else class="text-xs text-amber-200/40 italic">{{ tDual('inventoryDetail.emptySlot', '未装备') }}</div>
               </div>
             </div>
             <button
@@ -124,7 +124,7 @@
               @click="handleUnequip(equipped.ARMOR.id)"
               class="px-2.5 py-1 rounded-lg bg-wood-800 hover:bg-wood-750 text-amber-200/70 hover:text-red-300 text-xs font-bold transition-colors cursor-pointer"
             >
-              Tháo
+              {{ tDual('inventoryDetail.unequip', '卸下') }}
             </button>
           </div>
 
@@ -138,9 +138,9 @@
                 <Gem :size="24" />
               </div>
               <div>
-                <div class="text-[10px] uppercase font-bold text-amber-200/50">Phụ Kiện / Ngọc Bội</div>
+                <div class="text-[10px] uppercase font-bold text-amber-200/50">{{ tDual('inventoryDetail.slotAccessory', '佩饰法器') }}</div>
                 <div v-if="equipped.ACCESSORY" class="text-sm font-bold text-white">{{ equipped.ACCESSORY.item.name }}</div>
-                <div v-else class="text-xs text-amber-200/40 italic">Chưa trang bị</div>
+                <div v-else class="text-xs text-amber-200/40 italic">{{ tDual('inventoryDetail.emptySlot', '未装备') }}</div>
               </div>
             </div>
             <button
@@ -149,7 +149,7 @@
               @click="handleUnequip(equipped.ACCESSORY.id)"
               class="px-2.5 py-1 rounded-lg bg-wood-800 hover:bg-wood-750 text-amber-200/70 hover:text-red-300 text-xs font-bold transition-colors cursor-pointer"
             >
-              Tháo
+              {{ tDual('inventoryDetail.unequip', '卸下') }}
             </button>
           </div>
         </div>
@@ -160,26 +160,26 @@
         <div>
           <h2 class="text-lg font-bold font-heading text-white flex items-center gap-2 mb-3">
             <Sparkles :size="18" class="text-gold-400" />
-            <span>Thuộc Tính Kích Hoạt</span>
+            <span>{{ tDual('inventoryDetail.activeStatsTitle', '激活属性加成') }}</span>
           </h2>
           <p class="text-xs text-amber-200/70 leading-relaxed mb-4">
-            Hiệu ứng cộng hưởng từ tất cả trang bị đang mang trên người nhân vật:
+            {{ t('inventoryDetail.activeStatsDesc') }}
           </p>
 
           <div class="space-y-3">
             <div class="p-3 rounded-2xl bg-wood-950 border border-wood-800 flex items-center justify-between">
-              <span class="text-xs font-bold text-amber-200/70">Thưởng EXP nhận được</span>
+              <span class="text-xs font-bold text-amber-200/70">{{ tDual('characterDetail.exp', '经验值加成') }}</span>
               <span class="text-base font-black font-heading text-gold-300">+{{ statsBonus.totalBonusExpPercent }}%</span>
             </div>
             <div class="p-3 rounded-2xl bg-wood-950 border border-wood-800 flex items-center justify-between">
-              <span class="text-xs font-bold text-amber-200/70">Máu tối đa (HP Bonus)</span>
+              <span class="text-xs font-bold text-amber-200/70">{{ tDual('characterDetail.hp', '气血值上限') }}</span>
               <span class="text-base font-black font-heading text-emerald-400">+{{ statsBonus.totalHpBonus }} HP</span>
             </div>
           </div>
         </div>
 
         <div class="p-3 rounded-2xl bg-gold-500/10 border border-gold-500/20 text-[11px] text-gold-300/90 leading-relaxed">
-          💡 Mẹo: Mang trang bị trước khi làm bài học và làm bài kiểm tra Quiz để nhận thêm nhiều điểm kinh nghiệm.
+          💡 {{ t('inventoryDetail.gearTip') }}
         </div>
       </div>
 
@@ -190,29 +190,29 @@
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-bold font-heading text-white flex items-center gap-2">
           <Package :size="20" class="text-gold-400" />
-          <span>Túi Đồ ({{ inventory.length }} vật phẩm)</span>
+          <span>{{ tDual('inventoryDetail.bagTitle', '我的背包', { count: inventory.length }) }}</span>
         </h2>
       </div>
 
       <div v-if="isLoading" class="text-center py-16 text-amber-200/50">
         <Loader2 :size="28" class="animate-spin mx-auto mb-2 text-gold-400" />
-        <span>Đang kiểm tra hành trang...</span>
+        <span>{{ t('inventoryDetail.loading') }}</span>
       </div>
 
       <div v-else-if="inventory.length === 0" class="text-center py-16 rounded-3xl bg-wood-900/40 border border-wood-800/60 p-6 space-y-4">
         <div class="w-16 h-16 rounded-3xl bg-wood-850 flex items-center justify-center mx-auto text-amber-200/40">
           <PackageOpen :size="32" />
         </div>
-        <div class="text-base font-bold text-white">Hành trang của bạn đang trống!</div>
+        <div class="text-base font-bold text-white">{{ tDual('inventoryDetail.emptyBagTitle', '背包空空如也') }}</div>
         <p class="text-xs text-amber-200/60 max-w-sm mx-auto">
-          Hãy ghé thăm Cửa hàng Thương nhân để mua sắm bút lông, áo bào nho sinh hoặc làm bài học để nhận thêm vàng.
+          {{ t('inventoryDetail.emptyBagDesc') }}
         </p>
         <NuxtLink
           to="/shop"
           class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-wood-950 font-bold text-xs shadow-rpg-glow-gold transition-all cursor-pointer"
         >
           <Store :size="14" />
-          <span>Đến Cửa Hàng Ngay</span>
+          <span>{{ tDual('inventoryDetail.visitShopNow', '立即前往商店') }}</span>
         </NuxtLink>
       </div>
 
@@ -232,7 +232,7 @@
                 <div>
                   <h3 class="text-sm font-bold font-heading text-white">{{ inv.item.name }}</h3>
                   <div class="text-[10px] text-amber-200/50 uppercase mt-0.5 font-bold">
-                    {{ inv.item.slot ? formatSlotName(inv.item.slot) : 'Vật phẩm tiêu hao' }}
+                    {{ inv.item.slot ? formatSlotName(inv.item.slot) : tDual('inventoryDetail.consumable', '消耗品') }}
                   </div>
                 </div>
               </div>
@@ -251,9 +251,9 @@
               v-if="inv.isEquipped"
               class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-gold-500/20 text-gold-300 border border-gold-500/30"
             >
-              Đang trang bị
+              {{ tDual('inventoryDetail.isEquipped', '已装备') }}
             </span>
-            <span v-else class="text-[11px] text-amber-200/40">Trong hành trang</span>
+            <span v-else class="text-[11px] text-amber-200/40">{{ tDual('inventoryDetail.inBag', '在背包中') }}</span>
 
             <div class="flex items-center gap-2">
               <button
@@ -268,7 +268,7 @@
                 ]"
               >
                 <Check v-if="!inv.isEquipped" :size="12" />
-                <span>{{ inv.isEquipped ? 'Tháo ra' : 'Trang bị' }}</span>
+                <span>{{ inv.isEquipped ? tDual('inventoryDetail.unequip', '卸下') : tDual('inventoryDetail.equip', '装备') }}</span>
               </button>
 
               <button
@@ -278,7 +278,7 @@
                 class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm"
               >
                 <Coffee :size="12" />
-                <span>Sử dụng</span>
+                <span>{{ tDual('inventoryDetail.useItem', '使用') }}</span>
               </button>
             </div>
           </div>
@@ -315,6 +315,8 @@ import {
 definePageMeta({
   layout: 'default',
 });
+
+const { t, tDual } = useOriginLanguage();
 
 const inventory = ref<any[]>([]);
 const equipped = ref<Record<string, any>>({
@@ -359,10 +361,10 @@ async function handleEquip(inventoryItemId: string) {
       method: 'POST',
       body: { inventoryItemId },
     });
-    showToast(res?.data?.message || 'Đã trang bị thành công!');
+    showToast(res?.data?.message || t('inventoryDetail.equipSuccess'));
     await loadInventory();
   } catch (err: any) {
-    showToast(`Lỗi trang bị: ${err?.data?.message || err.message}`);
+    showToast(t('inventoryDetail.equipError', { err: err?.data?.message || err.message }));
   }
 }
 
@@ -372,10 +374,10 @@ async function handleUnequip(inventoryItemId: string) {
       method: 'POST',
       body: { inventoryItemId },
     });
-    showToast(res?.data?.message || 'Đã tháo trang bị!');
+    showToast(res?.data?.message || t('inventoryDetail.unequipSuccess'));
     await loadInventory();
   } catch (err: any) {
-    showToast(`Lỗi tháo trang bị: ${err?.data?.message || err.message}`);
+    showToast(t('inventoryDetail.unequipError', { err: err?.data?.message || err.message }));
   }
 }
 
@@ -387,27 +389,27 @@ async function handleUse(inventoryItemId: string) {
     });
     let effectDesc = '';
     if (res?.data?.effect?.healAmount) {
-      effectDesc += ` Hồi phục ${res.data.effect.healAmount} HP!`;
+      effectDesc += ' ' + t('inventoryDetail.healHpEffect', { amount: res.data.effect.healAmount });
     }
     if (res?.data?.effect?.expAmount) {
-      effectDesc += ` Nhận +${res.data.effect.expAmount} EXP!`;
+      effectDesc += ' ' + t('inventoryDetail.expEffect', { amount: res.data.effect.expAmount });
     }
     if (res?.data?.effect?.leveledUp) {
-      effectDesc += ` 🌟 Chúc mừng thăng cấp!`;
+      effectDesc += ' ' + t('inventoryDetail.levelUpEffect');
     }
-    showToast((res?.data?.message || 'Đã sử dụng vật phẩm!') + effectDesc);
+    showToast((res?.data?.message || t('inventoryDetail.useSuccess')) + effectDesc);
     await loadInventory();
   } catch (err: any) {
-    showToast(`Không thể dùng: ${err?.data?.message || err.message}`);
+    showToast(t('inventoryDetail.useError', { err: err?.data?.message || err.message }));
   }
 }
 
 function formatSlotName(slot: string) {
   const map: Record<string, string> = {
-    HEAD: 'Nón / Mũ',
-    WEAPON: 'Vũ khí / Bút lông',
-    ARMOR: 'Áo giáp / Y phục',
-    ACCESSORY: 'Phụ kiện / Ngọc bội',
+    HEAD: tDual('inventoryDetail.slotHead', '头部装备'),
+    WEAPON: tDual('inventoryDetail.slotWeapon', '武器法宝'),
+    ARMOR: tDual('inventoryDetail.slotArmor', '防御道袍'),
+    ACCESSORY: tDual('inventoryDetail.slotAccessory', '佩饰法器'),
   };
   return map[slot] || slot;
 }

@@ -9,28 +9,28 @@
           <div class="flex items-center gap-2 mb-2">
             <span class="px-3 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-gold-500/20 text-gold-300 border border-gold-400/30 flex items-center gap-1.5">
               <Clock :size="12" />
-              <span>Làm mới mỗi ngày</span>
+              <span>{{ tDual('questsDetail.dailyRefresh', '每日重置') }}</span>
             </span>
             <span class="text-xs text-amber-200/60 font-mono">{{ todayDate }}</span>
           </div>
           <h1 class="text-3xl font-black font-heading text-white flex items-center gap-3">
             <Scroll :size="28" class="text-gold-400" />
-            <span>Nhiệm Vụ Hàng Ngày</span>
+            <span>{{ tDual('questsDetail.title', '宗门每日任务') }}</span>
           </h1>
           <p class="text-amber-200/70 text-xs sm:text-sm mt-1 max-w-xl">
-            Hoàn thành các mục tiêu rèn luyện ngôn ngữ mỗi ngày để nhận thưởng Vàng (Gold) và Điểm Kinh Nghiệm (EXP) thăng cấp hiệp khách.
+            {{ t('questsDetail.desc') }}
           </p>
         </div>
 
         <div class="flex items-center gap-3 bg-wood-950/80 border border-wood-800 p-4 rounded-2xl shrink-0">
           <div class="text-center px-2">
             <div class="text-xl font-black font-heading text-emerald-400">{{ completedCount }}/{{ quests.length }}</div>
-            <div class="text-[10px] text-amber-200/50 uppercase font-bold">Hoàn thành</div>
+            <div class="text-[10px] text-amber-200/50 uppercase font-bold">{{ tDual('questsDetail.completedLabel', '已达成') }}</div>
           </div>
           <div class="w-px h-8 bg-wood-800" />
           <div class="text-center px-2">
             <div class="text-xl font-black font-heading text-gold-400">{{ claimedCount }}</div>
-            <div class="text-[10px] text-amber-200/50 uppercase font-bold">Đã nhận</div>
+            <div class="text-[10px] text-amber-200/50 uppercase font-bold">{{ tDual('questsDetail.claimedLabel', '已领取') }}</div>
           </div>
         </div>
       </div>
@@ -66,7 +66,7 @@
     <!-- Loading State -->
     <div v-if="isLoading" class="text-center py-16 text-amber-200/50">
       <Loader2 :size="32" class="animate-spin mx-auto mb-2 text-gold-400" />
-      <span>Đang tải danh sách nhiệm vụ...</span>
+      <span>{{ t('questsDetail.loading') }}</span>
     </div>
 
     <!-- Quests List -->
@@ -151,7 +151,7 @@
             <Check v-else-if="quest.isClaimed" :size="13" />
             <Gift v-else :size="13" />
             <span>
-              {{ quest.isClaimed ? 'Đã nhận' : quest.isCompleted ? 'Nhận thưởng' : 'Chưa xong' }}
+              {{ quest.isClaimed ? tDual('questsDetail.btnClaimed', '已领取') : quest.isCompleted ? tDual('questsDetail.btnClaim', '领取奖励') : tDual('questsDetail.btnIncomplete', '未完成') }}
             </span>
           </button>
         </div>
@@ -161,6 +161,7 @@
 </template>
 
 <script setup lang="ts">
+import { useOriginLanguage } from '~/composables/useOriginLanguage';
 import {
   Scroll,
   Clock,
@@ -178,6 +179,8 @@ import {
 definePageMeta({
   layout: 'default',
 });
+
+const { t, tDual } = useOriginLanguage();
 
 const quests = ref<any[]>([]);
 const todayDate = ref('');
@@ -217,10 +220,10 @@ async function handleClaim(questId: string) {
       method: 'POST',
       body: { questId },
     });
-    showToast(res?.data?.message || 'Nhận thưởng thành công!');
+    showToast(res?.data?.message || t('questsDetail.claimSuccess'));
     await loadQuests();
   } catch (err: any) {
-    showToast(`Lỗi nhận thưởng: ${err?.data?.message || err.message}`);
+    showToast(t('questsDetail.claimError', { err: err?.data?.message || err.message }));
   } finally {
     isClaiming.value = null;
   }

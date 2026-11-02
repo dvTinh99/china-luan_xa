@@ -5,8 +5,8 @@
         <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-600 via-brand-500 to-gold-500 flex items-center justify-center font-hanzi font-black text-2xl text-white mx-auto mb-3.5 shadow-glow-brand ring-1 ring-white/20">
           龙
         </div>
-        <h1 class="text-2xl font-black font-heading text-white">Đăng Nhập LinguaWorld</h1>
-        <p class="text-xs text-slate-400 mt-1">Tiếp tục hành trình học tiếng Trung kết hợp thế giới RPG 2D</p>
+        <h1 class="text-2xl font-black font-heading text-white">{{ tDual('authDetail.loginTitle', '登录 LinguaWorld') }}</h1>
+        <p class="text-xs text-slate-400 mt-1">{{ t('authDetail.loginDesc') }}</p>
       </div>
 
       <div
@@ -20,7 +20,7 @@
 
       <form @submit.prevent="handleLogin" class="space-y-4">
         <div>
-          <label class="block text-xs font-bold text-slate-300 mb-1.5" for="login-id">Email hoặc Tên đăng nhập</label>
+          <label class="block text-xs font-bold text-slate-300 mb-1.5" for="login-id">{{ tDual('authDetail.emailOrUsername', '电子邮箱或登录名') }}</label>
           <div class="relative">
             <input
               id="login-id"
@@ -34,7 +34,7 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-300 mb-1.5" for="login-pw">Mật khẩu</label>
+          <label class="block text-xs font-bold text-slate-300 mb-1.5" for="login-pw">{{ tDual('authDetail.password', '密码') }}</label>
           <div class="relative">
             <input
               id="login-pw"
@@ -53,13 +53,13 @@
           class="w-full min-h-[48px] py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-amber-600 hover:from-brand-500 hover:to-amber-500 text-white font-extrabold text-sm shadow-glow-brand disabled:opacity-50 transition-all mt-2 cursor-pointer flex items-center justify-center gap-2"
         >
           <LogIn v-if="!loading" :size="16" aria-hidden="true" />
-          <span>{{ loading ? 'Đang xác thực...' : 'Đăng Nhập' }}</span>
+          <span>{{ loading ? tDual('authDetail.verifying', '验证中...') : tDual('authDetail.btnLogin', '立即登录') }}</span>
         </button>
       </form>
 
       <div class="mt-6 text-center text-xs text-slate-400">
-        Chưa có tài khoản?
-        <NuxtLink to="/register" class="text-gold-400 font-bold hover:underline ml-1">Đăng ký ngay</NuxtLink>
+        {{ t('authDetail.noAccount') }}
+        <NuxtLink to="/register" class="text-gold-400 font-bold hover:underline ml-1">{{ tDual('authDetail.registerNow', '立即注册') }}</NuxtLink>
       </div>
 
       <div class="mt-5 pt-4 border-t border-surface-800 text-center">
@@ -68,7 +68,7 @@
           @click="quickDemoLogin"
           class="text-xs text-slate-400 hover:text-gold-300 underline cursor-pointer transition-colors"
         >
-          Dùng tài khoản demo (demo@linguaworld.dev / password123)
+          {{ t('authDetail.demoLogin') }}
         </button>
       </div>
     </div>
@@ -77,10 +77,13 @@
 
 <script setup lang="ts">
 import { AlertCircle, LogIn } from 'lucide-vue-next';
+import { useOriginLanguage } from '~/composables/useOriginLanguage';
 
 definePageMeta({
   layout: 'default',
 });
+
+const { t, tDual } = useOriginLanguage();
 
 const router = useRouter();
 
@@ -103,7 +106,7 @@ async function handleLogin() {
     });
     router.push('/learn');
   } catch (err: any) {
-    errorMessage.value = err?.data?.message || 'Đăng nhập không thành công.';
+    errorMessage.value = err?.data?.message || t('authDetail.loginFail');
   } finally {
     loading.value = false;
   }

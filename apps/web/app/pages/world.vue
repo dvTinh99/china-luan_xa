@@ -8,8 +8,8 @@
       <div class="w-16 h-16 rounded-3xl bg-brand-600/15 border border-brand-500/30 flex items-center justify-center text-brand-400 mb-6 animate-bounce shadow-glow-brand">
         <Gamepad2 :size="32" aria-hidden="true" />
       </div>
-      <h2 class="text-2xl font-black font-heading mb-2">Đang Khởi Tạo Thế Giới 2D...</h2>
-      <p class="text-slate-400 text-sm mb-6">Kết nối Godot 4.6 Web Assembly Canvas</p>
+      <h2 class="text-2xl font-black font-heading mb-2">{{ tDual('worldDetail.loading2D', '大千世界初始化中...') }}</h2>
+      <p class="text-slate-400 text-sm mb-6">{{ t('worldDetail.connectingWasm') }}</p>
       <div class="w-64 h-2.5 bg-surface-850 rounded-full overflow-hidden border border-surface-750">
         <div class="h-full bg-gradient-to-r from-brand-500 to-gold-400 rounded-full animate-pulse" style="width: 75%" />
       </div>
@@ -23,9 +23,9 @@
       <div class="w-16 h-16 rounded-3xl bg-brand-950/80 border border-brand-800 flex items-center justify-center text-brand-400 mb-6">
         <AlertTriangle :size="32" aria-hidden="true" />
       </div>
-      <h2 class="text-2xl font-black font-heading mb-2">Không Thể Tải Thế Giới 2D</h2>
+      <h2 class="text-2xl font-black font-heading mb-2">{{ tDual('worldDetail.errorLoading', '无法加载大千世界') }}</h2>
       <p class="text-slate-400 text-sm mb-8 max-w-md">
-        {{ bridge.error.value || 'Gặp sự cố khi khởi tạo WebAssembly. Vui lòng thử lại.' }}
+        {{ bridge.error.value || t('worldDetail.errorWasmDesc') }}
       </p>
       <div class="flex flex-wrap gap-3.5 justify-center">
         <button
@@ -34,14 +34,14 @@
           @click="handleRetry"
         >
           <RotateCcw :size="16" aria-hidden="true" />
-          <span>Thử lại</span>
+          <span>{{ tDual('worldDetail.retry', '重试') }}</span>
         </button>
         <NuxtLink
           to="/"
           class="min-h-[48px] px-6 py-3 bg-surface-800 text-slate-200 border border-surface-700 rounded-xl font-bold text-sm hover:bg-surface-750 transition-colors flex items-center gap-2 cursor-pointer"
         >
           <Home :size="16" aria-hidden="true" />
-          <span>Về trang chủ</span>
+          <span>{{ tDual('worldDetail.backHome', '返回主页') }}</span>
         </NuxtLink>
       </div>
     </div>
@@ -68,12 +68,12 @@
           class="min-h-[40px] px-3.5 py-1.5 bg-surface-950/80 border border-surface-750 backdrop-blur-md text-white rounded-xl text-xs font-bold hover:bg-surface-900 transition-colors flex items-center gap-1.5 shadow-sm"
         >
           <ArrowLeft :size="14" aria-hidden="true" />
-          <span>Thoát thế giới</span>
+          <span>{{ tDual('worldDetail.exitWorld', '离开世界') }}</span>
         </NuxtLink>
 
         <div class="px-3.5 py-1.5 bg-wood-950/80 border border-wood-750 backdrop-blur-md text-gold-300 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm">
           <MapPin :size="13" class="text-gold-400" />
-          <span>Tân Khởi Thôn (Lv.1+)</span>
+          <span>{{ tDual('worldDetail.starterVillage', '新手村 (Lv.1+)') }}</span>
         </div>
       </div>
 
@@ -86,7 +86,7 @@
           class="min-h-[40px] px-4 py-1.5 bg-gradient-to-r from-dragon-600 to-amber-600 hover:from-dragon-500 hover:to-amber-500 border border-gold-400/50 text-white rounded-xl text-xs font-black transition-all flex items-center gap-2 shadow-rpg-glow-dragon cursor-pointer hover:scale-105"
         >
           <Sword :size="15" />
-          <span>Khiêu chiến Quái Thú</span>
+          <span>{{ tDual('worldDetail.challengeMonster', '挑战魔物') }}</span>
         </button>
 
         <div
@@ -110,9 +110,9 @@
         <div class="flex items-center justify-between border-b border-wood-800 pb-3 mb-4">
           <div class="flex items-center gap-2">
             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-dragon-600/30 text-dragon-300 border border-dragon-500/40">
-              Chiến Trường Ngôn Ngữ
+              {{ tDual('worldDetail.battlefield', '词汇竞技场') }}
             </span>
-            <span class="text-xs text-amber-200/60 font-bold">Lượt {{ combatSession?.question?.turn || 1 }} / {{ combatSession?.question?.totalTurns || 5 }}</span>
+            <span class="text-xs text-amber-200/60 font-bold">{{ t('worldDetail.turn', { turn: combatSession?.question?.turn || 1, total: combatSession?.question?.totalTurns || 5 }) }}</span>
           </div>
 
           <button
@@ -120,7 +120,7 @@
             @click="fleeCombat"
             class="px-3 py-1 rounded-xl bg-wood-800 hover:bg-wood-750 text-amber-200/60 hover:text-white text-xs font-bold border border-wood-700 cursor-pointer"
           >
-            Rút lui (Flee)
+            {{ tDual('worldDetail.flee', '逃跑') }}
           </button>
         </div>
 
@@ -135,7 +135,7 @@
                 </div>
                 <div>
                   <div class="text-xs font-bold text-white leading-tight">{{ combatSession?.enemy?.name }}</div>
-                  <div class="text-[10px] text-dragon-400 font-bold">Quái thú Hán tự</div>
+                  <div class="text-[10px] text-dragon-400 font-bold">{{ tDual('worldDetail.monsterType', '字灵心魔') }}</div>
                 </div>
               </div>
 
@@ -164,7 +164,7 @@
                 </div>
                 <div>
                   <div class="text-xs font-bold text-white leading-tight">{{ combatSession?.player?.name }}</div>
-                  <div class="text-[10px] text-emerald-400 font-bold">Cấp {{ combatSession?.player?.level }} Hiệp Khách</div>
+                  <div class="text-[10px] text-emerald-400 font-bold">{{ t('worldDetail.playerLevel', { level: combatSession?.player?.level }) }}</div>
                 </div>
               </div>
 
@@ -194,7 +194,7 @@
         <div v-if="!combatFinished" class="space-y-4">
           <div class="p-5 rounded-2xl bg-wood-950/90 border border-wood-750 text-center relative">
             <div class="text-[11px] font-bold text-amber-200/50 uppercase tracking-widest mb-2">
-              Bí Kíp Xuất Chiêu • Chọn nghĩa đúng của chữ Hán
+              {{ tDual('worldDetail.spellBook', '绝学出招 • 选取汉字对应释义') }}
             </div>
 
             <div class="flex items-center justify-center gap-3 mb-2">
@@ -241,27 +241,27 @@
 
           <div>
             <h3 class="text-2xl font-black font-heading text-white">
-              {{ combatOutcome === 'VICTORY' ? 'Đại Thắng Quái Thú!' : 'Chiến Bại!' }}
+              {{ combatOutcome === 'VICTORY' ? tDual('worldDetail.victoryTitle', '大获全胜！') : tDual('worldDetail.defeatTitle', '战斗惜败！') }}
             </h3>
             <p class="text-xs text-amber-200/70 mt-1">
-              {{ combatOutcome === 'VICTORY' ? 'Bạn đã đánh bại quái thú bằng tri thức tiếng Trung chính xác.' : 'Hãy rèn luyện thêm từ vựng để quay trở lại phục thù.' }}
+              {{ combatOutcome === 'VICTORY' ? t('worldDetail.victoryDesc') : t('worldDetail.defeatDesc') }}
             </p>
           </div>
 
           <!-- Rewards Grid if Victory -->
           <div v-if="combatOutcome === 'VICTORY' && victoryRewards" class="grid grid-cols-2 gap-3 max-w-sm mx-auto">
             <div class="p-3 rounded-2xl bg-wood-950 border border-wood-800 text-center">
-              <div class="text-[10px] text-amber-200/50 uppercase font-bold">Kinh nghiệm</div>
+              <div class="text-[10px] text-amber-200/50 uppercase font-bold">{{ tDual('characterDetail.exp', '经验值') }}</div>
               <div class="text-lg font-black font-heading text-purple-400 mt-0.5">
                 +{{ victoryRewards.expEarned }} EXP
               </div>
               <div v-if="victoryRewards.gearBonusExp > 0" class="text-[10px] text-gold-400 font-bold">
-                (+{{ victoryRewards.gearBonusExp }} từ trang bị)
+                {{ t('worldDetail.gearBonusExp', { bonus: victoryRewards.gearBonusExp }) }}
               </div>
             </div>
 
             <div class="p-3 rounded-2xl bg-wood-950 border border-wood-800 text-center">
-              <div class="text-[10px] text-amber-200/50 uppercase font-bold">Vàng nhận được</div>
+              <div class="text-[10px] text-amber-200/50 uppercase font-bold">{{ tDual('characterDetail.luck', '金币') }}</div>
               <div class="text-lg font-black font-heading text-gold-300 mt-0.5">
                 +{{ victoryRewards.goldEarned }} Gold
               </div>
@@ -269,7 +269,7 @@
           </div>
 
           <div v-if="victoryRewards?.leveledUp" class="p-2.5 rounded-xl bg-gold-500/20 border border-gold-500/40 text-gold-300 text-xs font-bold">
-            🌟 Chúc mừng! Nhân vật của bạn đã lên cấp!
+            🌟 {{ t('lessonDetail.levelUp') }}
           </div>
 
           <button
@@ -277,7 +277,7 @@
             @click="closeCombat"
             class="px-8 py-3 rounded-2xl bg-gold-500 hover:bg-gold-400 text-wood-950 font-bold text-xs shadow-rpg-glow-gold transition-all cursor-pointer"
           >
-            Trở lại Thám Hiểm
+            {{ tDual('worldDetail.explore', '继续探索') }}
           </button>
         </div>
       </div>
@@ -300,8 +300,8 @@
               <MessageSquare :size="20" />
             </div>
             <div>
-              <h3 class="text-base font-bold text-white font-heading">{{ npcDialogueData?.name || 'Trần Lão (Elder Chen)' }}</h3>
-              <p class="text-[11px] text-amber-200/60">Trưởng Lão Tân Khởi Thôn • Cốt Truyện Luân Xa</p>
+              <h3 class="text-base font-bold text-white font-heading">{{ npcDialogueData?.name || tDual('worldDetail.elderChenName', '陈老 (Elder Chen)') }}</h3>
+              <p class="text-[11px] text-amber-200/60">{{ t('worldDetail.elderChenRole') }}</p>
             </div>
           </div>
           <button
@@ -317,9 +317,9 @@
         <div class="flex items-center justify-between p-3 rounded-2xl bg-wood-950 border border-wood-800 text-xs">
           <div class="flex items-center gap-2">
             <span class="w-3 h-3 rounded-full bg-red-500 shadow-sm animate-pulse" />
-            <span class="font-bold text-white">Khí Tức: Luân Xa Gốc (Muladhara)</span>
+            <span class="font-bold text-white">{{ tDual('worldDetail.chakraRootBreath', '周天气息: 海底轮') }}</span>
           </div>
-          <span class="font-mono font-bold text-gold-400">{{ chakraProgressPercent }}% Khai Mở</span>
+          <span class="font-mono font-bold text-gold-400">{{ chakraProgressPercent }}% {{ t('worldDetail.chakraUnlocked') }}</span>
         </div>
 
         <!-- Dialogue Message Body -->
@@ -334,14 +334,14 @@
             @click="isNpcDialogueOpen = false"
             class="px-4 py-2.5 rounded-xl bg-wood-800 hover:bg-wood-750 text-amber-200/70 text-xs font-bold border border-wood-700 transition-colors"
           >
-            Đóng
+            {{ tDual('common.close', '关闭') }}
           </button>
           <NuxtLink
             to="/learn"
             class="px-5 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-wood-950 text-xs font-black shadow-rpg-glow-gold transition-all flex items-center gap-1.5"
           >
             <Sparkles :size="14" />
-            <span>Đến Đài Tu Luyện (/learn)</span>
+            <span>{{ tDual('worldDetail.goToLearn', '前往修仙台') }}</span>
           </NuxtLink>
         </div>
       </div>
@@ -411,7 +411,7 @@ async function startCombat() {
       isCombatOpen.value = true;
     }
   } catch (err: any) {
-    alert(err?.data?.message || 'Không thể khởi tạo trận đấu');
+    alert(err?.data?.message || t('worldDetail.cannotStartBattle'));
   } finally {
     combatLoading.value = false;
   }
@@ -435,10 +435,10 @@ async function submitCombatAnswer(option: string) {
     if (!data) return;
 
     if (data.isCorrect) {
-      battleMessage.value = `🎯 CHÍNH XÁC! Bạn xuất chiêu gây ${data.playerDamage} sát thương!`;
+      battleMessage.value = t('worldDetail.battleHit', { damage: data.playerDamage });
       battleMessageClass.value = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
     } else {
-      battleMessage.value = `❌ SAI RỒI! Nghĩa đúng là "${data.correctMeaning}". Quái vật phản công gây ${data.enemyDamage} sát thương!`;
+      battleMessage.value = t('worldDetail.battleMiss', { meaning: data.correctMeaning, damage: data.enemyDamage });
       battleMessageClass.value = 'bg-dragon-600/20 text-dragon-300 border-dragon-500/40';
     }
 
@@ -457,7 +457,7 @@ async function submitCombatAnswer(option: string) {
       combatSession.value.question = data.nextQuestion;
     }
   } catch (err: any) {
-    battleMessage.value = `Lỗi: ${err?.data?.message || err.message}`;
+    battleMessage.value = t('worldDetail.battleError', { err: err?.data?.message || err.message });
     battleMessageClass.value = 'bg-dragon-600/20 text-dragon-300 border-dragon-500/40';
   } finally {
     combatTurnPending.value = false;
@@ -501,10 +501,14 @@ onMounted(() => {
 
       const isUnlocked = muladhara?.isUnlocked || (muladhara?.progressPercent >= 100);
       npcDialogueData.value = {
-        name: 'Trần Lão (Elder Chen)',
+        name: tDual('worldDetail.elderChenName', '陈老 (Elder Chen)'),
         message: isUnlocked
-          ? '🌟 Chúc mừng đại hiệp! Luân Xa Gốc (Muladhara) của ngươi đã bừng sáng với khí tức Xích Diễm vững như bàn thạch! Căn cơ tiếng Trung Band 1 đã thông suốt, cánh cổng đến Trúc Lâm Thôn (Bamboo Grove) đã sẵn sàng mở ra!'
-          : `Chào mừng tiểu hữu đến Tân Khởi Thôn! Muốn tiến vào giang hồ hiểm trở, trước tiên ngươi phải đả thông Luân Xa Gốc (Muladhara - HSK 3.0 Band 1). Hiện tại ngươi đã đạt ${muladhara?.progressPercent || 0}% tiến độ (${muladhara?.retainedVocabCount || 0}/${muladhara?.targetVocabCount || 20} từ FSRS). Hãy tiếp tục tu luyện tại Lộ Trình Học!`,
+          ? t('worldDetail.elderChenUnlocked')
+          : t('worldDetail.elderChenLocked', {
+              percent: muladhara?.progressPercent || 0,
+              retained: muladhara?.retainedVocabCount || 0,
+              target: muladhara?.targetVocabCount || 20,
+            }),
       };
       isNpcDialogueOpen.value = true;
     } catch (e) {

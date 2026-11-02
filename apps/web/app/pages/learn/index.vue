@@ -19,12 +19,12 @@
           <div class="flex items-center justify-between gap-3 mb-4">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/15 border border-gold-400/30 text-xs font-bold text-gold-300 shadow-sm">
               <Sparkles :size="13" class="text-gold-400" aria-hidden="true" />
-              <span>HSK 3.0 Chuẩn Mới • Sơ Cấp Band 1</span>
+              <span>{{ ui.heroTag }}</span>
             </div>
 
             <span class="text-xs font-semibold text-amber-200/50 hidden sm:inline-flex items-center gap-1.5">
               <Compass :size="14" class="text-amber-400" />
-              <span>Hành Trình Hiệp Khách</span>
+              <span>{{ ui.heroTagline }}</span>
             </span>
           </div>
 
@@ -34,7 +34,7 @@
             <div class="relative shrink-0 flex items-center justify-center">
               <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-tr from-wood-950 to-wood-850 border-2 border-gold-400/60 p-1 shadow-rpg-glow-gold relative overflow-hidden group cursor-pointer"
                    @click="cycleLumaDialogue"
-                   title="Bấm để nghe Luma trò chuyện!">
+                   :title="t('learnIndex.lumaTooltip')">
                 <img
                   src="/assets/character/ui/avatar_luma_portrait.png"
                   alt="Luma The Little Wanderer"
@@ -49,17 +49,17 @@
               <!-- Speech Bubble -->
               <div class="relative p-3 rounded-2xl bg-wood-950/90 border border-gold-500/30 text-xs text-amber-200/90 leading-relaxed shadow-sm mb-3">
                 <div class="font-bold text-gold-300 flex items-center gap-1.5 mb-0.5">
-                  <span>Luma (Đồng hành):</span>
-                  <span class="text-[10px] text-amber-200/50 italic font-normal">"{{ currentDialogue }}"</span>
+                  <span>{{ tDual('learnIndex.companionLuma', '伴读小仙 鹿玛') }}:</span>
+                  <span class="text-[10px] text-amber-200/50 italic font-normal">"{{ currentDialogue.zh }} ({{ t(currentDialogue.key) }})"</span>
                 </div>
                 <div class="text-[11px] text-amber-100/70">
-                  Mục tiêu tiếp theo: Hãy chinh phục <span class="text-gold-300 font-bold">{{ nextLesson?.title || 'bài học tiếp theo' }}</span> để thu thập thêm EXP và Gold!
+                  {{ ui.nextGoalPrefix }}: {{ ui.conquerLesson }} <span class="text-gold-300 font-bold">{{ dualLessonTitle(nextLesson?.title) || tDual('learnIndex.nextGoal', '下一关') }}</span> {{ ui.rewardSuffix }}
                 </div>
               </div>
 
               <!-- Main Title -->
               <h1 class="text-xl sm:text-2xl font-black font-heading text-white tracking-tight flex items-center gap-2">
-                <span>Lộ Trình Tu Luyện Tiếng Trung</span>
+                <span>{{ ui.heroTitle }}</span>
               </h1>
             </div>
           </div>
@@ -70,16 +70,16 @@
           <div class="flex items-center gap-3 text-xs text-amber-200/70">
             <span class="flex items-center gap-1 text-purple-300 font-bold">
               <Sparkles :size="13" />
-              <span>+{{ nextLesson?.expReward || 60 }} EXP</span>
+              <span>+{{ nextLesson?.expReward || 60 }} 经验 (EXP)</span>
             </span>
             <span class="text-wood-700">•</span>
             <span class="flex items-center gap-1 text-gold-300 font-bold">
               <Coins :size="13" />
-              <span>+{{ nextLesson?.goldReward || 25 }} Gold</span>
+              <span>+{{ nextLesson?.goldReward || 25 }} {{ tDual('learnIndex.goldSub', '金币') }}</span>
             </span>
             <span class="text-wood-700">•</span>
             <span class="text-slate-300 font-medium">
-              📖 {{ nextLesson?.vocabularyCount || 12 }} Từ vựng
+              📖 {{ nextLesson?.vocabularyCount || 12 }} {{ tDual('learnIndex.vocab', '生词') }}
             </span>
           </div>
 
@@ -89,7 +89,7 @@
             class="inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-2xl bg-gradient-to-r from-gold-500 via-amber-500 to-gold-400 hover:from-gold-400 hover:to-amber-300 text-wood-950 font-black text-sm shadow-rpg-glow-gold hover:scale-[1.02] active:scale-95 transition-all cursor-pointer shrink-0 min-h-[46px]"
           >
             <Play :size="16" class="fill-current text-wood-950" />
-            <span>Tiếp Tục Bài Học</span>
+            <span>{{ ui.btnContinueLesson }}</span>
             <ArrowRight :size="16" />
           </NuxtLink>
         </div>
@@ -108,10 +108,10 @@
               <div class="w-8 h-8 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-300">
                 <RotateCcw :size="16" />
               </div>
-              <h2 class="text-sm font-bold font-heading text-white">Đài Ôn Tập (SRS)</h2>
+              <h2 class="text-sm font-bold font-heading text-white">{{ ui.srsTitle }}</h2>
             </div>
             <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
-              Spaced Repetition
+              {{ dual('间隔重复', 'SRS', 'Spaced Repetition') }}
             </span>
           </div>
 
@@ -121,14 +121,14 @@
               {{ dueCount }}
             </div>
             <p class="text-xs text-amber-200/60 mt-1 font-medium">
-              {{ dueCount > 0 ? 'Thẻ từ vựng đã đến hạn ghi nhớ' : 'Tâm trí thanh thản, đã ôn hết từ!' }}
+              {{ dueCount > 0 ? (dueCount + ' ' + tDual('learnIndex.cardsDue', '张生词已到复习时刻')) : ui.srsEmpty }}
             </p>
           </div>
 
           <!-- Memory Retention Bar -->
           <div class="p-3 rounded-2xl bg-wood-950/70 border border-wood-800 space-y-1.5 my-2">
             <div class="flex items-center justify-between text-[11px] font-bold">
-              <span class="text-amber-200/70">Tỷ lệ lưu trữ ký ức:</span>
+              <span class="text-amber-200/70">{{ ui.retentionRate }}:</span>
               <span class="text-emerald-400 font-mono">98.2%</span>
             </div>
             <div class="w-full h-2 bg-wood-900 rounded-full overflow-hidden border border-wood-800">
@@ -145,7 +145,7 @@
             : 'bg-wood-850 hover:bg-wood-800 text-amber-200/70 border-wood-750'"
         >
           <RotateCcw :size="14" />
-          <span>{{ dueCount > 0 ? 'Vào Đài Ôn Tập Ngay' : 'Xem Kho Thẻ Từ' }}</span>
+          <span>{{ dueCount > 0 ? ui.btnStartReview : ui.btnViewDeck }}</span>
         </NuxtLink>
       </div>
 
@@ -161,7 +161,7 @@
           <BookOpen :size="20" />
         </div>
         <div class="min-w-0">
-          <div class="text-[11px] font-bold text-amber-200/60 uppercase">Tổng từ HSK 3.0</div>
+          <div class="text-[11px] font-bold text-amber-200/60 uppercase">{{ ui.statTotalVocab }}</div>
           <div class="text-lg font-black font-heading text-white">
             <span class="text-gold-300">{{ completedVocabCount }}</span> / {{ totalVocabCount }}
             <span class="text-xs text-amber-200/50 font-normal">({{ progressPercent }}%)</span>
@@ -175,9 +175,9 @@
           <Flame :size="20" />
         </div>
         <div class="min-w-0">
-          <div class="text-[11px] font-bold text-amber-200/60 uppercase">Chuỗi tu luyện</div>
+          <div class="text-[11px] font-bold text-amber-200/60 uppercase">{{ ui.statStreak }}</div>
           <div class="text-lg font-black font-heading text-dragon-400">
-            3 Ngày <span class="text-xs text-amber-200/60 font-bold">Liên tiếp 🔥</span>
+            3 {{ ui.streakUnit }} 🔥
           </div>
         </div>
       </div>
@@ -188,9 +188,9 @@
           <Trophy :size="20" />
         </div>
         <div class="min-w-0">
-          <div class="text-[11px] font-bold text-amber-200/60 uppercase">Chiến lợi phẩm</div>
+          <div class="text-[11px] font-bold text-amber-200/60 uppercase">{{ ui.statLoot }}</div>
           <div class="text-lg font-black font-heading text-jade-300">
-            {{ totalRewards.exp }} <span class="text-xs text-purple-300 font-bold">EXP</span> • {{ totalRewards.gold }} <span class="text-xs text-gold-400 font-bold">Gold</span>
+            {{ totalRewards.exp }} <span class="text-xs text-purple-300 font-bold">EXP</span> • {{ totalRewards.gold }} <span class="text-xs text-gold-400 font-bold">{{ ui.navGold }}</span>
           </div>
         </div>
       </div>
@@ -212,7 +212,7 @@
             ? 'bg-gold-500 text-wood-950 shadow-sm'
             : 'bg-wood-950/70 hover:bg-wood-850 text-amber-200/70 hover:text-white border border-wood-800'"
         >
-          Toàn bộ lộ trình ({{ totalLessonsCount }} bài)
+          {{ tDual('learnIndex.allLessons', '全部历练') }} ({{ totalLessonsCount }})
         </button>
 
         <button
@@ -225,7 +225,7 @@
             ? 'bg-gold-500 text-wood-950 shadow-sm'
             : 'bg-wood-950/70 hover:bg-wood-850 text-amber-200/70 hover:text-white border border-wood-800'"
         >
-          <span>Bài {{ unit.orderIndex }}</span>
+          <span>第 {{ unit.orderIndex }} 单元 ({{ t('learnIndex.unit') }} {{ unit.orderIndex }})</span>
           <span class="text-[10px] opacity-70">({{ unit.lessons.length }})</span>
         </button>
       </div>
@@ -233,7 +233,7 @@
       <!-- Tagline for Unified Chakra Journey -->
       <div v-else class="flex items-center gap-2 text-xs font-bold text-amber-300 py-1">
         <Sparkles :size="14" class="text-gold-400" />
-        <span>Bản Đồ Hành Trình Luân Xa • 7 Tầng Cảnh Giới Tu Luyện (HSK 3.0 & FSRS)</span>
+        <span>{{ ui.journeyTitle }}</span>
       </div>
 
       <!-- View Mode Toggle: Unified Chakra Journey vs Codex Grid -->
@@ -243,20 +243,20 @@
           @click="viewMode = 'journey'"
           class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
           :class="viewMode === 'journey' ? 'bg-gradient-to-r from-red-600 via-amber-500 to-gold-400 text-wood-950 font-black shadow-sm' : 'text-amber-200/60 hover:text-white'"
-          title="Bản Đồ Hành Trình Luân Xa (7-Chakra Ascension Journey)"
+          :title="ui.tabJourney"
         >
           <Zap :size="13" class="fill-current text-wood-950" />
-          <span>Hành Trình Luân Xa</span>
+          <span>{{ ui.tabJourney }}</span>
         </button>
         <button
           type="button"
           @click="viewMode = 'codex'"
           class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
           :class="viewMode === 'codex' ? 'bg-gold-500 text-wood-950 shadow-sm' : 'text-amber-200/60 hover:text-white'"
-          title="Tàng Kinh Các (Lưới thẻ bài chi tiết)"
+          :title="ui.tabCodex"
         >
           <Layers :size="13" />
-          <span>Tàng Kinh Các</span>
+          <span>{{ ui.tabCodex }}</span>
         </button>
       </div>
     </div>
@@ -280,8 +280,8 @@
               {{ unit.orderIndex }}
             </div>
             <div>
-              <h2 class="text-base font-bold font-heading text-white">{{ unit.title }}</h2>
-              <span class="text-[11px] text-amber-200/60">{{ unit.lessons.length }} Bài học sách cổ</span>
+              <h2 class="text-base font-bold font-heading text-white">{{ dualUnitTitle(unit.title) }}</h2>
+              <span class="text-[11px] text-amber-200/60">{{ unit.lessons.length }} {{ tDual('learnIndex.scrolls', '卷典籍') }}</span>
             </div>
           </div>
 
@@ -301,14 +301,14 @@
             <div>
               <div class="flex items-start justify-between gap-2 mb-2">
                 <h3 class="text-base font-bold font-heading text-white group-hover:text-gold-300 transition-colors">
-                  {{ lesson.title }}
+                  {{ dualLessonTitle(lesson.title) }}
                 </h3>
                 <span
                   v-if="lesson.isCompleted"
                   class="px-2.5 py-0.5 rounded-full bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold flex items-center gap-1 shrink-0"
                 >
                   <CheckCircle2 :size="11" class="text-emerald-400" />
-                  <span>Đã học</span>
+                  <span>{{ tDual('learnIndex.mastered', '已悟') }}</span>
                 </span>
               </div>
               <p class="text-xs text-amber-200/60 line-clamp-2 leading-relaxed mb-3">
@@ -321,7 +321,7 @@
                   v-for="(hz, hIdx) in lesson.hanziPreview"
                   :key="hIdx"
                   class="px-2.5 py-1 rounded-xl bg-wood-950 border border-wood-800 font-hanzi text-sm text-gold-300 font-bold hover:border-gold-500/50 transition-colors shadow-sm select-none"
-                  title="Chữ Hán tiêu biểu trong bài"
+                  :title="tDual('learnIndex.featuredHanzi', '典型汉字')"
                 >
                   {{ hz }}
                 </span>
@@ -329,22 +329,22 @@
 
               <!-- 5-Phase Mini Activity Pillars -->
               <div class="flex items-center gap-1.5 text-[10px] text-amber-200/50 pt-2 border-t border-wood-800/60">
-                <span class="px-2 py-0.5 rounded-lg bg-wood-950 border border-wood-800 font-medium">🎴 Thẻ từ</span>
-                <span class="px-2 py-0.5 rounded-lg bg-wood-950 border border-wood-800 font-medium">🧩 Bộ thủ</span>
-                <span class="px-2 py-0.5 rounded-lg bg-wood-950 border border-wood-800 font-medium">🔗 Nối từ</span>
-                <span class="px-2 py-0.5 rounded-lg bg-wood-950 border border-wood-800 font-medium">✍️ Viết</span>
-                <span class="px-2 py-0.5 rounded-lg bg-wood-950 border border-wood-800 font-medium">📝 Trắc nghiệm</span>
+                <span class="px-2 py-0.5 rounded-lg bg-wood-950 border border-wood-800 font-medium">🎴 {{ tDual('learnIndex.tagVocab', '生词') }}</span>
+                <span class="px-2 py-0.5 rounded-lg bg-wood-950 border border-wood-800 font-medium">🧩 {{ tDual('learnIndex.tagRadical', '部首') }}</span>
+                <span class="px-2 py-0.5 rounded-lg bg-wood-950 border border-wood-800 font-medium">🔗 {{ tDual('learnIndex.tagMatch', '连词') }}</span>
+                <span class="px-2 py-0.5 rounded-lg bg-wood-950 border border-wood-800 font-medium">✍️ {{ tDual('learnIndex.tagWrite', '书写') }}</span>
+                <span class="px-2 py-0.5 rounded-lg bg-wood-950 border border-wood-800 font-medium">📝 {{ tDual('learnIndex.tagQuiz', '测验') }}</span>
               </div>
             </div>
 
             <!-- Card Bottom Bar -->
             <div class="flex items-center justify-between pt-3 border-t border-wood-800/80 mt-auto">
               <div class="flex items-center gap-3 text-xs">
-                <span class="text-amber-200/60">📖 {{ lesson.vocabularyCount }} từ</span>
-                <span class="text-purple-400 font-bold">+{{ lesson.expReward }} EXP</span>
+                <span class="text-amber-200/60">📖 {{ lesson.vocabularyCount }} {{ tDual('learnIndex.wordsUnit', '词') }}</span>
+                <span class="text-purple-400 font-bold">+{{ lesson.expReward }} 经验 (EXP)</span>
                 <span class="text-gold-400 font-bold flex items-center gap-1">
                   <Coins :size="12" />
-                  <span>+{{ lesson.goldReward }}</span>
+                  <span>+{{ lesson.goldReward }} {{ tDual('learnIndex.goldSub', '金币') }}</span>
                 </span>
               </div>
 
@@ -355,7 +355,7 @@
                   ? 'bg-wood-800 hover:bg-wood-750 text-slate-200 border border-wood-700'
                   : 'bg-gold-500 hover:bg-gold-400 text-wood-950 font-black shadow-rpg-glow-gold'"
               >
-                <span>{{ lesson.isCompleted ? 'Ôn lại' : 'Bắt đầu' }}</span>
+                <span>{{ lesson.isCompleted ? tDual('learnIndex.btnReview', '温故') : tDual('learnIndex.btnStart', '历练') }}</span>
                 <ChevronRight :size="14" />
               </NuxtLink>
             </div>
@@ -387,10 +387,13 @@ import {
 } from 'lucide-vue-next';
 import { gsap } from 'gsap';
 import ChakraJourneyMap from '~/components/chakra/ChakraJourneyMap.vue';
+import { useOriginLanguage } from '~/composables/useOriginLanguage';
 
 definePageMeta({
   layout: 'default',
 });
+
+const { t, dual, tDual, sub, ui, dualLessonTitle, dualUnitTitle } = useOriginLanguage();
 
 // View mode state: 'journey' (Unified 7-Chakra Ascension Map) or 'codex' (Grid)
 const viewMode = ref<'journey' | 'codex'>('journey');
@@ -401,13 +404,13 @@ const { data: chakraRes } = await useFetch<any>('/api/chakra/status');
 const chakraStatus = computed(() => chakraRes.value?.data);
 const currentMuladhara = computed(() => chakraStatus.value?.chakras?.[0]);
 
-// Luma Dialogue cycle
+// Luma Dialogue cycle with pure Chinese & Origin Language via i18n
 const lumaDialogues = [
-  'Hôm nay chúng ta hãy hoàn thành nốt 5 chữ HSK nhé!',
-  'Mỗi ngày một bài học, con đường ngàn dặm bắt đầu từ một bước chân!',
-  'Nét bút vững vàng, từ vựng khắc sâu vào tâm trí!',
-  'Đừng quên ôn tập thẻ từ SRS để ký ức không phai nhạt!',
-  'Bạn đã tích lũy được rất nhiều Gold và EXP rồi đấy!',
+  { zh: '今天我们要完成5个HSK汉字哦！', key: 'dialogues.d0' },
+  { zh: '日就月将，千里之行始于足下！', key: 'dialogues.d1' },
+  { zh: '笔顺端正，生词铭记于心神之中！', key: 'dialogues.d2' },
+  { zh: '莫忘温习SRS卡片，以保真气不散！', key: 'dialogues.d3' },
+  { zh: '少侠已积累了丰厚的金币与修为经验！', key: 'dialogues.d4' },
 ];
 const dialogueIndex = ref(0);
 const currentDialogue = computed(() => lumaDialogues[dialogueIndex.value]);

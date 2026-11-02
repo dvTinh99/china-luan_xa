@@ -17,14 +17,14 @@
                 <Sparkles :size="12" />
                 <span>Cozy Fantasy Character Studio</span>
               </span>
-              <span class="text-xs text-amber-200/60 font-bold hidden sm:inline">Thử đồ & Chỉ số độc lập</span>
+              <span class="text-xs text-amber-200/60 font-bold hidden sm:inline">{{ tDual('characterDetail.tryOnBadge', '试穿与独立数值') }}</span>
             </div>
             <h1 class="text-2xl sm:text-3xl font-black font-heading text-white flex items-center gap-3">
               <Shield :size="28" class="text-gold-400" />
-              <span>Chibi Character Studio & Hồ Sơ</span>
+              <span>{{ tDual('characterDetail.title', 'Q版侠客衣橱与档案') }}</span>
             </h1>
             <p class="text-amber-200/70 text-xs sm:text-sm mt-1 max-w-xl">
-              Phòng thử đồ nhân vật 2D Chibi hoạt họa. Tùy biến trang bị, theo dõi chỉ số hiệp khách và thành tích học tập HSK 3.0.
+              {{ tDual('characterDetail.desc', '2D Q版角色试衣间。随心定制装备，查阅侠客属性与 HSK 3.0 学习成果。') }}
             </p>
           </div>
         </div>
@@ -35,7 +35,7 @@
             <Coins :size="20" />
           </div>
           <div>
-            <div class="text-[10px] text-amber-200/50 uppercase font-bold">Tài sản hiện có</div>
+            <div class="text-[10px] text-amber-200/50 uppercase font-bold">{{ tDual('shopDetail.yourWallet', '随身资产') }}</div>
             <div class="text-lg font-black font-heading text-gold-300 leading-tight">
               {{ walletBalance }} <span class="text-xs font-semibold text-gold-500">Gold</span>
             </div>
@@ -74,7 +74,7 @@
     <!-- Loading Skeleton -->
     <div v-if="isLoading" class="text-center py-20 text-amber-200/50">
       <Loader2 :size="32" class="animate-spin mx-auto mb-2 text-gold-400" />
-      <span>Đang chuẩn bị studio nhân vật...</span>
+      <span>{{ tDual('characterDetail.loadingStudio', '正在准备侠客衣橱...') }}</span>
     </div>
 
     <!-- Main Studio Grid -->
@@ -117,13 +117,13 @@
       <div class="flex items-center justify-between border-b border-wood-800 pb-4 mb-4">
         <div class="flex items-center gap-2 font-bold font-heading text-white text-base">
           <Coins :size="18" class="text-gold-400" />
-          <span>Lịch Sử Giao Dịch Gold (Sổ Cái Idempotent)</span>
+          <span>{{ tDual('characterDetail.txHistory', '金币收支明细') }}</span>
         </div>
-        <span class="text-xs text-amber-200/50">{{ transactions.length }} giao dịch gần nhất</span>
+        <span class="text-xs text-amber-200/50">{{ transactions.length }} {{ tDual('characterDetail.txRecent', '笔最新记录') }}</span>
       </div>
 
       <div v-if="transactions.length === 0" class="py-8 text-center text-xs text-amber-200/40">
-        Chưa có giao dịch nào được ghi nhận.
+        {{ tDual('characterDetail.txEmpty', '暂无交易记录') }}
       </div>
 
       <div v-else class="divide-y divide-wood-800/80">

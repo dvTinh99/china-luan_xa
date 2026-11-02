@@ -21,15 +21,15 @@
           </div>
           <div>
             <h2 class="text-xl sm:text-2xl font-black font-heading text-white tracking-tight flex items-center gap-2">
-              <span>Hành Trình Khai Mở 7 Luân Xa</span>
+              <span>{{ tDual('chakra.title', '七轮开启之旅') }}</span>
               <span class="text-xs px-2.5 py-0.5 rounded-full bg-gold-500/15 border border-gold-400/30 text-gold-300 font-sans font-bold">
-                HSK 3.0 Chuẩn Mới
+                {{ tDual('chakra.hskStandard', '新版 HSK 3.0') }}
               </span>
             </h2>
           </div>
         </div>
         <p class="text-xs sm:text-sm text-amber-200/60 leading-relaxed">
-          Từng nấc Luân Xa chính là một cảnh giới tu luyện. Khai mở căn cơ ngôn ngữ thực tế (FSRS) qua từng trạm ải.
+          {{ tDual('chakra.philosophy', '每重脉轮皆为一重修仙境界，以真实FSRS记忆与实战突破各关隘。') }}
         </p>
       </div>
 
@@ -41,9 +41,9 @@
             :style="{ backgroundColor: activeChakra?.colorHex || '#EF4444' }"
           />
           <div class="flex flex-col">
-            <span class="text-[10px] text-amber-200/50 uppercase font-bold tracking-wider">Khí Tức Hiện Tại</span>
+            <span class="text-[10px] text-amber-200/50 uppercase font-bold tracking-wider">{{ tDual('chakra.currentAura', '当前运转真气') }}</span>
             <span class="font-bold text-white flex items-center gap-1">
-              <span>{{ activeChakra?.nameVi?.split('(')[0]?.trim() || 'Muladhara' }}</span>
+              <span>{{ activeChakra?.nameZh || '海底轮' }} ({{ t('chakraNames.t' + (activeChakra?.tier || 1)) }})</span>
               <span class="text-xs font-mono text-gold-300">({{ activeChakra?.progressPercent || 49.3 }}%)</span>
             </span>
           </div>
@@ -68,8 +68,8 @@
       <div class="absolute top-3 left-3 sm:left-5 z-30 pointer-events-none">
         <div class="px-3.5 py-1.5 rounded-full bg-wood-950/85 backdrop-blur-md border border-wood-800 text-xs font-bold text-amber-200/90 shadow-sm flex items-center gap-2 pointer-events-auto">
           <Compass :size="14" class="text-gold-400" />
-          <span class="hidden sm:inline">Nhấp vào từng Luân Xa để khám phá hành trình bài học</span>
-          <span class="sm:hidden">Chạm vào Luân Xa để chọn</span>
+          <span class="hidden sm:inline">{{ tDual('chakra.touchToExplore', '轻触各脉轮探索历练关卡') }}</span>
+          <span class="sm:hidden">{{ tDual('chakra.tapToSelect', '触碰选择') }}</span>
         </div>
       </div>
 
@@ -245,8 +245,8 @@
         <!-- Label 7 (Right) -->
         <g class="chakra-label cursor-pointer select-none group" @click="selectTier(7)">
           <line x1="538" y1="65" x2="635" y2="52" stroke="#C084FC" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.8" class="leader-line pointer-events-none" />
-          <rect x="632" y="32" width="180" height="40" fill="transparent" />
-          <text x="642" y="48" fill="#F3E8FF" font-size="13" font-weight="800" font-family="sans-serif" filter="url(#text-shadow)" class="transition-colors group-hover:fill-gold-300">Luân xa Vương miện</text>
+          <rect x="632" y="32" width="220" height="40" fill="transparent" />
+          <text x="642" y="48" fill="#F3E8FF" font-size="13" font-weight="800" font-family="sans-serif" filter="url(#text-shadow)" class="transition-colors group-hover:fill-gold-300">顶轮 ({{ t('chakraNames.t7') }})</text>
           <text x="642" y="64" fill="#C084FC" font-size="11" font-weight="600" font-family="sans-serif" opacity="0.95" filter="url(#text-shadow)">(Sahasrara)</text>
         </g>
 
@@ -262,8 +262,8 @@
         <!-- Label 6 (Left) -->
         <g class="chakra-label cursor-pointer select-none group" @click="selectTier(6)">
           <line x1="486" y1="130" x2="415" y2="138" stroke="#818CF8" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.8" class="leader-line pointer-events-none" />
-          <rect x="210" y="118" width="200" height="40" fill="transparent" />
-          <text x="405" y="134" fill="#EEF2FF" font-size="13" font-weight="800" font-family="sans-serif" text-anchor="end" filter="url(#text-shadow)" class="transition-colors group-hover:fill-gold-300">Luân xa Con mắt thứ ba</text>
+          <rect x="180" y="118" width="230" height="40" fill="transparent" />
+          <text x="405" y="134" fill="#EEF2FF" font-size="13" font-weight="800" font-family="sans-serif" text-anchor="end" filter="url(#text-shadow)" class="transition-colors group-hover:fill-gold-300">眉心轮 ({{ t('chakraNames.t6') }})</text>
           <text x="405" y="150" fill="#818CF8" font-size="11" font-weight="600" font-family="sans-serif" opacity="0.95" text-anchor="end" filter="url(#text-shadow)">(Ajna)</text>
         </g>
 
@@ -279,8 +279,8 @@
         <!-- Label 5 (Right) -->
         <g class="chakra-label cursor-pointer select-none group" @click="selectTier(5)">
           <line x1="536" y1="215" x2="650" y2="208" stroke="#22D3EE" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.8" class="leader-line pointer-events-none" />
-          <rect x="650" y="188" width="180" height="40" fill="transparent" />
-          <text x="658" y="204" fill="#ECFEFF" font-size="13" font-weight="800" font-family="sans-serif" filter="url(#text-shadow)" class="transition-colors group-hover:fill-gold-300">Luân xa Cổ họng</text>
+          <rect x="650" y="188" width="220" height="40" fill="transparent" />
+          <text x="658" y="204" fill="#ECFEFF" font-size="13" font-weight="800" font-family="sans-serif" filter="url(#text-shadow)" class="transition-colors group-hover:fill-gold-300">喉轮 ({{ t('chakraNames.t5') }})</text>
           <text x="658" y="220" fill="#22D3EE" font-size="11" font-weight="600" font-family="sans-serif" opacity="0.95" filter="url(#text-shadow)">(Vishuddha)</text>
         </g>
 
@@ -296,8 +296,8 @@
         <!-- Label 4 (Left) -->
         <g class="chakra-label cursor-pointer select-none group" @click="selectTier(4)">
           <line x1="486" y1="285" x2="400" y2="280" stroke="#34D399" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.8" class="leader-line pointer-events-none" />
-          <rect x="210" y="260" width="190" height="40" fill="transparent" />
-          <text x="390" y="276" fill="#ECFDF5" font-size="13" font-weight="800" font-family="sans-serif" text-anchor="end" filter="url(#text-shadow)" class="transition-colors group-hover:fill-gold-300">Luân xa Tim</text>
+          <rect x="180" y="260" width="220" height="40" fill="transparent" />
+          <text x="390" y="276" fill="#ECFDF5" font-size="13" font-weight="800" font-family="sans-serif" text-anchor="end" filter="url(#text-shadow)" class="transition-colors group-hover:fill-gold-300">心轮 ({{ t('chakraNames.t4') }})</text>
           <text x="390" y="292" fill="#34D399" font-size="11" font-weight="600" font-family="sans-serif" opacity="0.95" text-anchor="end" filter="url(#text-shadow)">(Anahata)</text>
         </g>
 
@@ -312,8 +312,8 @@
         <!-- Label 3 (Right) -->
         <g class="chakra-label cursor-pointer select-none group" @click="selectTier(3)">
           <line x1="536" y1="355" x2="650" y2="350" stroke="#FACC15" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.8" class="leader-line pointer-events-none" />
-          <rect x="650" y="330" width="210" height="40" fill="transparent" />
-          <text x="658" y="346" fill="#FEFCE8" font-size="13" font-weight="800" font-family="sans-serif" filter="url(#text-shadow)" class="transition-colors group-hover:fill-gold-300">Luân xa Đám rối Mặt trời</text>
+          <rect x="650" y="330" width="240" height="40" fill="transparent" />
+          <text x="658" y="346" fill="#FEFCE8" font-size="13" font-weight="800" font-family="sans-serif" filter="url(#text-shadow)" class="transition-colors group-hover:fill-gold-300">脐轮 ({{ t('chakraNames.t3') }})</text>
           <text x="658" y="362" fill="#FACC15" font-size="11" font-weight="600" font-family="sans-serif" opacity="0.95" filter="url(#text-shadow)">(Manipura)</text>
         </g>
 
@@ -328,8 +328,8 @@
         <!-- Label 2 (Right) -->
         <g class="chakra-label cursor-pointer select-none group" @click="selectTier(2)">
           <line x1="536" y1="420" x2="665" y2="425" stroke="#FB923C" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.8" class="leader-line pointer-events-none" />
-          <rect x="664" y="405" width="190" height="40" fill="transparent" />
-          <text x="672" y="421" fill="#FFF7ED" font-size="13" font-weight="800" font-family="sans-serif" filter="url(#text-shadow)" class="transition-colors group-hover:fill-gold-300">Luân xa Xương cùng</text>
+          <rect x="664" y="405" width="230" height="40" fill="transparent" />
+          <text x="672" y="421" fill="#FFF7ED" font-size="13" font-weight="800" font-family="sans-serif" filter="url(#text-shadow)" class="transition-colors group-hover:fill-gold-300">生殖轮 ({{ t('chakraNames.t2') }})</text>
           <text x="672" y="437" fill="#FB923C" font-size="11" font-weight="600" font-family="sans-serif" opacity="0.95" filter="url(#text-shadow)">(Svadhisthana)</text>
         </g>
 
@@ -344,8 +344,8 @@
         <!-- Label 1 (Right) -->
         <g class="chakra-label cursor-pointer select-none group" @click="selectTier(1)">
           <line x1="540" y1="485" x2="665" y2="495" stroke="#F87171" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.8" class="leader-line pointer-events-none" />
-          <rect x="664" y="475" width="180" height="40" fill="transparent" />
-          <text x="672" y="491" fill="#FEF2F2" font-size="13" font-weight="800" font-family="sans-serif" filter="url(#text-shadow)" class="transition-colors group-hover:fill-gold-300">Luân xa Gốc</text>
+          <rect x="664" y="475" width="220" height="40" fill="transparent" />
+          <text x="672" y="491" fill="#FEF2F2" font-size="13" font-weight="800" font-family="sans-serif" filter="url(#text-shadow)" class="transition-colors group-hover:fill-gold-300">海底轮 ({{ t('chakraNames.t1') }})</text>
           <text x="672" y="507" fill="#F87171" font-size="11" font-weight="600" font-family="sans-serif" opacity="0.95" filter="url(#text-shadow)">(Muladhara)</text>
         </g>
 
@@ -382,7 +382,7 @@
         :style="{ borderColor: selectedTier === c.tier ? c.colorHex : undefined }"
       >
         <span class="w-2.5 h-2.5 rounded-full" :style="{ backgroundColor: c.colorHex }" />
-        <span>T{{ c.tier }}: {{ c.nameVi.split('(')[0].trim() }}</span>
+        <span>T{{ c.tier }}: {{ c.nameZh || c.code }} ({{ sub(c.nameVi.split('(')[0].trim(), c.nameEn?.split('(')[0]?.trim() || c.nameVi) }})</span>
         <span class="text-[10px] opacity-75 font-mono">({{ c.progressPercent }}%)</span>
       </button>
     </div>
@@ -412,14 +412,14 @@
                 :style="{ backgroundColor: selectedChakra.colorHex }"
               />
               <h3 class="text-lg font-black font-heading text-white">
-                Tầng {{ selectedChakra.tier }}: {{ selectedChakra.nameVi }}
+                第 {{ selectedChakra.tier }} 重境界: {{ selectedChakra.nameZh }} ({{ t('chakraNames.t' + selectedChakra.tier) }})
               </h3>
             </div>
             <span
               v-if="selectedChakra.isUnlocked"
               class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold shrink-0"
             >
-              Đã Khai Mở
+              {{ tDual('chakra.statusUnlocked', '已觉醒') }}
             </span>
             <span
               v-else-if="selectedChakra.tier === activeTier"
@@ -430,18 +430,18 @@
                 color: selectedChakra.colorHex
               }"
             >
-              Đang Tu Luyện
+              {{ tDual('chakra.statusTraining', '修炼中') }}
             </span>
             <span
               v-else
               class="px-2.5 py-0.5 rounded-full bg-wood-850 text-slate-400 border border-wood-750 text-[10px] font-medium shrink-0"
             >
-              Phong Ấn
+              {{ tDual('chakra.statusSealed', '封印中') }}
             </span>
           </div>
 
           <p class="text-xs text-amber-200/70 leading-relaxed">
-            {{ selectedChakra.descriptionVi }}
+            {{ selectedChakra.descriptionZh ? tDual('chakra.philosophy', selectedChakra.descriptionZh) : selectedChakra.descriptionZh }}
           </p>
         </div>
 
@@ -450,7 +450,7 @@
           <!-- Metric 1: Progress % -->
           <div class="p-3.5 rounded-2xl bg-wood-950 border border-wood-800">
             <div class="flex items-center justify-between text-xs font-bold mb-1">
-              <span class="text-amber-200/60 uppercase text-[10px]">Tiến Độ Khai Mở</span>
+              <span class="text-amber-200/60 uppercase text-[10px]">{{ tDual('chakra.progressPercent', '觉醒进度') }}</span>
               <span class="font-mono" :style="{ color: selectedChakra.colorHex }">
                 {{ selectedChakra.progressPercent }}%
               </span>
@@ -468,23 +468,23 @@
 
           <!-- Metric 2: FSRS Retention & Stability -->
           <div class="p-3.5 rounded-2xl bg-wood-950 border border-wood-800 space-y-1">
-            <div class="text-[10px] text-amber-200/60 uppercase font-bold">Từ Vựng Bền Vững (FSRS)</div>
+            <div class="text-[10px] text-amber-200/60 uppercase font-bold">{{ tDual('chakra.retainedVocab', '长效词汇') }}</div>
             <div class="text-base font-black font-heading text-gold-300">
-              {{ selectedChakra.retainedVocabCount }} / {{ selectedChakra.targetVocabCount }} từ đạt chuẩn
+              {{ selectedChakra.retainedVocabCount }} / {{ selectedChakra.targetVocabCount }} {{ tDual('chakra.wordsQualified', '词达标') }}
             </div>
             <div class="text-[11px] text-amber-200/50">
-              Độ bền ký ức yêu cầu: ≥ {{ selectedChakra.requiredStabilityDays }} ngày
+              {{ tDual('chakra.stabilityReq', '记忆稳定性要求') }}: ≥ {{ selectedChakra.requiredStabilityDays }} {{ t('chakra.days') }}
             </div>
           </div>
 
           <!-- Metric 3: Reward Item -->
           <div class="p-3.5 rounded-2xl bg-wood-950 border border-wood-800 space-y-1">
-            <div class="text-[10px] text-amber-200/60 uppercase font-bold">Vật Phẩm Hào Quang 2D</div>
+            <div class="text-[10px] text-amber-200/60 uppercase font-bold">{{ tDual('chakra.rewardItemAura', '2D灵气光环') }}</div>
             <div class="text-xs font-bold text-white truncate">
-              {{ selectedChakra.rewardItemName }}
+              {{ selectedChakra.rewardItemNameZh || selectedChakra.rewardItemName }}
             </div>
             <div class="text-[10px] font-bold" :class="selectedChakra.rewardClaimed ? 'text-emerald-400' : 'text-amber-200/50'">
-              {{ selectedChakra.rewardClaimed ? '✓ Đã kích hoạt dưới chân nhân vật' : 'Khóa (Cần đạt 100%)' }}
+              {{ selectedChakra.rewardClaimed ? ('✓ ' + tDual('chakra.auraActivated', '已附体在主角足下')) : tDual('chakra.auraLocked', '未解锁 (需达100%)') }}
             </div>
           </div>
         </div>
@@ -500,7 +500,7 @@
           >
             <AlertCircle v-if="selectedChakra.bottleneckSkill" :size="14" />
             <Sparkles v-else :size="14" />
-            <span>Chẩn Đoán Khai Thông Dòng Chảy</span>
+            <span>{{ tDual('chakra.diagnosticTitle', '周天诊断与通关指引') }}</span>
           </div>
           <p class="text-xs text-amber-100/80 leading-relaxed">
             {{ getBottleneckText(selectedChakra.bottleneckSkill) }}
@@ -525,10 +525,10 @@
         <div class="flex items-center justify-between px-1">
           <h4 class="text-sm font-black font-heading text-white uppercase tracking-wider flex items-center gap-2">
             <Compass :size="15" class="text-gold-400" />
-            <span>Hành Trình Bài Học • Tầng {{ selectedChakra.tier }}: {{ selectedChakra.nameVi.split('(')[0].trim() }}</span>
+            <span>{{ tDual('chakra.stationListTitle', '历练关卡') }} • 第 {{ selectedChakra.tier }} 境界: {{ selectedChakra.nameZh }} ({{ t('chakraNames.t' + selectedChakra.tier) }})</span>
           </h4>
           <span class="text-xs text-amber-200/50">
-            {{ currentChakraLessons.length }} Trạm Tu Luyện
+            {{ t('chakra.stationCount', { count: currentChakraLessons.length }) }}
           </span>
         </div>
 
@@ -564,17 +564,17 @@
 
               <div class="min-w-0">
                 <div class="flex items-center gap-2 mb-1">
-                  <span class="text-[10px] uppercase font-bold text-amber-200/50">Trạm {{ selectedChakra.tier }}.{{ lIdx + 1 }}</span>
+                  <span class="text-[10px] uppercase font-bold text-amber-200/50">{{ tDual('chakra.station', '关卡') }} {{ selectedChakra.tier }}.{{ lIdx + 1 }}</span>
                   <span
                     v-if="isNextLesson(lesson)"
                     class="px-2 py-0.5 rounded-full bg-gold-500/20 text-gold-300 border border-gold-500/40 text-[9px] font-bold"
                   >
-                    Mục Tiêu Hiện Tại
+                    {{ tDual('chakra.currentTarget', '当前目标') }}
                   </span>
                 </div>
 
                 <h5 class="text-sm font-bold font-heading text-white group-hover:text-gold-300 transition-colors truncate">
-                  {{ lesson.title }}
+                  {{ dualLessonTitle(lesson.title) }}
                 </h5>
                 <p class="text-xs text-amber-200/60 line-clamp-1 mt-0.5">
                   {{ lesson.description }}
@@ -596,10 +596,10 @@
             <!-- Right: Rewards & Action CTA -->
             <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-wood-800/80">
               <div class="flex items-center gap-2 text-xs">
-                <span class="text-purple-300 font-bold">+{{ lesson.expReward }} EXP</span>
+                <span class="text-purple-300 font-bold">+{{ lesson.expReward }} {{ tDual('hero.exp', '经验') }}</span>
                 <span class="text-gold-300 font-bold flex items-center gap-1">
                   <Coins :size="12" />
-                  <span>+{{ lesson.goldReward }}</span>
+                  <span>+{{ lesson.goldReward }} {{ tDual('nav.gold', '金币') }}</span>
                 </span>
               </div>
 
@@ -615,7 +615,7 @@
                 ]"
               >
                 <Play v-if="!lesson.isCompleted" :size="12" class="fill-current" />
-                <span>{{ lesson.isCompleted ? 'Ôn Lại' : 'Bắt Đầu' }}</span>
+                <span>{{ lesson.isCompleted ? tDual('chakra.btnReview', '温故') : tDual('chakra.btnStart', '历练') }}</span>
                 <ArrowRight v-if="lesson.isCompleted" :size="12" />
               </NuxtLink>
             </div>
@@ -629,10 +629,10 @@
               </div>
               <div>
                 <div class="text-xs font-black text-gold-300 font-heading">
-                  Bí Cảnh Khảo Hạch Đột Phá: {{ selectedChakra.nameVi }}
+                  {{ tDual('chakra.bossTitle', '秘境突破试炼') }}: {{ selectedChakra.nameZh }} ({{ t('chakraNames.t' + selectedChakra.tier) }})
                 </div>
                 <div class="text-[11px] text-amber-200/60 mt-0.5">
-                  Đạt 100% để lĩnh hội <strong class="text-white">{{ selectedChakra.rewardItemName }}</strong> và mở khóa vùng đất tiếp theo!
+                  {{ tDual('chakra.bossDescPrefix', '达到100%圆满以领悟') }} <strong class="text-white">{{ selectedChakra.rewardItemName }}</strong> {{ t('chakra.bossDescSuffix') }}
                 </div>
               </div>
             </div>
@@ -642,7 +642,7 @@
               class="px-5 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-wood-950 font-black text-xs shadow-rpg-glow-gold shrink-0 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <Sparkles :size="14" />
-              <span>Khiêu Chiến Đột Phá</span>
+              <span>{{ tDual('chakra.btnBossChallenge', '挑战突破') }}</span>
             </NuxtLink>
           </div>
 
@@ -667,23 +667,35 @@ import {
   Trophy,
 } from 'lucide-vue-next';
 import { gsap } from 'gsap';
+import { useOriginLanguage } from '~/composables/useOriginLanguage';
+
+const { t, dual, tDual, sub, ui, dualLessonTitle } = useOriginLanguage();
 
 interface ChakraItem {
   tier: number;
   code: string;
+  nameZh?: string;
   nameVi: string;
+  nameEn?: string;
   sanskritName: string;
   hskBand: string;
+  elementZh?: string;
   elementVi: string;
+  elementEn?: string;
   colorHex: string;
   bgGradient: string;
   targetVocabCount: number;
   requiredStabilityDays: number;
   rewardItemCode: string;
   rewardItemName: string;
+  rewardItemNameZh?: string;
   regionCode: string;
+  regionNameZh?: string;
   regionNameVi: string;
+  regionNameEn?: string;
+  descriptionZh?: string;
   descriptionVi: string;
+  descriptionEn?: string;
   progressPercent: number;
   retainedVocabCount: number;
   avgStability: number;
@@ -725,29 +737,29 @@ function selectTier(tier: number) {
 
 function getBottleneckText(skill: string | null | undefined): string {
   if (skill === 'retention') {
-    return 'Độ bền trí nhớ FSRS còn tích lũy chậm. Hãy ôn tập thẻ từ đến hạn để ổn định nền móng.';
+    return tDual('remedies.retentionText', 'FSRS 记忆稳定性积累偏缓，建议复习到期卡片以稳固根基。');
   }
   if (skill === 'character') {
-    return 'Tỷ lệ nhận diện chữ Hán & Bộ thủ chưa vững. Cần thiền định củng cố 214 bộ thủ.';
+    return tDual('remedies.characterText', '汉字识别率与部首掌握未达标准，需静心凝练214部首。');
   }
   if (skill === 'listening') {
-    return 'Phản xạ nhận diện ngữ âm Pinyin cần gia tăng. Hãy luyện nghe nhiều hơn với thẻ phát âm.';
+    return tDual('remedies.listeningText', '拼音辨音反射敏锐度需提升，请多加聆听发音卡片。');
   }
   if (skill === 'writing') {
-    return 'Quy tắc nét viết Hán tự chưa đạt tối ưu. Hãy hoàn thành các bài luyện nét bút thuận.';
+    return tDual('remedies.writingText', '汉字笔顺书写规范尚待精进，请完成笔顺轨迹修炼。');
   }
   if (skill === 'reading') {
-    return 'Kỹ năng ghép câu và đọc hiểu cần bồi dưỡng thêm qua các bài nối từ.';
+    return tDual('remedies.readingText', '组词成句与篇章理解需加强，建议多练习词语连结。');
   }
-  return 'Dòng chảy năng lượng ngôn ngữ thông suốt hoàn hảo! Không phát hiện điểm nghẽn kỹ năng.';
+  return tDual('remedies.perfectText', '真气周天畅通无阻！未检测到任何修行瓶颈。');
 }
 
 function getRemedyActionLabel(skill: string | null | undefined): string {
-  if (skill === 'retention') return 'Vào Đài Ôn Tập SRS';
-  if (skill === 'character') return 'Luyện Chữ Hán & Bộ Thủ';
-  if (skill === 'listening') return 'Luyện Nghe Pinyin';
-  if (skill === 'writing') return 'Luyện Viết Nét';
-  return 'Tiếp Tục Bài Học';
+  if (skill === 'retention') return tDual('remedies.retentionAction', '前往复习台');
+  if (skill === 'character') return tDual('remedies.characterAction', '修炼汉字与部首');
+  if (skill === 'listening') return tDual('remedies.listeningAction', '强化拼音听力');
+  if (skill === 'writing') return tDual('remedies.writingAction', '练习笔顺笔画');
+  return tDual('remedies.perfectAction', '继续修行关卡');
 }
 
 function getRemedyLink(skill: string | null | undefined): string {
@@ -769,14 +781,17 @@ const allLessons = computed(() => {
 // Map lessons to corresponding Chakra tier (Tier 1 Muladhara holds Band 1 lessons)
 const currentChakraLessons = computed(() => {
   if (selectedTier.value === 1) {
-    return allLessons.value.slice(0, 6);
+    return allLessons.value.slice(0, 6).map((l: any) => ({
+      ...l,
+      title: dualLessonTitle(l.title),
+    }));
   }
   const bandNum = selectedTier.value;
   return [
     {
       id: `lesson_tier_${bandNum}_1`,
-      title: `Trạm ${bandNum}.1: Khảo Ngữ Căn Bản HSK Band ${bandNum}`,
-      description: `Lĩnh hội từ vựng chuyên sâu và cú pháp đặc thù của cảnh giới Tầng ${bandNum}.`,
+      title: tDual('chakra.synthLesson1Title', `第 ${bandNum}.1 关：基础语法与核心字词 (HSK ${bandNum})`, { band: bandNum }),
+      description: tDual('chakra.synthLesson1Desc', `领悟本重境界的核心汉字架构与特有语序句法。`, { band: bandNum }),
       expReward: 60 + bandNum * 15,
       goldReward: 25 + bandNum * 5,
       vocabularyCount: 15 + bandNum * 5,
@@ -785,8 +800,8 @@ const currentChakraLessons = computed(() => {
     },
     {
       id: `lesson_tier_${bandNum}_2`,
-      title: `Trạm ${bandNum}.2: Đàm Thoại & Ngữ Cảnh Xã Hội Band ${bandNum}`,
-      description: `Rèn luyện phản xạ đối đáp và áp dụng ngữ pháp vào tình huống thực tế.`,
+      title: tDual('chakra.synthLesson2Title', `第 ${bandNum}.2 关：日常对话与社会语境 (HSK ${bandNum})`, { band: bandNum }),
+      description: tDual('chakra.synthLesson2Desc', `锻炼语感反应力，将词句运用自如于实际生活交互中。`, { band: bandNum }),
       expReward: 70 + bandNum * 15,
       goldReward: 30 + bandNum * 5,
       vocabularyCount: 20 + bandNum * 5,
@@ -795,8 +810,8 @@ const currentChakraLessons = computed(() => {
     },
     {
       id: `lesson_tier_${bandNum}_3`,
-      title: `Trạm ${bandNum}.3: Đọc Hiểu & Trực Giác Cổ Thư Band ${bandNum}`,
-      description: `Đọc hiểu các trích đoạn văn bản và củng cố độ bền FSRS ổn định lâu dài.`,
+      title: tDual('chakra.synthLesson3Title', `第 ${bandNum}.3 关：典籍阅读与长期记忆 (HSK ${bandNum})`, { band: bandNum }),
+      description: tDual('chakra.synthLesson3Desc', `精读古典与现代篇章，提升 FSRS 记忆曲线稳定性。`, { band: bandNum }),
       expReward: 80 + bandNum * 15,
       goldReward: 35 + bandNum * 5,
       vocabularyCount: 25 + bandNum * 5,

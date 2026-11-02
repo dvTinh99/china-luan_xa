@@ -3,7 +3,7 @@
     <button
       type="button"
       @click.stop="handleToggle"
-      :aria-label="isPlayingThis ? `Dừng phát âm: ${text}` : `Nghe phát âm chuẩn: ${text}`"
+      :aria-label="isPlayingThis ? `${t('common.stopAudio')}: ${text}` : `${t('common.playAudio')}: ${text}`"
       :aria-pressed="isPlayingThis"
       class="inline-flex items-center justify-center rounded-2xl transition-all duration-150 cursor-pointer select-none relative group focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:outline-none border-b-2 active:border-b-0 active:translate-y-0.5"
       :class="[
@@ -37,7 +37,7 @@
       />
 
       <span v-if="showLabel" class="ml-2 text-xs font-bold tracking-wide">
-        {{ isPlayingThis ? 'Đang phát...' : 'Phát âm' }}
+        {{ isPlayingThis ? tDual('common.playingAudio', '发音中') : tDual('common.pronounce', '发音') }}
       </span>
     </button>
 
@@ -46,7 +46,7 @@
       v-if="showSpeedToggle"
       type="button"
       @click.stop="cycleSpeed"
-      title="Tốc độ đọc"
+      :title="tDual('common.speed', '语速')"
       class="h-7 px-2 rounded-lg bg-wood-900 border border-wood-750 text-[10px] font-bold text-amber-200/80 hover:text-gold-300 hover:border-gold-500/50 transition-colors cursor-pointer select-none"
     >
       {{ activeSpeed }}x
@@ -57,6 +57,9 @@
 <script setup lang="ts">
 import { Volume2, Loader2 } from 'lucide-vue-next';
 import type { PlaybackSpeed } from '../composables/useAudioManager';
+import { useOriginLanguage } from '~/composables/useOriginLanguage';
+
+const { t, tDual } = useOriginLanguage();
 
 const props = withDefaults(
   defineProps<{

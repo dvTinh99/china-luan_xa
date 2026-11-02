@@ -4,14 +4,14 @@
     <div class="flex items-center justify-between border-b border-surface-800 pb-4 mb-6">
       <NuxtLink to="/learn" class="flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors py-2 px-2.5 rounded-xl hover:bg-surface-850">
         <ArrowLeft :size="14" aria-hidden="true" />
-        <span>Về lộ trình học</span>
+        <span>{{ tDual('reviewDetail.backToLearn', '返回学习路线') }}</span>
       </NuxtLink>
       <div class="text-center">
         <h1 class="text-base font-bold font-heading text-white flex items-center justify-center gap-2">
           <RotateCcw :size="16" class="text-gold-400" aria-hidden="true" />
-          <span>Ôn tập ngắt quãng (FSRS)</span>
+          <span>{{ tDual('reviewDetail.title', '间隔复习 (FSRS)') }}</span>
         </h1>
-        <div class="text-xs text-slate-400 mt-0.5">Còn lại: {{ remainingCount }} từ hôm nay</div>
+        <div class="text-xs text-slate-400 mt-0.5">{{ t('reviewDetail.remainingCards', { count: remainingCount }) }}</div>
       </div>
       <div class="flex items-center gap-1.5 text-xs font-extrabold text-gold-300 bg-surface-850 border border-surface-750 px-3 py-1.5 rounded-xl">
         <Coins :size="14" class="text-gold-400" aria-hidden="true" />
@@ -34,9 +34,9 @@
       >
         <div class="flex items-center gap-2">
           <Sparkles :size="16" class="text-gold-400" />
-          <span>🎯 Nhiệm vụ hoàn thành: {{ questToast }}!</span>
+          <span>🎯 {{ t('reviewDetail.questToast', { name: questToast }) }}</span>
         </div>
-        <NuxtLink to="/quests" class="underline text-gold-300 hover:text-white">Nhận thưởng</NuxtLink>
+        <NuxtLink to="/quests" class="underline text-gold-300 hover:text-white">{{ tDual('reviewDetail.claimReward', '领取奖励') }}</NuxtLink>
       </div>
     </transition>
 
@@ -45,7 +45,7 @@
       <div class="w-12 h-12 rounded-2xl bg-surface-850 border border-surface-750 flex items-center justify-center animate-spin mb-3 text-gold-400">
         <RotateCcw :size="24" aria-hidden="true" />
       </div>
-      <p class="text-sm font-medium">Đang tính toán các thẻ cần ôn theo FSRS...</p>
+      <p class="text-sm font-medium">{{ t('reviewDetail.calculating') }}</p>
     </div>
 
     <!-- Zero Due State (All completed) -->
@@ -56,9 +56,9 @@
       <div class="w-16 h-16 rounded-3xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-4 shadow-glow-jade">
         <CheckCircle2 :size="36" aria-hidden="true" />
       </div>
-      <h2 class="text-2xl font-black font-heading text-white mb-2">Đã Hoàn Thành Ôn Tập Hôm Nay!</h2>
+      <h2 class="text-2xl font-black font-heading text-white mb-2">{{ tDual('reviewDetail.allDoneTitle', '今日复习圆满达成！') }}</h2>
       <p class="text-sm text-slate-400 max-w-sm mb-8 leading-relaxed">
-        Bạn đã hoàn tất tất cả các từ vựng cần ôn theo thuật toán FSRS. Hãy học thêm bài mới hoặc du ngoạn thế giới 2D!
+        {{ t('reviewDetail.allDoneDesc') }}
       </p>
       <div class="flex flex-wrap gap-3.5 justify-center">
         <NuxtLink
@@ -66,14 +66,14 @@
           class="min-h-[48px] px-6 py-3 rounded-xl bg-surface-800 hover:bg-surface-750 text-slate-200 text-sm font-bold border border-surface-700 flex items-center gap-2 cursor-pointer transition-colors"
         >
           <BookOpen :size="16" aria-hidden="true" />
-          <span>Học bài mới</span>
+          <span>{{ tDual('reviewDetail.studyNew', '学习新课') }}</span>
         </NuxtLink>
         <NuxtLink
           to="/world"
           class="min-h-[48px] px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-sm font-bold shadow-glow-brand flex items-center gap-2 cursor-pointer transition-all hover:scale-[1.02]"
         >
           <Gamepad2 :size="16" aria-hidden="true" />
-          <span>Vào thế giới 2D</span>
+          <span>{{ tDual('reviewDetail.enterWorld', '进入大千世界') }}</span>
         </NuxtLink>
       </div>
     </div>
@@ -83,7 +83,7 @@
       <div class="w-full max-w-md bg-surface-900 border border-surface-750 hover:border-surface-600 rounded-3xl p-8 shadow-card-elevated text-center relative transition-all">
         <!-- Status badge -->
         <div class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-6">
-          Trạng thái thẻ: <span class="text-gold-400 font-extrabold">{{ currentCard.state || 'review' }}</span>
+          {{ tDual('reviewDetail.cardState', '卡片状态') }}: <span class="text-gold-400 font-extrabold">{{ currentCard.state || 'review' }}</span>
         </div>
 
         <!-- Hanzi Prominent with Speaker -->
@@ -121,7 +121,7 @@
           @click="revealed = true"
           class="w-full min-h-[48px] py-3.5 rounded-2xl bg-surface-800 hover:bg-surface-750 text-slate-200 text-sm font-bold transition-all shadow-sm border border-surface-700 mt-6 cursor-pointer hover:border-gold-500/40"
         >
-          Hiện nghĩa & Pinyin (Phím Space)
+          {{ tDual('reviewDetail.flipPrompt', '显示释义与拼音 (Space)') }}
         </button>
       </div>
 
@@ -132,42 +132,42 @@
           @click="submitRating(1)"
           class="min-h-[56px] p-3 rounded-2xl bg-brand-950/70 hover:bg-brand-900 border border-brand-800/80 hover:border-brand-600 text-center transition-all cursor-pointer group active:scale-95"
         >
-          <div class="text-xs font-black text-brand-300">1. Quên</div>
-          <div class="text-[10px] text-brand-400 mt-0.5">Lặp lại</div>
+          <div class="text-xs font-black text-brand-300">{{ tDual('reviewDetail.rateAgain', '1. 重来') }}</div>
+          <div class="text-[10px] text-brand-400 mt-0.5">{{ t('reviewDetail.rateAgainSub') }}</div>
         </button>
         <button
           type="button"
           @click="submitRating(2)"
           class="min-h-[56px] p-3 rounded-2xl bg-amber-950/70 hover:bg-amber-900 border border-amber-800/80 hover:border-amber-600 text-center transition-all cursor-pointer group active:scale-95"
         >
-          <div class="text-xs font-black text-amber-300">2. Khó</div>
-          <div class="text-[10px] text-amber-400 mt-0.5">Khó nhớ</div>
+          <div class="text-xs font-black text-amber-300">{{ tDual('reviewDetail.rateHard', '2. 较难') }}</div>
+          <div class="text-[10px] text-amber-400 mt-0.5">{{ t('reviewDetail.rateHardSub') }}</div>
         </button>
         <button
           type="button"
           @click="submitRating(3)"
           class="min-h-[56px] p-3 rounded-2xl bg-sky-950/70 hover:bg-sky-900 border border-sky-800/80 hover:border-sky-600 text-center transition-all cursor-pointer group active:scale-95"
         >
-          <div class="text-xs font-black text-sky-300">3. Nhớ tốt</div>
-          <div class="text-[10px] text-sky-400 mt-0.5">Chuẩn</div>
+          <div class="text-xs font-black text-sky-300">{{ tDual('reviewDetail.rateGood', '3. 良好') }}</div>
+          <div class="text-[10px] text-sky-400 mt-0.5">{{ t('reviewDetail.rateGoodSub') }}</div>
         </button>
         <button
           type="button"
           @click="submitRating(4)"
           class="min-h-[56px] p-3 rounded-2xl bg-emerald-950/70 hover:bg-emerald-900 border border-emerald-800/80 hover:border-emerald-600 text-center transition-all cursor-pointer group active:scale-95"
         >
-          <div class="text-xs font-black text-emerald-300">4. Rất dễ</div>
-          <div class="text-[10px] text-emerald-400 mt-0.5">Dễ dàng</div>
+          <div class="text-xs font-black text-emerald-300">{{ tDual('reviewDetail.rateEasy', '4. 极易') }}</div>
+          <div class="text-[10px] text-emerald-400 mt-0.5">{{ t('reviewDetail.rateEasySub') }}</div>
         </button>
       </div>
 
       <!-- Hotkeys Info -->
       <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-5">
-        <span><kbd class="px-1 py-0.5 bg-surface-850 rounded border border-surface-700 font-mono">Space</kbd> Hiện nghĩa</span>
+        <span><kbd class="px-1 py-0.5 bg-surface-850 rounded border border-surface-700 font-mono">Space</kbd> {{ t('reviewDetail.keySpace') }}</span>
         <span>•</span>
-        <span><kbd class="px-1 py-0.5 bg-surface-850 rounded border border-surface-700 font-mono">1-4</kbd> Đánh giá</span>
+        <span><kbd class="px-1 py-0.5 bg-surface-850 rounded border border-surface-700 font-mono">1-4</kbd> {{ t('reviewDetail.keyRating') }}</span>
         <span>•</span>
-        <span><kbd class="px-1 py-0.5 bg-surface-850 rounded border border-surface-700 font-mono">P</kbd> Phát âm</span>
+        <span><kbd class="px-1 py-0.5 bg-surface-850 rounded border border-surface-700 font-mono">P</kbd> {{ t('reviewDetail.keyAudio') }}</span>
       </div>
     </div>
   </div>
@@ -183,6 +183,9 @@ import {
   Gamepad2,
   Sparkles,
 } from 'lucide-vue-next';
+import { useOriginLanguage } from '~/composables/useOriginLanguage';
+
+const { t, tDual } = useOriginLanguage();
 
 definePageMeta({
   layout: 'default',

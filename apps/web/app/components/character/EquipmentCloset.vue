@@ -8,8 +8,8 @@
             <Sparkles :size="18" />
           </div>
           <div>
-            <h2 class="text-base font-bold font-heading text-white">Tủ Đồ Hiệp Khách (Equipment Closet)</h2>
-            <p class="text-[11px] text-amber-200/60">Bấm vào vật phẩm để thử đồ trực tiếp trên nhân vật Chibi</p>
+            <h2 class="text-base font-bold font-heading text-white">{{ tDual('characterDetail.closetTitle', '侠客服饰衣橱') }}</h2>
+            <p class="text-[11px] text-amber-200/60">{{ tDual('characterDetail.closetDesc', '点击物品可在 Q 版角色上即时试穿') }}</p>
           </div>
         </div>
 
@@ -18,7 +18,7 @@
           class="px-3 py-1.5 rounded-xl bg-wood-850 hover:bg-wood-800 border border-wood-700 hover:border-gold-500/50 text-[11px] font-bold text-amber-200 hover:text-gold-300 transition-all flex items-center gap-1.5 cursor-pointer"
         >
           <Store :size="13" />
-          <span>Thương Điếm</span>
+          <span>{{ tDual('nav.shop', '珍宝商行') }}</span>
         </NuxtLink>
       </div>
 
@@ -114,35 +114,35 @@
           <div class="flex items-center justify-between pt-2 border-t border-wood-800/60 text-[10px]">
             <span v-if="isPreviewing(item)" class="text-gold-300 font-black flex items-center gap-1">
               <Sparkles :size="11" />
-              <span>Đang thử{{ !item.isOwned ? ' (Chưa mua)' : '' }}</span>
+              <span>{{ tDual('characterDetail.previewing', '试穿中') }}{{ !item.isOwned ? ` (${t('characterDetail.unowned')})` : '' }}</span>
             </span>
             <span v-else-if="item.isEquipped" class="text-emerald-400 font-bold flex items-center gap-1">
               <Check :size="11" />
-              <span>Đang dùng</span>
+              <span>{{ tDual('characterDetail.equipped', '使用中') }}</span>
             </span>
             <span v-else-if="!item.isOwned" class="text-amber-200/40 italic flex items-center gap-1">
               <Lock :size="10" />
-              <span>Chưa sở hữu</span>
+              <span>{{ tDual('characterDetail.unowned', '未拥有') }}</span>
             </span>
-            <span v-else class="text-amber-200/40">Có sẵn</span>
+            <span v-else class="text-amber-200/40">{{ tDual('characterDetail.available', '已有') }}</span>
 
             <span class="text-gold-400 font-bold hover:underline">
-              {{ isPreviewing(item) ? 'Bỏ chọn' : 'Thử đồ' }}
+              {{ isPreviewing(item) ? tDual('characterDetail.deselect', '取消') : tDual('characterDetail.tryOn', '试穿') }}
             </span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Sticky Bottom Save & Cancel Controls (CHIBI_CHARACTER.md §7, §9) -->
+    <!-- Sticky Bottom Save & Cancel Controls -->
     <div class="pt-4 border-t border-wood-800 flex items-center justify-between gap-3">
       <div>
         <div v-if="isDirty" class="text-[11px] font-bold text-gold-300 flex items-center gap-1 animate-pulse">
           <Sparkles :size="13" />
-          <span>Có thay đổi chưa lưu</span>
+          <span>{{ tDual('characterDetail.unsavedChanges', '有未保存的更改') }}</span>
         </div>
         <div v-else class="text-[11px] text-amber-200/40">
-          Đang hiển thị trang phục chính thức
+          {{ tDual('characterDetail.officialOutfit', '当前显示正式装扮') }}
         </div>
       </div>
 
@@ -154,7 +154,7 @@
           :disabled="isSaving"
           class="px-4 py-2 rounded-xl bg-wood-850 hover:bg-wood-800 text-amber-200/80 hover:text-white text-xs font-bold border border-wood-750 transition-all cursor-pointer"
         >
-          Hủy thử
+          {{ tDual('characterDetail.cancelTry', '放弃') }}
         </button>
 
         <button
@@ -170,7 +170,7 @@
         >
           <Loader2 v-if="isSaving" :size="13" class="animate-spin" />
           <Save v-else :size="13" />
-          <span>{{ isSaving ? 'Đang lưu...' : 'Lưu diện mạo' }}</span>
+          <span>{{ isSaving ? tDual('characterDetail.saving', '保存中...') : tDual('characterDetail.saveOutfit', '保存装扮') }}</span>
         </button>
       </div>
     </div>
@@ -178,7 +178,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import {
   Sparkles,
   GraduationCap,
@@ -197,6 +197,9 @@ import {
   Shield,
   ShieldAlert,
 } from 'lucide-vue-next';
+import { useOriginLanguage } from '~/composables/useOriginLanguage';
+
+const { t, tDual } = useOriginLanguage();
 import type {
   CharacterAppearanceState,
   CharacterCustomizationCategory,
@@ -218,13 +221,13 @@ defineEmits<{
   (e: 'cancel'): void;
 }>();
 
-const categories = [
-  { id: 'hat' as const, label: 'Mũ & Nón', icon: GraduationCap },
-  { id: 'outfit' as const, label: 'Y Phục', icon: Shirt },
-  { id: 'hair' as const, label: 'Búi Tóc', icon: Sparkles },
-  { id: 'shoes' as const, label: 'Hài Giày', icon: Footprints },
-  { id: 'accessory' as const, label: 'Phụ Kiện', icon: PenTool },
-];
+const categories = computed(() => [
+  { id: 'hat' as const, label: tDual('characterDetail.catHead', '冠帽'), icon: GraduationCap },
+  { id: 'outfit' as const, label: tDual('characterDetail.catArmor', '长袍'), icon: Shirt },
+  { id: 'hair' as const, label: tDual('characterDetail.catAll', '发型'), icon: Sparkles },
+  { id: 'shoes' as const, label: tDual('characterDetail.catAccessory', '鞋靴'), icon: Footprints },
+  { id: 'accessory' as const, label: tDual('characterDetail.catWeapon', '法宝'), icon: PenTool },
+]);
 
 const failedIconCodes = ref<Set<string>>(new Set());
 

@@ -9,28 +9,28 @@
           <div class="flex items-center gap-3">
             <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-gold-500/20 text-gold-300 border border-gold-400/30 flex items-center gap-1.5">
               <Store :size="14" />
-              <span>Thương Điếm Tân Thủ (Beginner Shop)</span>
+              <span>{{ tDual('shopDetail.tag', '新手商铺') }}</span>
             </span>
-            <span class="text-xs font-bold text-amber-200/60 hidden sm:inline">Chủ tiệm: Tiền Chưởng Quỹ (钱掌柜)</span>
+            <span class="text-xs font-bold text-amber-200/60 hidden sm:inline">{{ tDual('shopDetail.keeper', '店主: 钱掌柜') }}</span>
           </div>
 
           <h1 class="text-3xl sm:text-4xl font-black font-heading text-white tracking-wide">
-            Cửa Hàng Thương Nhân
+            {{ tDual('shopDetail.title', '珍宝商行') }}
           </h1>
 
           <p class="text-amber-200/80 text-sm max-w-xl leading-relaxed">
-            "Chào mừng thiếu hiệp ghé thăm! Ở đây có đủ bút lông luyện chữ, trường bào nho sinh và trà thơm hảo hạng để tăng tốc độ rèn luyện HSK 3.0."
+            {{ t('shopDetail.desc') }}
           </p>
         </div>
 
         <!-- Player Current Gold Display -->
         <div class="bg-wood-950/90 border-2 border-gold-500/40 p-4 sm:p-5 rounded-2xl shadow-rpg-glow-gold flex flex-col items-center justify-center shrink-0 min-w-[180px]">
-          <span class="text-xs font-bold text-amber-200/60 uppercase tracking-wider mb-1">Túi tiền của bạn</span>
+          <span class="text-xs font-bold text-amber-200/60 uppercase tracking-wider mb-1">{{ tDual('shopDetail.yourWallet', '您的钱袋') }}</span>
           <div class="flex items-center gap-2 text-2xl sm:text-3xl font-black font-heading text-gold-300">
             <Coins :size="24" class="text-gold-400" />
             <span>{{ walletGold }}</span>
           </div>
-          <span class="text-[10px] text-amber-200/50 mt-1">Đồng tiền vàng</span>
+          <span class="text-[10px] text-amber-200/50 mt-1">{{ tDual('shopDetail.goldCoins', '金币') }}</span>
         </div>
       </div>
     </div>
@@ -85,7 +85,7 @@
     <!-- Loading State -->
     <div v-if="isLoading" class="text-center py-16 text-amber-200/50">
       <Loader2 :size="32" class="animate-spin mx-auto mb-3 text-gold-400" />
-      <span>Đang tải vật phẩm thương điếm...</span>
+      <span>{{ t('shopDetail.loading') }}</span>
     </div>
 
     <!-- Items Grid -->
@@ -108,7 +108,7 @@
                 {{ item.rarity }}
               </span>
               <span v-if="item.slot" class="text-[10px] font-bold text-amber-200/50 uppercase">
-                Vị trí: {{ formatSlotName(item.slot) }}
+                {{ tDual('shopDetail.slotPrefix', '装备部位') }}: {{ formatSlotName(item.slot) }}
               </span>
             </div>
           </div>
@@ -129,25 +129,25 @@
               v-if="item.stats.bonusExpPercent"
               class="px-2 py-0.5 rounded-lg bg-gold-500/10 border border-gold-500/20 text-gold-300 text-[11px] font-bold"
             >
-              +{{ item.stats.bonusExpPercent }}% EXP nhận được
+              +{{ item.stats.bonusExpPercent }}% {{ tDual('characterDetail.exp', '经验值') }}
             </span>
             <span
               v-if="item.stats.hpBonus"
               class="px-2 py-0.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-[11px] font-bold"
             >
-              +{{ item.stats.hpBonus }} Máu (HP)
+              +{{ item.stats.hpBonus }} {{ tDual('characterDetail.hp', '气血值') }}
             </span>
             <span
               v-if="item.stats.healHp"
               class="px-2 py-0.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-[11px] font-bold"
             >
-              Hồi {{ item.stats.healHp }} HP
+              {{ t('shopDetail.healHp', { hp: item.stats.healHp }) }}
             </span>
             <span
               v-if="item.stats.grantExp"
               class="px-2 py-0.5 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-300 text-[11px] font-bold"
             >
-              Thưởng +{{ item.stats.grantExp }} EXP
+              {{ t('shopDetail.grantExp', { exp: item.stats.grantExp }) }}
             </span>
           </div>
         </div>
@@ -173,7 +173,7 @@
           >
             <Loader2 v-if="isBuying === item.id" :size="13" class="animate-spin" />
             <ShoppingBag v-else :size="13" />
-            <span>{{ isBuying === item.id ? 'Đang mua...' : walletGold >= item.priceGold ? 'Mua ngay' : 'Thiếu Gold' }}</span>
+            <span>{{ isBuying === item.id ? tDual('shopDetail.buying', '购买中...') : walletGold >= item.priceGold ? tDual('shopDetail.buyNow', '立即购买') : tDual('shopDetail.notEnoughGold', '金币不足') }}</span>
           </button>
         </div>
       </div>
@@ -208,6 +208,8 @@ definePageMeta({
   layout: 'default',
 });
 
+const { t, tDual } = useOriginLanguage();
+
 const items = ref<any[]>([]);
 const walletGold = ref(0);
 const isLoading = ref(true);
@@ -225,14 +227,14 @@ function showToast(msg: string) {
 
 const selectedCategory = ref<'all' | 'HEAD' | 'WEAPON' | 'ARMOR' | 'ACCESSORY' | 'CONSUMABLE'>('all');
 
-const categories = [
-  { id: 'all', label: 'Tất cả vật phẩm', icon: Package },
-  { id: 'HEAD', label: 'Mũ & Nón', icon: GraduationCap },
-  { id: 'WEAPON', label: 'Bút & Kiếm', icon: Sword },
-  { id: 'ARMOR', label: 'Trang Phục', icon: Shirt },
-  { id: 'ACCESSORY', label: 'Ngọc & Phụ Kiện', icon: Gem },
-  { id: 'CONSUMABLE', label: 'Dược Liệu & Trà', icon: Coffee },
-];
+const categories = computed(() => [
+  { id: 'all', label: tDual('shopDetail.catAll', '全品类'), icon: Package },
+  { id: 'HEAD', label: tDual('shopDetail.catHead', '冠冕发簪'), icon: GraduationCap },
+  { id: 'WEAPON', label: tDual('shopDetail.catWeapon', '神兵判官笔'), icon: Sword },
+  { id: 'ARMOR', label: tDual('shopDetail.catArmor', '玄锦道袍'), icon: Shirt },
+  { id: 'ACCESSORY', label: tDual('shopDetail.catAccessory', '灵玉佩饰'), icon: Gem },
+  { id: 'CONSUMABLE', label: tDual('shopDetail.catConsumable', '丹药香茗'), icon: Coffee },
+]);
 
 function getCategoryCount(catId: string) {
   if (catId === 'all') return items.value.length;
@@ -267,7 +269,7 @@ async function loadShopData() {
 
 async function handleBuy(item: any) {
   if (walletGold.value < item.priceGold) {
-    showToast('Bạn không đủ Gold để mua vật phẩm này!');
+    showToast(t('shopDetail.notEnoughGoldAlert'));
     return;
   }
 
@@ -281,9 +283,9 @@ async function handleBuy(item: any) {
     if (res?.data?.purchase?.wallet) {
       walletGold.value = res.data.purchase.wallet.balanceGold;
     }
-    showToast(res?.data?.message || 'Mua vật phẩm thành công!');
+    showToast(res?.data?.message || t('shopDetail.buySuccess'));
   } catch (err: any) {
-    showToast(`Lỗi khi mua: ${err?.data?.message || err.message || 'Giao dịch thất bại'}`);
+    showToast(t('shopDetail.buyError', { err: err?.data?.message || err.message || 'Purchase error' }));
   } finally {
     isBuying.value = null;
   }
@@ -291,10 +293,10 @@ async function handleBuy(item: any) {
 
 function formatSlotName(slot: string) {
   const map: Record<string, string> = {
-    HEAD: 'Nón / Mũ',
-    WEAPON: 'Vũ khí / Bút lông',
-    ARMOR: 'Áo giáp / Y phục',
-    ACCESSORY: 'Phụ kiện / Ngọc bội',
+    HEAD: tDual('inventoryDetail.slotHead', '头部装备'),
+    WEAPON: tDual('inventoryDetail.slotWeapon', '武器法宝'),
+    ARMOR: tDual('inventoryDetail.slotArmor', '防御道袍'),
+    ACCESSORY: tDual('inventoryDetail.slotAccessory', '佩饰法器'),
   };
   return map[slot] || slot;
 }

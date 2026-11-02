@@ -4,11 +4,11 @@
     <div class="text-center mb-6">
       <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-gold-300 text-xs font-bold mb-2">
         <Sparkles :size="13" class="text-gold-400" />
-        <span>Chiến Thuật Phân Tích Bộ Thủ (部首)</span>
+        <span>{{ tDual('radicals.tag', '部首战术拆解') }}</span>
       </div>
-      <h3 class="text-xl sm:text-2xl font-bold font-heading text-white">Giải Mã Cấu Trúc Chữ Hán</h3>
+      <h3 class="text-xl sm:text-2xl font-bold font-heading text-white">{{ tDual('radicals.title', '破译汉字架构') }}</h3>
       <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">
-        Hiểu rõ từng thành phần bộ thủ để ghi nhớ chữ Hán vĩnh viễn, không học vẹt!
+        {{ t('radicals.desc') }}
       </p>
     </div>
 
@@ -45,7 +45,7 @@
 
         <!-- Radical Badge -->
         <div class="bg-surface-950/80 border border-surface-750 rounded-2xl p-3 sm:text-right flex sm:flex-col items-center sm:items-end gap-3 sm:gap-1">
-          <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Bộ thủ chủ đạo:</span>
+          <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">{{ tDual('radicals.mainRadical', '主导部首') }}</span>
           <div class="flex items-center gap-2">
             <span class="font-hanzi font-bold text-2xl text-gold-400">{{ activeRadical }}</span>
             <span class="text-xs font-bold text-slate-200">({{ radicalTitle }})</span>
@@ -57,7 +57,7 @@
       <div class="py-6">
         <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
           <Layers :size="14" class="text-gold-400" />
-          <span>Các thành phần cấu thành chữ:</span>
+          <span>{{ tDual('radicals.components', '汉字组成构件') }}</span>
         </h4>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -81,7 +81,7 @@
       <div class="p-4 rounded-2xl bg-gold-500/10 border border-gold-500/25 text-left mb-6">
         <div class="flex items-center gap-2 text-xs font-black uppercase text-gold-300 mb-1">
           <BookOpen :size="14" />
-          <span>Bí kíp ghi nhớ độc quyền:</span>
+          <span>{{ tDual('radicals.exclusiveMnemonic', '独家助记心法') }}</span>
         </div>
         <p class="text-xs sm:text-sm text-gold-100 font-medium leading-relaxed">
           {{ tacticalStory }}
@@ -91,7 +91,7 @@
       <!-- Mini-Challenge: Radical Assembly -->
       <div class="pt-4 border-t border-surface-800 text-center">
         <div class="text-xs font-bold text-slate-300 mb-3">
-          🎯 Thử thách kiếm sĩ: Chữ <span class="text-gold-300 font-bold font-hanzi text-base">{{ currentItem.simplified }}</span> mang bộ thủ chủ đạo nào?
+          🎯 {{ t('radicals.challengePrompt', { char: currentItem.simplified }) }}
         </div>
 
         <div class="grid grid-cols-3 gap-3 max-w-sm mx-auto mb-4">
@@ -113,7 +113,7 @@
           <div class="flex items-center gap-2 text-xs font-bold" :class="isCorrect ? 'text-emerald-400' : 'text-amber-400'">
             <CheckCircle2 v-if="isCorrect" :size="18" />
             <AlertCircle v-else :size="18" />
-            <span>{{ isCorrect ? 'Tuyệt vời! Bạn đã ghi nhớ bộ thủ chuẩn xác.' : 'Chưa đúng, bộ thủ chính là: ' + activeRadical }}</span>
+            <span>{{ isCorrect ? t('radicals.correctFeedback') : t('radicals.incorrectFeedback', { radical: activeRadical }) }}</span>
           </div>
 
           <button
@@ -121,7 +121,7 @@
             @click="nextItem"
             class="min-h-[40px] px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-glow-brand transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
           >
-            <span>{{ currentIndex < totalItems - 1 ? 'Từ tiếp theo' : 'Hoàn tất phân tích' }}</span>
+            <span>{{ currentIndex < totalItems - 1 ? tDual('radicals.nextWord', '下一个词') : tDual('radicals.finishRadicals', '完成拆解') }}</span>
             <ArrowRight :size="14" />
           </button>
         </div>
@@ -130,9 +130,9 @@
 
     <!-- Stepper Footer -->
     <div class="flex items-center gap-3 text-xs text-slate-400">
-      <span>Từ {{ currentIndex + 1 }} / {{ totalItems }}</span>
+      <span>{{ t('radicals.itemOf', { current: currentIndex + 1, total: totalItems }) }}</span>
       <span>•</span>
-      <span>Nhấn để bẻ khóa cấu trúc chữ</span>
+      <span>{{ t('radicals.tapToUnlock') }}</span>
     </div>
   </div>
 </template>
@@ -159,7 +159,7 @@ const activeRadical = computed(() => {
 
 const radicalTitle = computed(() => {
   const radInfo = currentItem.value.radicalStrategy?.radicalInfo;
-  return radInfo?.meaningVi || 'Bộ thủ cơ bản';
+  return (currentOrigin.value === 'vi' ? radInfo?.meaningVi : radInfo?.meaningEn) || radInfo?.meaningVi || radInfo?.meaningEn || t('radicals.defaultRadicalMeaning');
 });
 
 const breakdownComponents = computed(() => {
@@ -167,8 +167,8 @@ const breakdownComponents = computed(() => {
     return currentItem.value.radicalStrategy.components;
   }
   return [
-    { char: activeRadical.value, nameVi: radicalTitle.value, role: 'Bộ thủ chỉ ý nghĩa' },
-    { char: currentItem.value.simplified || '字', nameVi: 'Thân chữ', role: 'Biểu thị âm điệu & hình dáng' },
+    { char: activeRadical.value, nameVi: radicalTitle.value, role: t('radicals.semanticRadicalRole') },
+    { char: currentItem.value.simplified || '字', nameVi: t('radicals.charBody'), role: t('radicals.bodyRole') },
   ];
 });
 
@@ -176,7 +176,7 @@ const tacticalStory = computed(() => {
   if (currentItem.value.radicalStrategy?.tacticalStory) {
     return currentItem.value.radicalStrategy.tacticalStory;
   }
-  return `Chữ "${currentItem.value.simplified}" (${currentItem.value.pinyin}) có bộ thủ "${activeRadical.value}" làm điểm tựa ý nghĩa, biểu thị nhóm khái niệm liên quan trong tiếng Hán.`;
+  return t('radicals.tacticalStoryFallback', { char: currentItem.value.simplified, pinyin: currentItem.value.pinyin, radical: activeRadical.value });
 });
 
 // Quiz Options

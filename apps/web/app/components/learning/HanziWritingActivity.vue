@@ -4,11 +4,11 @@
     <div class="text-center mb-6">
       <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-bold mb-2">
         <PenTool :size="13" class="text-emerald-400" />
-        <span>Tập Viết & Bút Thuận Chữ Hán (笔画)</span>
+        <span>{{ tDual('writing.tag', '汉字书写与笔顺') }}</span>
       </div>
-      <h3 class="text-xl sm:text-2xl font-bold font-heading text-white">Luyện Viết Bút Pháp Thần Công</h3>
+      <h3 class="text-xl sm:text-2xl font-bold font-heading text-white">{{ tDual('writing.title', '神功笔法练习') }}</h3>
       <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">
-        Lựa chọn giữa tự tay vẽ nét hoặc thử thách chọn thứ tự từng nét theo chuẩn bút thuận.
+        {{ t('writing.desc') }}
       </p>
     </div>
 
@@ -21,7 +21,7 @@
         :class="practiceMode === 'draw' ? 'bg-emerald-600 text-white shadow-glow-jade' : 'text-slate-400 hover:text-white'"
       >
         <PenTool :size="14" />
-        <span>1. Tự tay vẽ nét (Canvas)</span>
+        <span>1. {{ tDual('writing.modeCanvas', '自由临摹') }}</span>
       </button>
 
       <button
@@ -31,7 +31,7 @@
         :class="practiceMode === 'order' ? 'bg-amber-600 text-white shadow-glow-gold' : 'text-slate-400 hover:text-white'"
       >
         <Sparkles :size="14" />
-        <span>2. Thử thách chọn thứ tự nét</span>
+        <span>2. {{ tDual('writing.modeOrder', '笔顺挑战') }}</span>
       </button>
     </div>
 
@@ -48,7 +48,7 @@
         </div>
 
         <div class="text-right">
-          <div class="text-xs text-slate-400 font-bold uppercase tracking-wider">Từ vựng</div>
+          <div class="text-xs text-slate-400 font-bold uppercase tracking-wider">{{ tDual('writing.vocab', '生词') }}</div>
           <div class="text-sm font-extrabold text-gold-300">{{ currentIndex + 1 }} / {{ totalWords }}</div>
         </div>
       </div>
@@ -71,10 +71,10 @@
               class="px-3 py-1 rounded-full text-xs font-bold border transition-colors"
               :class="writerMode === 'quiz' ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300' : 'bg-surface-850 border-surface-750 text-slate-400'"
             >
-              {{ writerMode === 'quiz' ? '✍️ Chế độ: Vẽ từng nét bằng chuột/tay' : '👀 Chế độ: Xem biểu diễn mẫu' }}
+              {{ writerMode === 'quiz' ? ('✍️ ' + tDual('writing.modeQuiz', '临摹模式')) : ('👀 ' + tDual('writing.modeDemo', '演示模式')) }}
             </span>
             <span v-if="mistakes > 0" class="text-xs text-amber-400 font-medium">
-              (Nét vẽ chưa chuẩn: {{ mistakes }})
+              ({{ t('writing.mistakes', { count: mistakes }) }})
             </span>
           </div>
         </div>
@@ -87,7 +87,7 @@
             class="min-h-[42px] px-4 py-2 rounded-xl bg-surface-850 hover:bg-surface-800 border border-surface-750 text-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
           >
             <Play :size="14" class="text-gold-400" />
-            <span>Thị phạm mẫu</span>
+            <span>{{ tDual('writing.btnDemo', '演示') }}</span>
           </button>
 
           <button
@@ -96,7 +96,7 @@
             class="min-h-[42px] px-4 py-2 rounded-xl bg-surface-850 hover:bg-surface-800 border border-surface-750 text-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
           >
             <RotateCcw :size="14" class="text-slate-400" />
-            <span>Vẽ lại</span>
+            <span>{{ tDual('writing.btnRedo', '重写') }}</span>
           </button>
 
           <button
@@ -105,17 +105,17 @@
             class="min-h-[42px] px-4 py-2 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
           >
             <PenTool :size="14" class="text-emerald-400" />
-            <span>Luyện viết ngay</span>
+            <span>{{ tDual('writing.btnWriteNow', '开始临摹') }}</span>
           </button>
         </div>
       </div>
 
-      <!-- MODE 2: STROKE ORDER CHALLENGE (CHỌN THỨ TỰ NÉT) -->
+      <!-- MODE 2: STROKE ORDER CHALLENGE -->
       <div v-if="practiceMode === 'order'" class="w-full flex flex-col items-center">
         <!-- Hanzi Display Stage with Interactive Stroke Highlighting -->
         <div class="relative w-full max-w-md bg-wood-950 border-2 border-wood-750 rounded-3xl p-6 flex flex-col items-center justify-center shadow-inner mb-6">
           <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
-            Đã hoàn thành nét: <span class="text-gold-400 font-extrabold">{{ currentStrokeIndex }}</span> / {{ strokeCount }}
+            {{ tDual('writing.completedStrokesLabel', '已完成笔画') }}: <span class="text-gold-400 font-extrabold">{{ currentStrokeIndex }}</span> / {{ strokeCount }}
           </div>
 
           <!-- SVG Character Stage (Renders completed strokes and outline) -->
@@ -162,18 +162,18 @@
 
             <!-- Loading indicator -->
             <div v-else class="text-xs text-slate-500 animate-pulse">
-              Đang tải dữ liệu bút thuận...
+              {{ tDual('writing.loadingStrokes', '正在加载笔画数据...') }}
             </div>
           </div>
 
           <!-- Instruction Pill -->
           <div class="mt-4 px-4 py-1.5 rounded-full bg-surface-900 border border-surface-750 text-xs font-bold text-slate-300 text-center">
             <span v-if="currentStrokeIndex < strokeCount">
-              👉 Hãy chọn <span class="text-gold-300 font-extrabold">Nét thứ {{ currentStrokeIndex + 1 }}</span> trong số các nét bên dưới:
+              👉 {{ t('writing.chooseStroke', { index: currentStrokeIndex + 1 }) }}
             </span>
             <span v-else class="text-emerald-400 font-extrabold flex items-center justify-center gap-1.5">
               <CheckCircle2 :size="14" />
-              <span>Xuất sắc! Bạn đã xác định chuẩn toàn bộ {{ strokeCount }} nét bút thuận.</span>
+              <span>{{ t('writing.allStrokesCorrect', { count: strokeCount }) }}</span>
             </span>
           </div>
         </div>
@@ -181,7 +181,7 @@
         <!-- Stroke Options Grid (Shuffled stroke previews to click) -->
         <div v-if="currentStrokeIndex < strokeCount && rawStrokeData" class="w-full">
           <div class="text-center text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
-            Chọn nét đúng cho bước này:
+            {{ tDual('writing.chooseStrokeStep', '选择当前正确的笔画') }}
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-lg mx-auto">
@@ -209,7 +209,7 @@
                 </svg>
               </div>
               <span class="text-[10px] text-slate-400 font-bold group-hover:text-slate-200">
-                Lựa chọn {{ optIdx + 1 }}
+                {{ t('writing.option', { index: optIdx + 1 }) }}
               </span>
             </button>
           </div>
@@ -223,7 +223,7 @@
             class="px-4 py-2 rounded-xl bg-surface-850 hover:bg-surface-800 border border-surface-750 text-slate-300 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
           >
             <RotateCcw :size="14" />
-            <span>Làm lại từ nét đầu</span>
+            <span>{{ tDual('writing.restartFromFirst', '从第一画重新开始') }}</span>
           </button>
         </div>
       </div>
@@ -235,7 +235,7 @@
       >
         <div class="flex items-center gap-2.5 text-emerald-300 text-xs font-bold">
           <CheckCircle2 :size="20" class="text-emerald-400 shrink-0" />
-          <span>Bút pháp chuẩn xác! Bạn đã hoàn thành chữ {{ currentWord.simplified }}.</span>
+          <span>{{ t('writing.wordFinished', { char: currentWord.simplified }) }}</span>
         </div>
 
         <button
@@ -243,7 +243,7 @@
           @click="nextWord"
           class="min-h-[42px] px-6 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-glow-brand transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
         >
-          <span>{{ currentIndex < totalWords - 1 ? 'Từ tiếp theo' : 'Hoàn tất phần Viết' }}</span>
+          <span>{{ currentIndex < totalWords - 1 ? tDual('writing.nextWord', '下一个词') : tDual('writing.finishWriting', '完成书写') }}</span>
           <ArrowRight :size="14" />
         </button>
       </div>
@@ -251,7 +251,7 @@
 
     <!-- Tips -->
     <div class="mt-4 text-[11px] text-slate-400 flex items-center gap-3 text-center">
-      <span>💡 Khẩu quyết bút thuận: Ngang trước sổ sau • Phẩy trước mác sau • Trên trước dưới sau • Ngoài trước trong sau • Vào trước đóng sau</span>
+      <span>💡 {{ t('writing.strokeMantra') }}</span>
     </div>
   </div>
 </template>
@@ -259,6 +259,9 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, nextTick } from 'vue';
 import { PenTool, Play, RotateCcw, CheckCircle2, ArrowRight, Sparkles } from 'lucide-vue-next';
+import { useOriginLanguage } from '~/composables/useOriginLanguage';
+
+const { t, tDual } = useOriginLanguage();
 
 const props = defineProps<{
   vocabulary: any[];

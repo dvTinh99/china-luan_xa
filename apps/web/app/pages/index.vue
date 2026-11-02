@@ -24,14 +24,14 @@
           <div class="space-y-2">
             <div class="flex flex-wrap items-center gap-2.5">
               <h1 class="text-2xl sm:text-3xl font-black font-rpg text-white tracking-wide">
-                {{ characterName || 'Lữ Khách Phương Xa' }}
+                {{ characterName || tDual('home.traveler', '异乡游侠') }}
               </h1>
               <RpgBadge variant="gold" size="sm">
                 HSK 3.0 Band 1
               </RpgBadge>
             </div>
             <p class="text-xs text-amber-200/70 font-medium">
-              Võ sinh tại Tân Thủ Thôn • Hành trình chinh phục Hán tự
+              {{ tDual('home.apprenticeBio', '新手村武生 • 汉字修仙历练之旅') }}
             </p>
 
             <!-- Mini Vitals (HP & EXP) -->
@@ -39,7 +39,7 @@
               <RpgProgressBar
                 :value="characterHp"
                 :max="characterMaxHp"
-                label="Sinh lực (HP)"
+                :label="tDual('characterDetail.hp', '气血值 (HP)')"
                 color="jade"
                 size="sm"
               >
@@ -51,7 +51,7 @@
               <RpgProgressBar
                 :value="characterExp"
                 :max="nextLevelExp"
-                label="Kinh nghiệm"
+                :label="tDual('characterDetail.exp', '经验值 (EXP)')"
                 color="purple"
                 size="sm"
               >
@@ -73,7 +73,7 @@
             <template #prefix>
               <BookOpen :size="18" aria-hidden="true" />
             </template>
-            Tiếp tục học tập
+            {{ tDual('home.continueStudy', '继续修炼') }}
           </RpgButton>
 
           <RpgButton
@@ -84,7 +84,7 @@
             <template #prefix>
               <Gamepad2 :size="18" class="text-sky-400" aria-hidden="true" />
             </template>
-            Vào Làng 2D
+            {{ tDual('home.enterVillage', '进入大千世界') }}
           </RpgButton>
         </div>
       </div>
@@ -97,26 +97,26 @@
         <!-- 1. Next Recommended Activity Banner -->
         <RpgCard
           variant="wood"
-          title="Tiến Trình Học Tiếp Theo"
+          :title="tDual('home.nextProgressTitle', '后续进阶境界')"
         >
           <template #icon>
             <Flame :size="18" class="text-dragon-400" aria-hidden="true" />
           </template>
           <template #header>
-            <RpgBadge variant="dragon" size="sm">Đề xuất ưu tiên</RpgBadge>
+            <RpgBadge variant="dragon" size="sm">{{ tDual('home.recommendedTag', '首选突破') }}</RpgBadge>
           </template>
 
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="space-y-1">
-              <div class="text-xs text-gold-400 font-bold uppercase tracking-wider">Bài học sắp tới</div>
+              <div class="text-xs text-gold-400 font-bold uppercase tracking-wider">{{ tDual('home.upcomingLesson', '即临关卡') }}</div>
               <h4 class="text-lg font-bold font-heading text-white">
-                {{ nextRecommendedLesson?.title || 'Lời chào cơ bản & Đại từ nhân xưng' }}
+                {{ nextRecommendedLesson?.title || tDual('home.defaultLessonTitle', '基础问候与代词') }}
               </h4>
               <p class="text-xs text-amber-200/70 line-clamp-2 leading-relaxed">
-                {{ nextRecommendedLesson?.description || 'Học các đại từ cơ bản: 你, 我, 他, 她, 们, 好, 见... kèm Flashcard, Nối từ và Trắc nghiệm.' }}
+                {{ nextRecommendedLesson?.description || t('home.defaultLessonDesc') }}
               </p>
               <div class="flex items-center gap-4 text-xs font-bold pt-2">
-                <span class="text-amber-200/60">📖 12 từ vựng</span>
+                <span class="text-amber-200/60">📖 {{ t('home.vocabCount', { count: 12 }) }}</span>
                 <span class="text-purple-400">+50 EXP</span>
                 <span class="text-gold-400">+20 Gold 🪙</span>
               </div>
@@ -131,15 +131,15 @@
               <template #suffix>
                 <ArrowRight :size="16" aria-hidden="true" />
               </template>
-              Vào học ngay
+              {{ tDual('home.startNow', '立即启程') }}
             </RpgButton>
           </div>
         </RpgCard>
 
-        <!-- 2. Active Daily Quests Board (Nhiệm Vụ Hàng Ngày) -->
+        <!-- 2. Active Daily Quests Board -->
         <RpgCard
           variant="board"
-          title="Bảng Nhiệm Vụ Hàng Ngày (Quest Board)"
+          :title="tDual('home.questBoardTitle', '宗门每日任务榜')"
         >
           <template #icon>
             <Scroll :size="18" class="text-gold-400" aria-hidden="true" />
@@ -156,8 +156,8 @@
                   <RotateCcw :size="18" aria-hidden="true" />
                 </div>
                 <div>
-                  <div class="text-sm font-bold text-slate-100">Luyện nhớ Thần Tháp (FSRS)</div>
-                  <div class="text-xs text-slate-400">Ôn tập toàn bộ các thẻ từ đến hạn hôm nay</div>
+                  <div class="text-sm font-bold text-slate-100">{{ tDual('home.quest1Title', '试炼神塔 (FSRS)') }}</div>
+                  <div class="text-xs text-slate-400">{{ t('home.quest1Desc') }}</div>
                 </div>
               </div>
               <div class="flex items-center gap-3 shrink-0">
@@ -170,7 +170,7 @@
                   variant="gold"
                   size="sm"
                 >
-                  Ôn tập
+                  {{ tDual('home.btnReview', '复习') }}
                 </RpgButton>
               </div>
             </div>
@@ -182,8 +182,8 @@
                   <BookOpen :size="18" aria-hidden="true" />
                 </div>
                 <div>
-                  <div class="text-sm font-bold text-slate-100">Khai mở thư tịch cổ</div>
-                  <div class="text-xs text-slate-400">Hoàn thành ít nhất 1 bài học HSK 3.0 với độ chính xác &gt; 80%</div>
+                  <div class="text-sm font-bold text-slate-100">{{ tDual('home.quest2Title', '开启古老典籍') }}</div>
+                  <div class="text-xs text-slate-400">{{ t('home.quest2Desc') }}</div>
                 </div>
               </div>
               <div class="flex items-center gap-3 shrink-0">
@@ -196,7 +196,7 @@
                   variant="wood"
                   size="sm"
                 >
-                  Làm bài
+                  {{ tDual('home.btnStudy', '研读') }}
                 </RpgButton>
               </div>
             </div>
@@ -208,8 +208,8 @@
                   <Gamepad2 :size="18" aria-hidden="true" />
                 </div>
                 <div>
-                  <div class="text-sm font-bold text-slate-100">Thám hiểm Tân Thủ Thôn 2D</div>
-                  <div class="text-xs text-slate-400">Dạo bước trong thế giới 2D và đối thoại cùng NPC Trưởng thôn</div>
+                  <div class="text-sm font-bold text-slate-100">{{ tDual('home.quest3Title', '踏足新手村2D') }}</div>
+                  <div class="text-xs text-slate-400">{{ t('home.quest3Desc') }}</div>
                 </div>
               </div>
               <div class="flex items-center gap-3 shrink-0">
@@ -222,7 +222,7 @@
                   variant="wood"
                   size="sm"
                 >
-                  Khám phá
+                  {{ tDual('home.btnExplore', '探寻') }}
                 </RpgButton>
               </div>
             </div>
@@ -235,26 +235,24 @@
         <!-- 3. Spaced Repetition (SRS) Status Box -->
         <RpgCard
           variant="wood"
-          title="Thần Tháp Ôn Tập (FSRS)"
+          :title="tDual('home.srsTowerTitle', '记忆神塔 (FSRS)')"
         >
           <template #icon>
             <RotateCcw :size="18" class="text-gold-400" aria-hidden="true" />
           </template>
           <template #header>
             <RpgBadge :variant="dueCount > 0 ? 'dragon' : 'jade'" size="sm">
-              {{ dueCount > 0 ? `${dueCount} thẻ đến hạn` : 'Đã hoàn tất' }}
+              {{ dueCount > 0 ? t('home.dueCardsCount', { count: dueCount }) : tDual('home.allDone', '全部达成') }}
             </RpgBadge>
           </template>
 
           <div class="text-center py-4">
             <div class="w-20 h-20 rounded-3xl bg-wood-900 border-2 border-wood-700 flex flex-col items-center justify-center mx-auto mb-3 shadow-inner">
               <span class="text-3xl font-black font-heading text-gold-400">{{ dueCount }}</span>
-              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Từ cần ôn</span>
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{{ tDual('home.cardsToReview', '待复习词汇') }}</span>
             </div>
             <p class="text-xs text-amber-200/70 max-w-xs mx-auto leading-relaxed mb-5">
-              {{ dueCount > 0 
-                ? 'Thuật toán FSRS phát hiện các từ sắp phai nhạt trong trí nhớ. Hãy củng cố ngay để đạt điểm ổn định cao nhất!' 
-                : 'Trí nhớ của bạn đang trong trạng thái tối ưu. Không có thẻ nào bị trễ hạn hôm nay.' }}
+              {{ dueCount > 0 ? t('home.fsrsDueDesc') : t('home.fsrsOptimalDesc') }}
             </p>
 
             <RpgButton
@@ -266,7 +264,7 @@
               <template #prefix>
                 <RotateCcw :size="16" aria-hidden="true" />
               </template>
-              {{ dueCount > 0 ? 'Bắt đầu phiên ôn tập' : 'Ôn luyện tự do' }}
+              {{ dueCount > 0 ? tDual('home.startReviewSession', '开启复习轮次') : tDual('home.freePractice', '自由练习') }}
             </RpgButton>
           </div>
         </RpgCard>
@@ -274,7 +272,7 @@
         <!-- 4. Learning Mastery Progress Summary -->
         <RpgCard
           variant="wood"
-          title="Chỉ Số Tinh Thông Ngôn Ngữ"
+          :title="tDual('home.masteryIndexTitle', '语言熟练掌握度')"
         >
           <template #icon>
             <Award :size="18" class="text-emerald-400" aria-hidden="true" />
@@ -283,11 +281,11 @@
           <div class="space-y-4">
             <div class="grid grid-cols-2 gap-3">
               <div class="p-3.5 bg-wood-950/70 rounded-2xl border border-wood-800 text-center">
-                <div class="text-[11px] text-slate-400 font-semibold">Từ đã tiếp cận</div>
+                <div class="text-[11px] text-slate-400 font-semibold">{{ tDual('home.wordsEncountered', '已涉猎词汇') }}</div>
                 <div class="text-2xl font-black font-heading text-gold-300 mt-1">{{ proficiency.vocabularyEnrolled || 12 }}</div>
               </div>
               <div class="p-3.5 bg-wood-950/70 rounded-2xl border border-wood-800 text-center">
-                <div class="text-[11px] text-slate-400 font-semibold">Đã tinh thông</div>
+                <div class="text-[11px] text-slate-400 font-semibold">{{ tDual('home.allDone', '已融会贯通') }}</div>
                 <div class="text-2xl font-black font-heading text-emerald-400 mt-1">{{ proficiency.masteredCount || 5 }}</div>
               </div>
             </div>
@@ -295,8 +293,8 @@
             <RpgProgressBar
               :value="proficiency.masteredCount || 5"
               :max="proficiency.vocabularyEnrolled || 12"
-              label="Tỷ lệ thuần thục HSK 3.0"
-              unit="từ"
+              :label="tDual('home.hskMasteryRate', 'HSK 3.0 掌握度')"
+              :unit="t('home.unitWords')"
               color="gold"
               size="md"
             />
@@ -306,7 +304,7 @@
         <!-- 5. Recent Achievements -->
         <RpgCard
           variant="wood"
-          title="Thành Tựu Mới Mở Khóa"
+          :title="tDual('home.achievementsTitle', '最新达成成就')"
         >
           <template #icon>
             <Trophy :size="18" class="text-gold-400" aria-hidden="true" />
@@ -318,10 +316,10 @@
                 <Sparkles :size="18" aria-hidden="true" />
               </div>
               <div class="flex-1 min-w-0">
-                <div class="text-xs font-bold text-white truncate">Khởi Đầu Hành Trình</div>
-                <div class="text-[10px] text-slate-400 truncate">Tạo thành công nhân vật đầu tiên</div>
+                <div class="text-xs font-bold text-white truncate">{{ tDual('home.achieve1Title', '启程初试') }}</div>
+                <div class="text-[10px] text-slate-400 truncate">{{ t('home.achieve1Desc') }}</div>
               </div>
-              <span class="text-xs text-gold-400 font-bold shrink-0">✓ Đạt</span>
+              <span class="text-xs text-gold-400 font-bold shrink-0">{{ t('home.achieved') }}</span>
             </div>
 
             <div class="flex items-center gap-3 p-3 rounded-2xl bg-wood-900 border border-wood-750">
@@ -329,10 +327,10 @@
                 <Shield :size="18" aria-hidden="true" />
               </div>
               <div class="flex-1 min-w-0">
-                <div class="text-xs font-bold text-white truncate">Âm Điệu Tiên Phong</div>
-                <div class="text-[10px] text-slate-400 truncate">Luyện nghe phát âm chuẩn 10 từ đầu tiên</div>
+                <div class="text-xs font-bold text-white truncate">{{ tDual('home.achieve2Title', '声韵先锋') }}</div>
+                <div class="text-[10px] text-slate-400 truncate">{{ t('home.achieve2Desc') }}</div>
               </div>
-              <span class="text-xs text-gold-400 font-bold shrink-0">✓ Đạt</span>
+              <span class="text-xs text-gold-400 font-bold shrink-0">{{ t('home.achieved') }}</span>
             </div>
           </div>
         </RpgCard>
@@ -342,6 +340,7 @@
 </template>
 
 <script setup lang="ts">
+import { useOriginLanguage } from '~/composables/useOriginLanguage';
 import {
   Heart,
   Zap,
@@ -360,6 +359,8 @@ import {
 definePageMeta({
   layout: 'default',
 });
+
+const { t, tDual } = useOriginLanguage();
 
 // Fetch user character and proficiency
 const { data: authData } = await useFetch<any>('/api/auth/me');
