@@ -19,9 +19,19 @@ export default defineNuxtConfig({
   // Nitro Server Configuration
   // ---------------------------------------------------------------------------
   nitro: {
+    preset: 'cloudflare-pages',
     externals: {
       inline: ['@vue/server-renderer', 'vue'],
     },
+  },
+
+  routeRules: {
+    // Cache dài hạn cho các file build của Godot để người chơi không phải tải lại
+    '/godot/**': {
+      headers: {
+        'Cache-Control': 'public, max-age=31536000, immutable'
+      }
+    }
   },
 
   // ---------------------------------------------------------------------------
