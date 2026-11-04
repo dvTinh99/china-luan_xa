@@ -83,9 +83,15 @@
     </div>
 
     <!-- Loading State -->
-    <div v-if="isLoading" class="text-center py-16 text-amber-200/50">
-      <Loader2 :size="32" class="animate-spin mx-auto mb-3 text-gold-400" />
-      <span>{{ t('shopDetail.loading') }}</span>
+    <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6" role="status" aria-busy="true">
+      <div v-for="card in 6" :key="card" class="min-h-[276px] rounded-3xl bg-wood-900/80 border-2 border-wood-750 p-5 flex flex-col justify-between animate-pulse">
+        <div class="space-y-5">
+          <div class="flex justify-between"><div class="w-12 h-12 rounded-2xl bg-wood-800" /><div class="w-16 h-5 rounded-full bg-wood-800" /></div>
+          <div class="space-y-2"><div class="w-2/3 h-5 rounded bg-wood-800" /><div class="w-full h-3 rounded bg-wood-800" /><div class="w-4/5 h-3 rounded bg-wood-800" /></div>
+        </div>
+        <div class="flex justify-between items-center pt-5"><div class="w-20 h-6 rounded bg-wood-800" /><div class="w-24 h-10 rounded-xl bg-wood-800" /></div>
+      </div>
+      <span class="sr-only">{{ t('shopDetail.loading') }}</span>
     </div>
 
     <!-- Items Grid -->

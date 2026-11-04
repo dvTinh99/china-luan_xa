@@ -117,10 +117,11 @@
 
           <!-- Counter Display -->
           <div class="my-4 text-center">
-            <div class="text-4xl sm:text-5xl font-black font-heading text-gold-300 srs-counter">
+            <div v-if="isSrsLoading" class="mx-auto w-20 h-14 rounded-xl bg-wood-800 animate-pulse" aria-hidden="true" />
+            <div v-else class="text-4xl sm:text-5xl font-black font-heading text-gold-300 srs-counter">
               {{ dueCount }}
             </div>
-            <p class="text-xs text-amber-200/60 mt-1 font-medium">
+            <p v-if="!isSrsLoading" class="text-xs text-amber-200/60 mt-1 font-medium">
               {{ dueCount > 0 ? (dueCount + ' ' + tDual('learnIndex.cardsDue', '张生词已到复习时刻')) : ui.srsEmpty }}
             </p>
           </div>
@@ -469,6 +470,7 @@ const totalRewards = computed(() => {
 });
 
 const dueCount = ref(0);
+const isSrsLoading = ref(true);
 
 // GSAP Animations & Lifecycles
 const heroBentoRef = ref<HTMLElement | null>(null);
@@ -480,6 +482,8 @@ onMounted(async () => {
     dueCount.value = srs?.data?.dueCount ?? 4;
   } catch (e) {
     dueCount.value = 4; // Friendly fallback count for demo
+  } finally {
+    isSrsLoading.value = false;
   }
 
   await nextTick();

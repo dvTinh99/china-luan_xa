@@ -36,7 +36,8 @@
           </div>
           <div>
             <div class="text-[10px] text-amber-200/50 uppercase font-bold">{{ tDual('shopDetail.yourWallet', '随身资产') }}</div>
-            <div class="text-lg font-black font-heading text-gold-300 leading-tight">
+            <div v-if="isLoading" class="w-20 h-5 rounded bg-wood-800 animate-pulse" />
+            <div v-else class="text-lg font-black font-heading text-gold-300 leading-tight">
               {{ walletBalance }} <span class="text-xs font-semibold text-gold-500">Gold</span>
             </div>
           </div>
@@ -72,9 +73,16 @@
     </transition>
 
     <!-- Loading Skeleton -->
-    <div v-if="isLoading" class="text-center py-20 text-amber-200/50">
-      <Loader2 :size="32" class="animate-spin mx-auto mb-2 text-gold-400" />
-      <span>{{ tDual('characterDetail.loadingStudio', '正在准备侠客衣橱...') }}</span>
+    <div v-if="isLoading" class="grid grid-cols-1 lg:grid-cols-12 gap-6" role="status" aria-busy="true">
+      <div class="lg:col-span-5 space-y-6 animate-pulse">
+        <div class="min-h-[420px] rounded-3xl bg-wood-900 border-2 border-wood-750" />
+        <div class="h-40 rounded-3xl bg-wood-900 border-2 border-wood-750" />
+      </div>
+      <div class="lg:col-span-7 space-y-6 animate-pulse">
+        <div class="min-h-[420px] rounded-3xl bg-wood-900 border-2 border-wood-750" />
+        <div class="h-40 rounded-3xl bg-wood-900 border-2 border-wood-750" />
+      </div>
+      <span class="sr-only">{{ tDual('characterDetail.loadingStudio', '正在准备侠客衣橱...') }}</span>
     </div>
 
     <!-- Main Studio Grid -->
@@ -122,7 +130,12 @@
         <span class="text-xs text-amber-200/50">{{ transactions.length }} {{ tDual('characterDetail.txRecent', '笔最新记录') }}</span>
       </div>
 
-      <div v-if="transactions.length === 0" class="py-8 text-center text-xs text-amber-200/40">
+      <div v-if="isTransactionsLoading" class="space-y-3 py-2 animate-pulse" role="status" aria-busy="true">
+        <div v-for="row in 3" :key="row" class="flex items-center gap-3"><div class="w-8 h-8 rounded-xl bg-wood-800" /><div class="flex-1 space-y-2"><div class="w-1/3 h-3 rounded bg-wood-800" /><div class="w-1/4 h-2 rounded bg-wood-800" /></div><div class="w-16 h-4 rounded bg-wood-800" /></div>
+        <span class="sr-only">{{ tDual('characterDetail.loadingStudio', '正在准备侠客衣橱...') }}</span>
+      </div>
+
+      <div v-else-if="transactions.length === 0" class="py-8 text-center text-xs text-amber-200/40">
         {{ tDual('characterDetail.txEmpty', '暂无交易记录') }}
       </div>
 
@@ -163,15 +176,20 @@ import {
   Sparkles,
   Shield,
   Coins,
-  Loader2,
   ArrowDownLeft,
   ArrowUpRight,
 } from 'lucide-vue-next';
-import CharacterStage from '../components/character/CharacterStage.client.vue';
+import { defineAsyncComponent } from 'vue';
 import CharacterStatsPanel from '../components/character/CharacterStatsPanel.vue';
 import LearningStatsPanel from '../components/character/LearningStatsPanel.vue';
 import EquipmentCloset from '../components/character/EquipmentCloset.vue';
 import { useCharacterStudio } from '../composables/useCharacterStudio';
+
+// PixiJS + Spine are only needed on this page; keep them out of the app's
+// initial route bundle and load them when the character stage is rendered.
+const CharacterStage = defineAsyncComponent(
+  () => import('../components/character/CharacterStage.client.vue'),
+);
 
 definePageMeta({
   layout: 'default',
@@ -197,6 +215,7 @@ const {
 
 const transactions = ref<any[]>([]);
 const walletBalance = ref(0);
+const isTransactionsLoading = ref(true);
 
 async function loadTransactions() {
   try {
@@ -205,7 +224,10 @@ async function loadTransactions() {
       transactions.value = res.data.transactions || [];
       walletBalance.value = res.data.wallet?.goldBalance ?? 0;
     }
-  } catch (e) {}
+  } catch (e) {
+  } finally {
+    isTransactionsLoading.value = false;
+  }
 }
 
 function formatDate(iso: string) {

@@ -248,7 +248,8 @@
 
           <div class="text-center py-4">
             <div class="w-20 h-20 rounded-3xl bg-wood-900 border-2 border-wood-700 flex flex-col items-center justify-center mx-auto mb-3 shadow-inner">
-              <span class="text-3xl font-black font-heading text-gold-400">{{ dueCount }}</span>
+              <span v-if="isDashboardStatsLoading" class="inline-block w-10 h-9 rounded-lg bg-wood-800 animate-pulse" aria-hidden="true" />
+              <span v-else class="text-3xl font-black font-heading text-gold-400">{{ dueCount }}</span>
               <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{{ tDual('home.cardsToReview', '待复习词汇') }}</span>
             </div>
             <p class="text-xs text-amber-200/70 max-w-xs mx-auto leading-relaxed mb-5">
@@ -282,11 +283,13 @@
             <div class="grid grid-cols-2 gap-3">
               <div class="p-3.5 bg-wood-950/70 rounded-2xl border border-wood-800 text-center">
                 <div class="text-[11px] text-slate-400 font-semibold">{{ tDual('home.wordsEncountered', '已涉猎词汇') }}</div>
-                <div class="text-2xl font-black font-heading text-gold-300 mt-1">{{ proficiency.vocabularyEnrolled || 12 }}</div>
+                <div v-if="isDashboardStatsLoading" class="w-10 h-7 rounded bg-wood-800 animate-pulse mt-1" aria-hidden="true" />
+                <div v-else class="text-2xl font-black font-heading text-gold-300 mt-1">{{ proficiency.vocabularyEnrolled || 12 }}</div>
               </div>
               <div class="p-3.5 bg-wood-950/70 rounded-2xl border border-wood-800 text-center">
                 <div class="text-[11px] text-slate-400 font-semibold">{{ tDual('home.allDone', '已融会贯通') }}</div>
-                <div class="text-2xl font-black font-heading text-emerald-400 mt-1">{{ proficiency.masteredCount || 5 }}</div>
+                <div v-if="isDashboardStatsLoading" class="w-10 h-7 rounded bg-wood-800 animate-pulse mt-1" aria-hidden="true" />
+                <div v-else class="text-2xl font-black font-heading text-emerald-400 mt-1">{{ proficiency.masteredCount || 5 }}</div>
               </div>
             </div>
 
@@ -363,7 +366,10 @@ definePageMeta({
 const { t, tDual } = useOriginLanguage();
 
 // Fetch user character and proficiency
-const { data: authData } = await useFetch<any>('/api/auth/me');
+const [{ data: authData }, { data: coursesData }] = await Promise.all([
+  useFetch<any>('/api/auth/me'),
+  useFetch<any>('/api/learning/courses'),
+]);
 const user = computed(() => authData.value?.data?.user);
 const character = computed(() => user.value?.character || {});
 const characterName = computed(() => character.value?.name || '');
@@ -374,7 +380,6 @@ const characterExp = computed(() => character.value?.exp || 0);
 const nextLevelExp = computed(() => characterLevel.value * 100);
 
 // Fetch courses and next recommended lesson
-const { data: coursesData } = await useFetch<any>('/api/learning/courses');
 const courses = computed(() => coursesData.value?.data?.courses || []);
 const nextRecommendedLesson = computed(() => {
   for (const c of courses.value) {
@@ -389,6 +394,7 @@ const nextRecommendedLesson = computed(() => {
 
 // Fetch SRS statistics
 const dueCount = ref(0);
+const isDashboardStatsLoading = ref(true);
 const proficiency = ref<any>({
   vocabularyEnrolled: 12,
   masteredCount: 5,
@@ -397,13 +403,15 @@ const proficiency = ref<any>({
 
 onMounted(async () => {
   try {
-    const srs = await $fetch<any>('/api/srs/statistics');
+    const [srs, prof] = await Promise.all([
+      $fetch<any>('/api/srs/statistics'),
+      $fetch<any>('/api/character/profile'),
+    ]);
     dueCount.value = srs?.data?.dueCount || 0;
-
-    const prof = await $fetch<any>('/api/character/profile');
-    if (prof?.data?.proficiency) {
-      proficiency.value = prof.data.proficiency;
-    }
-  } catch (e) {}
+    if (prof?.data?.proficiency) proficiency.value = prof.data.proficiency;
+  } catch (e) {
+  } finally {
+    isDashboardStatsLoading.value = false;
+  }
 });
 </script>

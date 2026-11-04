@@ -12,6 +12,7 @@ import type { PrismaClient } from '@prisma/client';
 import { PrismaClient as SqliteClient } from '@linguaworld/database/sqlite';
 import { PrismaClient as PostgresClient } from '@linguaworld/database/postgresql';
 import { PrismaNeon } from '@prisma/adapter-neon';
+import { useEvent } from 'nitropack/runtime';
 import path from 'path';
 import fs from 'fs';
 
@@ -145,6 +146,29 @@ export function getActivePrismaClient(): PrismaClient {
   const activeDriver = resolveDbDriver();
   const resolvedUrl = resolveDatabaseUrl(activeDriver);
 
+  // Neon sockets belong to the Worker request that created them. Keep the
+  // Prisma client on that request's Nitro event instead of sharing it through
+  // globalThis across concurrently running Worker requests.
+  if (process.env.CLOUDFLARE_WORKERS_BUILD === '1') {
+    const event = useEvent();
+    const context = event.context as typeof event.context & {
+      linguaworldPrisma?: PrismaClient;
+    };
+
+    if (!context.linguaworldPrisma) {
+      if (activeDriver !== 'postgresql') {
+        throw new Error('Cloudflare Workers requires PostgreSQL/Neon.');
+      }
+
+      context.linguaworldPrisma = new PostgresClient({
+        adapter: new PrismaNeon({ connectionString: resolvedUrl }),
+        log: ['warn', 'error'],
+      } as never) as unknown as PrismaClient;
+    }
+
+    return context.linguaworldPrisma;
+  }
+
   if (!globalThis.__prisma || globalThis.__dbDriver !== activeDriver) {
     if (globalThis.__prisma) {
       console.log(
@@ -163,21 +187,14 @@ export function getActivePrismaClient(): PrismaClient {
 
     let newInstance: PrismaClient;
     if (activeDriver === 'postgresql') {
-      if (process.env.CLOUDFLARE_WORKERS_BUILD === '1') {
-        newInstance = new PostgresClient({
-          adapter: new PrismaNeon({ connectionString: resolvedUrl }),
-          log: ['warn', 'error'],
-        } as never) as unknown as PrismaClient;
-      } else {
-        newInstance = new PostgresClient({
-          datasources: {
-            db: {
-              url: resolvedUrl,
-            },
+      newInstance = new PostgresClient({
+        datasources: {
+          db: {
+            url: resolvedUrl,
           },
-          log: ['warn', 'error'],
-        }) as unknown as PrismaClient;
-      }
+        },
+        log: ['warn', 'error'],
+      }) as unknown as PrismaClient;
     } else {
       newInstance = new SqliteClient({
         datasources: {

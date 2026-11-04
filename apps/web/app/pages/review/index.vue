@@ -41,11 +41,14 @@
     </transition>
 
     <!-- Loading State -->
-    <div v-if="pending" class="flex-1 flex flex-col items-center justify-center py-20 text-slate-400">
-      <div class="w-12 h-12 rounded-2xl bg-surface-850 border border-surface-750 flex items-center justify-center animate-spin mb-3 text-gold-400">
-        <RotateCcw :size="24" aria-hidden="true" />
+    <div v-if="pending" class="flex-1 flex flex-col justify-center items-center py-8" role="status" aria-busy="true">
+      <div class="w-full max-w-md min-h-[340px] rounded-3xl bg-surface-900 border border-surface-750 p-8 flex flex-col items-center justify-center animate-pulse">
+        <div class="w-24 h-3 rounded bg-surface-750 mb-10" />
+        <div class="w-36 h-20 rounded-2xl bg-surface-800 mb-8" />
+        <div class="w-3/4 h-4 rounded bg-surface-800 mb-3" />
+        <div class="w-1/2 h-4 rounded bg-surface-800" />
       </div>
-      <p class="text-sm font-medium">{{ t('reviewDetail.calculating') }}</p>
+      <span class="sr-only">{{ t('reviewDetail.calculating') }}</span>
     </div>
 
     <!-- Zero Due State (All completed) -->

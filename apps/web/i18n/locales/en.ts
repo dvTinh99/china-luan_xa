@@ -495,7 +495,7 @@ export default defineI18nLocale(async () => ({
     charName: 'In-game Character Name',
     regUsername: 'Username',
     passwordMin: 'Password (min 6 chars)',
-    demoLogin: 'Use demo account (demo@linguaworld.dev / password123)',
+    demoLogin: 'Use demo account (demo{\'@\'}linguaworld.dev / password123)',
     emailOrUsername: 'Email or Username',
     charNamePlaceholder: 'e.g. Xiao Long (小龙)',
     loginFail: 'Login failed.',

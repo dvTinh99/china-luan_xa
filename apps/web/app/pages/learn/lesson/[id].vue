@@ -65,11 +65,17 @@
     </div>
 
     <!-- Loading State -->
-    <div v-if="pending" class="flex-1 flex flex-col items-center justify-center py-20">
-      <div class="w-12 h-12 rounded-2xl bg-surface-850 border border-surface-750 flex items-center justify-center animate-bounce mb-3 text-gold-400">
-        <BookOpen :size="24" aria-hidden="true" />
+    <div v-if="pending" class="flex-1 flex flex-col items-center justify-center py-6" role="status" aria-busy="true">
+      <div class="w-full max-w-md space-y-4 animate-pulse">
+        <div class="flex items-center justify-between"><div class="w-24 h-3 rounded bg-surface-800" /><div class="w-36 h-2 rounded-full bg-surface-800" /></div>
+        <div class="min-h-[300px] rounded-3xl bg-surface-900 border border-surface-750 p-8 flex flex-col items-center justify-center">
+          <div class="w-32 h-24 rounded-2xl bg-surface-800 mb-6" />
+          <div class="w-2/3 h-4 rounded bg-surface-800 mb-3" />
+          <div class="w-1/2 h-3 rounded bg-surface-800" />
+        </div>
+        <div class="flex justify-center gap-3"><div class="w-24 h-10 rounded-xl bg-surface-800" /><div class="w-24 h-10 rounded-xl bg-surface-800" /></div>
       </div>
-      <p class="text-slate-400 text-sm font-medium">{{ t('lessonDetail.preparing') }}</p>
+      <span class="sr-only">{{ t('lessonDetail.preparing') }}</span>
     </div>
 
     <!-- Main Activity Area -->

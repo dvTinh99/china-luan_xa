@@ -30,6 +30,7 @@ export default defineNuxtConfig({
     preset: 'cloudflare-module',
     experimental: {
       wasm: true,
+      asyncContext: true,
     },
     externals: {
       inline: ['@vue/server-renderer', 'vue'],
@@ -109,6 +110,8 @@ export default defineNuxtConfig({
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         {
           rel: 'stylesheet',
+          media: 'print',
+          onload: "this.media='all'",
           href: 'https://fonts.googleapis.com/css2?family=Marcellus&family=Noto+Serif+SC:wght@600;700;900&family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap',
         },
       ],

@@ -59,3 +59,4 @@ coverage/
 # Misc
 *.tsbuildinfo
 luna-nanobanana
+apps/web/.wrangler

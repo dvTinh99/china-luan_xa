@@ -52,7 +52,10 @@
           <span class="text-xs text-amber-200/60 font-bold">4 {{ t('inventoryDetail.slotCount') }}</span>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-pulse" aria-hidden="true">
+          <div v-for="slot in 4" :key="slot" class="h-[82px] rounded-2xl bg-wood-950/60 border-2 border-wood-800/80" />
+        </div>
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <!-- HEAD SLOT -->
           <div
             class="p-4 rounded-2xl border-2 transition-all flex items-center justify-between gap-3"
@@ -169,11 +172,13 @@
           <div class="space-y-3">
             <div class="p-3 rounded-2xl bg-wood-950 border border-wood-800 flex items-center justify-between">
               <span class="text-xs font-bold text-amber-200/70">{{ tDual('characterDetail.exp', '经验值加成') }}</span>
-              <span class="text-base font-black font-heading text-gold-300">+{{ statsBonus.totalBonusExpPercent }}%</span>
+              <span v-if="isLoading" class="w-12 h-5 rounded bg-wood-800 animate-pulse" aria-hidden="true" />
+              <span v-else class="text-base font-black font-heading text-gold-300">+{{ statsBonus.totalBonusExpPercent }}%</span>
             </div>
             <div class="p-3 rounded-2xl bg-wood-950 border border-wood-800 flex items-center justify-between">
               <span class="text-xs font-bold text-amber-200/70">{{ tDual('characterDetail.hp', '气血值上限') }}</span>
-              <span class="text-base font-black font-heading text-emerald-400">+{{ statsBonus.totalHpBonus }} HP</span>
+              <span v-if="isLoading" class="w-16 h-5 rounded bg-wood-800 animate-pulse" aria-hidden="true" />
+              <span v-else class="text-base font-black font-heading text-emerald-400">+{{ statsBonus.totalHpBonus }} HP</span>
             </div>
           </div>
         </div>
@@ -190,13 +195,17 @@
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-bold font-heading text-white flex items-center gap-2">
           <Package :size="20" class="text-gold-400" />
-          <span>{{ tDual('inventoryDetail.bagTitle', '我的背包', { count: inventory.length }) }}</span>
+          <span v-if="!isLoading">{{ tDual('inventoryDetail.bagTitle', '我的背包', { count: inventory.length }) }}</span>
+          <span v-else class="w-20 h-5 rounded bg-wood-800 animate-pulse" aria-hidden="true" />
         </h2>
       </div>
 
-      <div v-if="isLoading" class="text-center py-16 text-amber-200/50">
-        <Loader2 :size="28" class="animate-spin mx-auto mb-2 text-gold-400" />
-        <span>{{ t('inventoryDetail.loading') }}</span>
+      <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" role="status" aria-busy="true">
+        <div v-for="card in 6" :key="card" class="min-h-[150px] p-4 rounded-3xl bg-wood-900/80 border-2 border-wood-750 animate-pulse space-y-5">
+          <div class="flex items-center gap-3"><div class="w-11 h-11 rounded-2xl bg-wood-800" /><div class="flex-1 space-y-2"><div class="w-2/3 h-4 rounded bg-wood-800" /><div class="w-1/2 h-3 rounded bg-wood-800" /></div></div>
+          <div class="w-full h-9 rounded-xl bg-wood-800" />
+        </div>
+        <span class="sr-only">{{ t('inventoryDetail.loading') }}</span>
       </div>
 
       <div v-else-if="inventory.length === 0" class="text-center py-16 rounded-3xl bg-wood-900/40 border border-wood-800/60 p-6 space-y-4">
@@ -309,7 +318,6 @@ import {
   Sparkle,
   Coffee,
   ShieldAlert,
-  Loader2,
 } from 'lucide-vue-next';
 
 definePageMeta({

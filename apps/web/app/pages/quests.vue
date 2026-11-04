@@ -64,9 +64,13 @@
     </transition>
 
     <!-- Loading State -->
-    <div v-if="isLoading" class="text-center py-16 text-amber-200/50">
-      <Loader2 :size="32" class="animate-spin mx-auto mb-2 text-gold-400" />
-      <span>{{ t('questsDetail.loading') }}</span>
+    <div v-if="isLoading" class="space-y-4" role="status" aria-busy="true">
+      <div v-for="card in 4" :key="card" class="min-h-[132px] rounded-3xl bg-wood-900/80 border-2 border-wood-750 p-5 flex items-center gap-4 animate-pulse">
+        <div class="w-12 h-12 rounded-2xl bg-wood-800 shrink-0" />
+        <div class="flex-1 space-y-3"><div class="w-1/3 h-5 rounded bg-wood-800" /><div class="w-2/3 h-3 rounded bg-wood-800" /><div class="w-full max-w-md h-2 rounded-full bg-wood-800" /></div>
+        <div class="hidden sm:block w-24 h-10 rounded-xl bg-wood-800" />
+      </div>
+      <span class="sr-only">{{ t('questsDetail.loading') }}</span>
     </div>
 
     <!-- Quests List -->

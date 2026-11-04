@@ -478,7 +478,7 @@ export default defineI18nLocale(async () => ({
     charName: 'Tên nhân vật trong game',
     regUsername: 'Tên đăng nhập',
     passwordMin: 'Mật khẩu (tối thiểu 6 ký tự)',
-    demoLogin: 'Dùng tài khoản demo (demo@linguaworld.dev / password123)',
+    demoLogin: 'Dùng tài khoản demo (demo{\'@\'}linguaworld.dev / password123)',
     charNamePlaceholder: 'Ví dụ: Tiểu Long (小龙)',
     loginFail: 'Đăng nhập không thành công.',
     registerFail: 'Đăng ký không thành công.'
