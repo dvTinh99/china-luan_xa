@@ -37,22 +37,23 @@ npm run db:seed
 npm run db:studio
 ```
 
-## Cloudflare Pages
+## Cloudflare Workers
 
 The Nuxt server build imports Prisma clients from the ignored
 `database/prisma/generated/` directory. This is an npm workspace, so configure
-Cloudflare Pages with `apps/web` as its root directory. Run the build from that
-project directory so Cloudflare detects Nuxt in the app rather than the
+Cloudflare Workers Builds with `apps/web` as its root directory. Run the build
+from that project directory so Wrangler targets the Nuxt app rather than the
 workspace root:
 
 ```sh
 npm run build:cloudflare-pages
 ```
 
-Set the build output directory to `dist`. The workspace-local build command
-generates the Prisma clients from the repository root before building Nuxt.
+The `wrangler.jsonc` configuration points to the Nuxt Worker entry point and
+static assets. The workspace-local build command generates Prisma clients
+from the repository root before building Nuxt.
 
-Set `DATABASE_URL` and the other server secrets in Cloudflare Pages settings;
+Set `DATABASE_URL` and the other server secrets in Cloudflare settings;
 do not commit production credentials. The build command generates both
 SQLite and PostgreSQL Prisma clients and does not connect to the production
 database.

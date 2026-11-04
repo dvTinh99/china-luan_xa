@@ -19,7 +19,7 @@ export default defineNuxtConfig({
   // Nitro Server Configuration
   // ---------------------------------------------------------------------------
   nitro: {
-    preset: 'cloudflare-pages',
+    preset: 'cloudflare-module',
     externals: {
       inline: ['@vue/server-renderer', 'vue'],
     },
