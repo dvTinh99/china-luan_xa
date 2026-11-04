@@ -1,50 +1,70 @@
-# LinguaWorld — Implementation Documentation
+# LinguaWorld
 
-**Document package:** 1.2  
-**Architecture:** Hybrid Nuxt + Godot  
-**Initial curriculum:** Mandarin Chinese — HSK 3.0, with HSK 2.0 as a separate optional curriculum  
-**Visual direction:** 2D Cartoon  
-**Product principle:** Learning First
+LinguaWorld is a Mandarin-learning application with a cozy 2D RPG presentation. Learning sessions and review history support language learning; character progression, inventory, quests, and the Godot world provide motivation and context.
 
-## Package contents
+## Current implementation
 
-- `docs/PRD.md` — Product requirements and scope.
-- `docs/GDD.md` — Game design document.
-- `docs/ARCHITECTURE.md` — System architecture and technology decisions.
-- `docs/API.md` — Initial backend API contract.
-- `docs/DATABASE.md` — Data model and database design guidance.
-- `docs/GAME_BRIDGE.md` — Nuxt ↔ Godot communication contract.
-- `docs/LEARNING_CONTENT.md` — HSK sources, licensing, content schema and import pipeline.
-- `docs/ROADMAP.md` — Implementation phases, milestones and acceptance criteria.
-- `ANTIGRAVITY_PROMPT.md` — Master implementation prompt for Antigravity.
+- `apps/web`: Nuxt 3.14.1592 with Nuxt 4 compatibility conventions, Vue, TypeScript, Tailwind, and Nitro server routes.
+- `apps/game`: Godot 4.6 project using the Compatibility renderer; a browser Canvas fallback is also present in `apps/web/public/game/`.
+- `database/prisma`: Prisma schema configured for PostgreSQL plus seed/provider scripts. The migration directory is ignored by the current `.gitignore`; confirm migration files are tracked before relying on them for reproducible schema evolution.
+- `packages/shared-types` and `packages/api-contracts`: shared bridge and API TypeScript contracts.
+- Implemented areas include authentication, learning sessions, SRS, character, wallet, inventory, shop, quests, combat, game bootstrap, audio operations, and chakra progression. The exact available endpoints are listed in [API documentation](docs/API.md).
 
-## Important implementation rules
+See [AGENTS.md](AGENTS.md) before making code changes. It explains repository boundaries, security invariants, commands, and which sources are authoritative.
 
-1. Backend is the source of truth for all persistent state, rewards, progression and validation.
-2. Godot is an untrusted presentation/gameplay client. Never trust client-submitted EXP, Gold, damage, quest completion or item ownership.
-3. Nuxt owns application UX, learning UX, account management, shop, inventory and administrative interfaces.
-4. Godot owns the 2D world presentation, movement, NPC/game scenes, adventure and combat presentation.
-5. Learning proficiency and RPG character level are independent.
-6. SRS and learning history are first-class product features.
-7. Start as a modular monolith. Do not introduce microservices for MVP.
-8. HSK 2.0 and HSK 3.0 must be stored as separate curriculum versions.
-9. Do not copy copyrighted textbook content, audio or exam material without checking the applicable license and permissions.
-10. Validate Godot Web compatibility early on desktop and mobile browsers before investing in large game content.
+## Requirements
 
-## Suggested execution order
+- Node.js 20 or newer; npm 10.9.0 as declared by the repository.
+- PostgreSQL for the configured Prisma datasource.
+- Godot 4.6 for editing/running/exporting the native game project.
+- Copy `.env.example` to `.env` and set local credentials and service configuration. Never commit secrets.
 
-1. Read all documents.
-2. Implement Phase 0 technical prototype only.
-3. Demonstrate Nuxt embedding Godot Web, secure communication and authenticated API calls.
-4. Obtain approval before proceeding to the next phase.
-5. Implement incrementally with tests and updated documentation.
+## Common commands
 
-## Current assumptions to confirm during implementation
+```sh
+npm install
+npm run dev
+npm run typecheck
+npm run build
+n```
 
-- Nuxt 4 + Vue 3 + TypeScript.
-- PostgreSQL + Prisma.
-- Godot 4.x, exact minor version selected and pinned during Phase 0.
-- Same-origin deployment for the embedded Godot Web build where practical.
-- Secure HttpOnly cookie authentication for Nuxt.
-- One initial player/account workflow, but multi-user-ready data ownership.
-- Mandarin and Vietnamese as the initial learning language pair.
+Database helpers:
+
+```sh
+npm run db:generate
+npm run db:push
+npm run db:seed
+npm run db:studio
+```
+
+See root `package.json` and `database/prisma/package.json` for the exact scripts. `npm run lint` is currently a placeholder in the web workspace, not a configured lint check. For Godot, open `apps/game/project.godot`; export settings are in `apps/game/export_presets.cfg`.
+
+## Repository map
+
+| Path | Purpose |
+| --- | --- |
+| `apps/web/app` | Nuxt pages, components, composables, and client services |
+| `apps/web/server/api` | Nitro API route handlers |
+| `apps/web/server/utils` | Server-side auth, Prisma, SRS, quest, audio, and domain helpers |
+| `apps/game` | Godot project, scripts, scenes, and character exports |
+| `packages/shared-types` | Bridge protocol and shared types/enums |
+| `packages/api-contracts` | Shared API request/response contracts |
+| `database/prisma` | Prisma schema, migrations, provider helper, and seed scripts |
+| `docs` | Product, architecture, API, data, bridge, learning, and decision records |
+| `character`, `assets`, `design-system`, root art files | Character production, design references, and source assets |
+
+## Documentation map
+
+- See the [documentation index](docs/README.md) for the complete guide map.
+- [Architecture](docs/ARCHITECTURE.md) — implemented boundaries and technical baseline.
+- [API](docs/API.md) — route inventory and security expectations.
+- [Database](docs/DATABASE.md) — current Prisma models and data invariants.
+- [Game bridge](docs/GAME_BRIDGE.md) — typed Nuxt ↔ Godot messages.
+- [Decisions](docs/DECISIONS.md) — accepted decisions and implementation notes.
+- [Roadmap](docs/ROADMAP.md) — delivered capabilities and remaining product direction.
+- [Product requirements](docs/PRD.md), [game design](docs/GDD.md), [learning content](docs/LEARNING_CONTENT.md).
+- Specialized references: [UX/UI](UX-UI.md), [audio](Audio_system.md), [design system](design-system/linguaworld/MASTER.md), and [character production](character/CHARACTER_PRODUCTION_PLAN.md).
+
+## Status and source of truth
+
+This repository contains a working implementation plus future-facing product/design documents. A feature mentioned in a PRD or roadmap is not necessarily implemented. For current behavior, inspect code first; for persistent data use `database/prisma/schema.prisma`; for bridge shapes use `packages/shared-types/src/bridge.ts`; for API contracts use the relevant route and `packages/api-contracts`. Current auth demo fallback and bridge caveats are documented in [Architecture](docs/ARCHITECTURE.md) and [Game bridge](docs/GAME_BRIDGE.md). See [AGENTS.md](AGENTS.md) for precedence rules.

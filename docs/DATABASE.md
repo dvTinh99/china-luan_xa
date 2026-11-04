@@ -1,202 +1,46 @@
-# LinguaWorld — Database Design
+# Database and Prisma
 
-**Version:** 1.0 draft  
-**Database:** PostgreSQL  
-**ORM:** Prisma
+**Status:** Describes the Prisma schema as inspected on 2026-11-04. `database/prisma/schema.prisma` is authoritative. Note that `.gitignore` currently excludes `database/prisma/migrations/`, so local migration files may not be versioned; do not assume migration history is reproducible from a clean checkout.
 
-This is a domain-oriented starting point. Final Prisma schema should be normalized and reviewed before implementation.
+## Provider and workflow
 
-## 1. Domains and suggested tables
+- The schema datasource is PostgreSQL (`DATABASE_URL`). `database/prisma/dbProvider.mjs` prepares provider configuration for the repository scripts; inspect it and `.env` before switching providers or running data-changing commands.
+- Prisma schema: `database/prisma/schema.prisma`.
+- Local migration files, if present: `database/prisma/migrations/` (currently ignored by `.gitignore`).
+- Prisma client setup: `database/prisma/client.mjs`; generated output under `database/prisma/generated/` is not hand-edited source.
+- Root scripts: `npm run db:generate`, `npm run db:push`, `npm run db:migrate`, `npm run db:seed`, and `npm run db:studio`.
+- Resolve the migration tracking policy before shared schema evolution. `db:push` is useful for local iteration but does not create migration history.
 
-### User
-- `users`
-- `user_settings`
-- `sessions` (if using database-backed sessions)
+## Current model groups
 
-### Character
-- `characters`
-- `character_stats`
-- `character_appearances`
+The schema currently defines:
 
-### Curriculum and learning
-- `curriculums`
-- `curriculum_levels`
-- `courses`
-- `units`
-- `lessons`
-- `vocabulary`
-- `vocabulary_meanings`
-- `vocabulary_readings`
-- `vocabulary_examples`
-- `vocabulary_audio`
-- `grammar_points`
-- `exercises`
-- `questions`
-- `question_options`
+- Identity: `User`, `Session`, `UserSettings`.
+- Character/progression: `Character`, `UserChakraProgress`.
+- Curriculum/content: `Curriculum`, `CurriculumLevel`, `Course`, `Unit`, `Lesson`, `Vocabulary`, `VocabularyReading`, `VocabularyMeaning`, `VocabularyExample`, `CurriculumVocabulary`, `Radical`, `VocabularyRadical`.
+- Learning/SRS: `LearningSession`, `LearningAnswer`, `VocabularyProgress`, `ReviewHistory`.
+- Economy/collection: `Wallet`, `WalletTransaction`, `Item`, `InventoryItem`.
+- Quests/world/combat: `Quest`, `UserQuest`, `Region`, `CombatSession`.
+- Audio operations: `VoiceProfile`, `AudioAsset`, `AudioGenerationJob`.
 
-### Learning history and SRS
-- `learning_sessions`
-- `learning_answers`
-- `vocabulary_progress`
-- `review_history`
+Use the schema to confirm exact fields, relations, defaults, indexes, and uniqueness. Earlier conceptual suggestions for pets, housing, achievements, or separate location/combat-action tables are not current models unless added to the schema.
 
-### Economy and inventory
-- `items`
-- `wallets`
-- `wallet_transactions`
-- `inventory`
-- `equipment`
+## Invariants to preserve
 
-### Quest and world
-- `quests`
-- `quest_objectives`
-- `quest_progress`
-- `regions`
-- `locations`
-- `world_unlocks`
+- User-owned records must remain associated with the authenticated user; enforce ownership in server logic as well as relations.
+- A user's character, wallet, and settings have unique user relationships in the current schema.
+- Vocabulary progress and review history are separate: progress stores current scheduling state while review history records attempts.
+- Curriculum membership is modeled separately from reusable vocabulary.
+- Wallet transactions provide an audit trail; inspect current schema constraints before changing balance mutation behavior.
+- Cross-record economy/reward changes must use server transactions and replay protection where the domain requires it.
+- RPG character progression and language proficiency are distinct concepts.
 
-### Combat
-- `combat_sessions`
-- `combat_actions`
+## Schema change checklist
 
-### Pets/housing (later)
-- `pet_definitions`
-- `user_pets`
-- `houses`
-- `decorations`
-- `house_decorations`
+1. Inspect the model, its consumers, migration history, seeds, and DB provider helper.
+2. Make the smallest schema change and generate a migration using the project's Prisma scripts/workflow.
+3. Update seed/import code and server code that reads or writes the model.
+4. Regenerate the client with `npm run db:generate`; never edit generated client output manually.
+5. Verify on a disposable/local database and document any compatibility or data-backfill requirement.
 
-### Achievement
-- `achievements`
-- `user_achievements`
-
-## 2. Important relationships
-
-- Every user-owned row has `user_id`.
-- A curriculum has version and source metadata.
-- A curriculum level belongs to a curriculum, not globally to the vocabulary table.
-- Vocabulary is a reusable language item; curriculum membership should be represented through a join/mapping where needed.
-- A vocabulary item may appear in more than one curriculum or level.
-- Learning answers belong to a learning session.
-- SRS state is per user and vocabulary item.
-- Wallet transactions are immutable ledger entries.
-- Inventory ownership references item definitions.
-- Quest progress is per user and quest.
-- Combat actions belong to a server-created combat session.
-
-## 3. Key fields
-
-### curriculums
-- `id`
-- `code` (e.g. `hsk-3.0`)
-- `name`
-- `version`
-- `language_code`
-- `translation_language_code`
-- `source_url`
-- `license_name`
-- `license_url`
-- `status`
-- `created_at`
-
-### vocabulary
-- `id`
-- `language_code`
-- `hanzi`
-- `simplified`
-- `traditional`
-- `created_at`
-
-### vocabulary_readings
-- `id`
-- `vocabulary_id`
-- `reading`
-- `reading_system` (e.g. pinyin)
-- `is_primary`
-
-### vocabulary_meanings
-- `id`
-- `vocabulary_id`
-- `language_code`
-- `meaning`
-- `part_of_speech`
-- `review_status`
-- `source_id`
-
-### curriculum_vocabulary
-- `curriculum_level_id`
-- `vocabulary_id`
-- `sequence_number`
-- `source_reference`
-
-### vocabulary_progress
-- `id`
-- `user_id`
-- `vocabulary_id`
-- `state`
-- `difficulty`
-- `stability`
-- `due_at`
-- `last_reviewed_at`
-- `total_reviews`
-- `correct_reviews`
-- `incorrect_reviews`
-- `algorithm_version`
-
-### review_history
-- `id`
-- `user_id`
-- `vocabulary_id`
-- `answer`
-- `rating`
-- `response_time_ms`
-- `reviewed_at`
-- `session_id`
-
-### wallet_transactions
-- `id`
-- `user_id`
-- `currency`
-- `amount` (signed or explicit direction; choose one convention)
-- `transaction_type`
-- `reference_type`
-- `reference_id`
-- `idempotency_key`
-- `created_at`
-
-## 4. Constraints and indexes
-
-- Unique user email/username as appropriate.
-- Unique `(user_id, vocabulary_id)` for current SRS state.
-- Unique idempotency key within the relevant user/domain.
-- Unique inventory ownership row by `(user_id, item_id)` if quantity-based.
-- Index user-owned tables by `(user_id, created_at)`.
-- Index due reviews by `(user_id, due_at)`.
-- Index curriculum vocabulary by `(curriculum_level_id, sequence_number)`.
-- Foreign keys for all domain relationships.
-- Use check constraints for nonnegative quantities/balances where applicable.
-
-## 5. Transaction requirements
-
-Purchase transaction:
-1. Lock/read wallet safely.
-2. Validate item availability and price on server.
-3. Validate sufficient balance.
-4. Debit wallet.
-5. Create inventory ownership/quantity.
-6. Write ledger transaction.
-7. Commit atomically.
-
-Reward transaction:
-1. Validate originating learning/quest/combat event.
-2. Check idempotency/unique reward claim.
-3. Calculate reward server-side.
-4. Credit wallet and/or EXP.
-5. Write ledger/event record.
-6. Commit atomically.
-
-Never update wallet balance without a corresponding ledger entry.
-
-## 6. Content provenance
-
-Store source and license information for imported learning content. Avoid mixing data with different licensing conditions into an untraceable dataset.
+Seed scripts in `database/prisma/` can create or modify data. Confirm `DATABASE_URL` points to a safe local target before executing them.

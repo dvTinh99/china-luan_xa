@@ -1,219 +1,59 @@
-# LinguaWorld — Technical Architecture
+# LinguaWorld architecture
 
-**Version:** 1.2  
-**Decision:** Hybrid Nuxt + Godot, backend-authoritative modular monolith.
+**Status:** Current implementation map inspected on 2026-11-04. This file explains the code that exists; aspirational product direction belongs in `PRD.md`, `GDD.md`, and `ROADMAP.md`.
 
-## 1. Technology baseline
+## Technology baseline
 
-| Layer | Choice |
-|---|---|
-| Web application | Nuxt 4 + Vue 3 + TypeScript |
-| Styling | Tailwind CSS |
-| Game engine | Godot 4.x |
-| Backend | Nuxt Server API initially |
-| Database | PostgreSQL |
-| ORM | Prisma |
-| Authentication | Secure HttpOnly cookie-based session |
-| Asset storage | S3-compatible object storage |
-| Audio in web | HTML Audio API |
-| Audio in game | Godot audio |
-| Animation | CSS/Lottie/Godot AnimationPlayer |
+| Area | Current repository choice |
+| --- | --- |
+| Web + server | Nuxt 3.14.1592 with Nuxt 4 compatibility conventions, Vue 3, TypeScript, Nitro |
+| Styling/UI | Tailwind CSS; design references in `UX-UI.md` and `design-system/linguaworld/MASTER.md` |
+| Game | Godot 4.6, GL Compatibility renderer; Canvas browser fallback at `apps/web/public/game/` |
+| Data | Prisma 6.1, PostgreSQL datasource |
+| Shared contracts | npm workspaces: `packages/shared-types`, `packages/api-contracts` |
+| Monorepo | npm workspaces and Turborepo |
 
-Pin exact versions during Phase 0 and record them in the repository. Do not silently upgrade engine/runtime versions after content production begins.
+Confirm pinned versions in package manifests and `apps/game/project.godot` before changing the baseline.
 
-## 2. Responsibility boundaries
+## Runtime ownership
 
-### Nuxt owns
-- Authentication and account.
-- Home/dashboard.
-- Learning courses, lessons and exercises.
-- Flashcards, matching and quiz.
-- Learning history and SRS UI.
-- Character management UI.
-- Inventory and shop UI.
-- Quest overview and profile.
-- Admin/CMS in later phase.
-- Hosting/embedding the Godot Web build.
+- **Nuxt application (`apps/web/app`)** owns pages, learning and character interfaces, shop/inventory/quest views, locale handling, and the embedded game route.
+- **Nitro server (`apps/web/server`)** owns API handlers, session resolution, persistence through Prisma, learning/SRS helpers, audio operations, and domain validation.
+- **Godot (`apps/game`)** owns 2D scene presentation, movement, NPC/game visuals, and local interaction input. It is an untrusted client and must not connect directly to PostgreSQL.
+- **Shared packages** provide TypeScript protocol/API types; these are not automatically runtime validators and current runtime payload coverage is incomplete.
+- **Prisma/database** owns persistent schema and migration history.
 
-### Godot owns
-- 2D world rendering.
-- Character rendering and animation.
-- Movement and camera.
-- NPC visualization and in-world interaction.
-- Exploration.
-- Adventure and combat presentation.
-- Pet and housing visualization in later phases.
-
-### Backend owns
-- Authentication and authorization.
-- Persistent user data.
-- Learning evaluation and history.
-- SRS scheduling.
-- Character progression.
-- Inventory and wallet.
-- Quest validation.
-- World unlocks.
-- Combat state and reward validation.
-
-Godot must not connect directly to PostgreSQL.
-
-## 3. High-level diagram
+## Request and data flow
 
 ```mermaid
-flowchart TB
-  PLAYER[Player]
-  subgraph CLIENTS
-    WEB[Nuxt 4 Application]
-    GAME[Godot Web Client]
-    WEB -->|Embed /world| GAME
-  end
-  subgraph SERVER
-    API[Backend API]
-    AUTH[Auth]
-    LEARN[Learning]
-    SRS[SRS]
-    CHAR[Character]
-    QUEST[Quest / World]
-    ECON[Economy / Inventory]
-    COMBAT[Combat]
-  end
-  DB[(PostgreSQL)]
-  OBJECTS[(Object Storage)]
-  PLAYER --> WEB
-  WEB --> API
-  GAME -->|Authenticated requests| API
-  API --> AUTH
-  API --> LEARN
-  API --> SRS
-  API --> CHAR
-  API --> QUEST
-  API --> ECON
-  API --> COMBAT
-  AUTH --> DB
-  LEARN --> DB
-  SRS --> DB
-  CHAR --> DB
-  QUEST --> DB
-  ECON --> DB
-  COMBAT --> DB
-  WEB --> OBJECTS
-  GAME --> OBJECTS
+flowchart LR
+  Browser[Browser] --> Nuxt[Nuxt app / Nitro API]
+  Nuxt --> Prisma[Prisma]
+  Prisma --> DB[(PostgreSQL)]
+  Nuxt -->|iframe / postMessage bridge| Game[Godot Web or Canvas fallback]
+  Game -->|requests through host/API| Nuxt
+  Nuxt --> Storage[Local or S3-compatible audio storage]
 ```
 
-## 4. Routing
+The exact audio storage provider and runtime configuration depend on environment. Inspect `apps/web/server/utils/audio/storage/` and deployment configuration before changing it.
 
-- `/` — landing.
-- `/home` — dashboard.
-- `/learn` — learning overview.
-- `/learn/courses` — course selection.
-- `/learn/lesson/:id` — lesson.
-- `/review` — SRS.
-- `/character` — character management.
-- `/inventory` — inventory.
-- `/shop` — shop.
-- `/quests` — quest overview.
-- `/world` — full-screen Godot game.
-- `/profile` — player profile.
+## Authentication and trust boundary
 
-## 5. Godot Web integration
+Session utilities use an `lw_session` HttpOnly cookie and database-backed session records. However, current `apps/web/server/middleware/auth.ts` falls back to the `demo-user-001` account for non-login/register API requests when a demo user exists. Therefore, do not describe current middleware as strict authenticated-only access. This fallback must be considered in authorization reviews and deployment decisions.
 
-Recommended MVP: export Godot to Web and embed in Nuxt `/world`.
+Every API route must validate inputs and enforce the intended access policy. Client-reported answers, rewards, prices, ownership, quest completion, and combat results are untrusted. The server must calculate and persist authoritative outcomes.
 
-Keep the game build on the same origin as Nuxt where practical. This reduces authentication complexity and avoids unnecessary cross-origin configuration.
+## Important implementation entry points
 
-Potential static output:
-- `index.html`
-- generated JavaScript loader
-- `.wasm`
-- `.pck`
-- game assets
+- Web routes: `apps/web/app/pages/`; game host: `apps/web/app/pages/world.vue`.
+- API route handlers: `apps/web/server/api/`; auth middleware: `apps/web/server/middleware/auth.ts`.
+- Server helpers: `apps/web/server/utils/` (auth, Prisma, SRS, quests, chakra, audio, response).
+- Godot startup: `apps/game/project.godot`, `apps/game/scenes/main/Main.tscn`, `apps/game/autoload/Bridge.gd`.
+- Bridge types: `packages/shared-types/src/bridge.ts`; bootstrap contract: `packages/api-contracts/src/game.ts`.
+- Database schema: `database/prisma/schema.prisma`.
 
-Do not assume the exact output filenames; use the selected Godot version's export template.
+## Deployment and future direction
 
-Use an isolated bridge adapter. Do not scatter browser JavaScript calls through gameplay scripts.
+The repository includes Vercel preparation scripts and Docker Compose for PostgreSQL; read `vercel.json`, `scripts/prepare-vercel.mjs`, `docker-compose.yml`, and environment examples before changing deployment behavior. Same-origin game hosting is an intended simplification, not an invariant guaranteed by every deployment.
 
-## 6. Authentication
-
-Preferred MVP:
-- Nuxt handles login.
-- Use secure HttpOnly cookies.
-- Same-origin game API requests where supported.
-- Backend authenticates every API request.
-
-If game hosting becomes cross-origin:
-- Backend issues short-lived, single-use game ticket.
-- Exchange ticket for a narrowly scoped game session.
-- Never place long-lived access tokens in query strings or localStorage.
-- Validate origin and audience.
-- Expire/revoke tickets.
-
-## 7. Backend organization
-
-Modular monolith:
-
-```text
-apps/web/
-  app/
-  components/
-  pages/
-  composables/
-  server/
-    api/
-    modules/
-      auth/
-      users/
-      learning/
-      vocabulary/
-      srs/
-      character/
-      inventory/
-      economy/
-      quests/
-      world/
-      combat/
-      achievements/
-```
-
-Each module should expose application services and own its domain rules. Avoid direct cross-module database writes.
-
-## 8. Suggested monorepo
-
-```text
-linguaworld/
-├── apps/
-│   ├── web/
-│   └── game/
-├── packages/
-│   ├── api-contracts/
-│   └── shared-types/
-├── database/
-│   └── prisma/
-├── content/
-│   ├── imports/
-│   ├── normalized/
-│   └── reviewed/
-├── docs/
-└── README.md
-```
-
-## 9. Deployment
-
-MVP:
-- Deploy Nuxt application and API.
-- Serve Godot Web export as static assets under same origin if feasible.
-- PostgreSQL managed or self-hosted.
-- S3-compatible storage for audio and images.
-- Use CDN/cache for static game assets.
-
-Separate game deployment/subdomain only if needed for performance or operational reasons.
-
-## 10. Architecture constraints
-
-- No microservices in MVP.
-- No direct database access from Godot.
-- No client-authoritative rewards.
-- No secrets in client bundles.
-- Version API contracts and game bridge.
-- Keep curriculum content data-driven.
-- Make all user-owned records user-scoped.
-- Use database transactions for wallet, purchases and reward claims.
+Microservices, a full CMS, social systems, pets/housing, and expanded world content are product direction unless current routes/schema prove otherwise. Consult `docs/ROADMAP.md` for current delivered/future status.

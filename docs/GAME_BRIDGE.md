@@ -1,105 +1,48 @@
-# LinguaWorld — Nuxt ↔ Godot Game Bridge
+# Nuxt ↔ Godot bridge
 
-**Version:** 1.0 draft
+**Status:** Describes the current protocol types and integration points inspected on 2026-11-04. The type definitions are in `packages/shared-types/src/bridge.ts`; runtime code is in `apps/web/app/composables/useGameBridge.ts`, `apps/web/app/pages/world.vue`, `apps/game/autoload/Bridge.gd`, and the web fallback `apps/web/public/game/index.html`.
 
-## 1. Purpose
+## Message envelope
 
-Define a small, versioned communication protocol between the Nuxt parent application and embedded Godot Web client.
+Messages use `version: 1`, a string `type`, a type-specific `payload`, and optional `requestId`. Keep TypeScript, the Godot adapter, fallback client, and host in sync when changing the protocol. Type definitions do not guarantee that every event is currently handled end to end.
 
-The bridge is for UI coordination and gameplay requests. It is not a security boundary and does not make the game client trusted.
+## Typed event catalogue
 
-## 2. Message envelope
+Nuxt → Godot: `GAME_INIT`, `PLAYER_DATA`, `WORLD_DATA`, `SET_AUDIO`, `PAUSE_GAME`, `RESUME_GAME`, `PLAY_AUDIO`, `STOP_AUDIO`, `CHAKRA_DATA`.
 
-```json
-{
-  "version": 1,
-  "type": "INTERACT_NPC",
-  "requestId": "req_123",
-  "payload": {
-    "npcId": "npc_001"
-  }
-}
-```
+Godot → Nuxt: `GAME_READY`, `GAME_ERROR`, `INTERACT_NPC`, `ENTER_REGION`, `START_COMBAT`, `OPEN_APP_ROUTE`, `AUDIO_STATUS`.
 
-Fields:
-- `version`: protocol version.
-- `type`: allowlisted event name.
-- `requestId`: optional correlation ID.
-- `payload`: event-specific validated data.
+See `BridgePayloadMap` in `packages/shared-types/src/bridge.ts` for current payload shapes. Always check the runtime handlers before relying on an event.
 
-## 3. Initial event catalogue
+## Current lifecycle
 
-### Nuxt → Godot
-- `GAME_INIT`: initial boot information and non-secret configuration.
-- `PLAYER_DATA`: current character appearance and display stats.
-- `WORLD_DATA`: visible regions and world configuration.
-- `SET_AUDIO`: application-level audio preference.
-- `PAUSE_GAME`: pause game.
-- `RESUME_GAME`: resume game.
+1. `/world` embeds `apps/web/public/game/index.html` in an iframe.
+2. The client sends `GAME_READY`; the host checks the message origin, version, and event name.
+3. The host calls authenticated `GET /api/game/bootstrap`, then sends `GAME_INIT` with player/world/chakra/config data.
+4. The bridge status controls the loading and error UI. The host has a 15-second ready timeout and an iframe retry path.
+5. Godot editor/desktop mode uses mock initialization; web mode uses the bridge. The Canvas fallback implements a web-hosted protocol subset.
 
-### Godot → Nuxt
-- `GAME_READY`: Godot initialization completed.
-- `GAME_ERROR`: client-side failure.
-- `INTERACT_NPC`: request interaction with NPC.
-- `ENTER_REGION`: request entry to a region.
-- `START_COMBAT`: request creation of combat session.
-- `OPEN_APP_ROUTE`: request Nuxt to open a permitted application route.
+## Runtime caveats to account for
 
-## 4. Example NPC interaction
+- `useGameBridge.ts` validates origin, protocol version, and known event name, but does not validate payloads with a runtime schema and does not check `event.source` against the expected iframe. Preserve defensive validation and address these gaps when changing trust boundaries.
+- The outbound host `postMessage` path is implemented; Godot's inbound callback wiring and the browser fallback use different mechanisms. Verify a message in both directions for the target client before claiming bridge support.
+- Some declared events are not wired through the host/game end to end. For example, typed audio and chakra events should be traced through all endpoints before use.
+- Godot outbound helper payloads do not always match TypeScript payload definitions: `GAME_ERROR`, `INTERACT_NPC`, `ENTER_REGION`, and `START_COMBAT` currently send subsets of the declared shapes.
+- Current origin handling is configured in `useGameBridge.ts`; Godot's `postMessage` uses `'*'`. Do not treat a TypeScript type or client-side allowlist as a security boundary.
+- `OPEN_APP_ROUTE` has client-side route allowlisting in Godot, but the host must independently validate any requested route.
 
-Godot → Nuxt:
-```json
-{
-  "version": 1,
-  "type": "INTERACT_NPC",
-  "requestId": "req_123",
-  "payload": {
-    "npcId": "npc_001"
-  }
-}
-```
+## Security rules
 
-Nuxt calls backend:
-`POST /api/world/interactions`
+- The bridge is a presentation/request channel, never an authorization boundary.
+- Treat all messages as untrusted. Validate origin, source, version, event type, payload shape, and user/session authority on the host/backend.
+- Backend validates NPC/region/combat actions and computes outcomes/rewards. Never trust client EXP, Gold, damage, answer correctness, inventory, or quest completion.
+- Do not send secrets or long-lived credentials in messages.
+- Keep audio URLs and asset identifiers constrained to server-approved assets where applicable.
 
-Backend validates:
-- Authenticated user.
-- NPC exists and is active.
-- Player can access the location.
-- Interaction prerequisites.
-- Quest state.
+## Change checklist
 
-Nuxt returns result to Godot through a correlated response/event. The response contains displayable dialogue/quest state, not arbitrary client-authoritative rewards.
-
-## 5. Security
-
-- Validate exact `event.origin` in the parent window.
-- Validate `event.source` matches the expected iframe/window.
-- Validate message envelope and payload schema.
-- Allowlist event types.
-- Ignore unknown protocol versions.
-- Never accept EXP, Gold, item ownership, answer correctness, damage or quest completion from client as authoritative.
-- Never put secrets in bridge messages.
-- Avoid passing long-lived tokens.
-- Restrict `OPEN_APP_ROUTE` to approved internal routes.
-- Use request IDs and timeout/error handling.
-
-## 6. Lifecycle
-
-1. Nuxt renders loading state and game iframe/container.
-2. Godot initializes.
-3. Godot sends `GAME_READY`.
-4. Nuxt sends `GAME_INIT`, then player/world data.
-5. Godot requests actions.
-6. Nuxt/backend validate actions and send results.
-7. On route leave, Nuxt sends pause/cleanup where possible.
-8. On errors, show recoverable UI and provide retry.
-
-## 7. Performance and compatibility
-
-- Load the game only when `/world` is visited.
-- Show progress/loading UI.
-- Avoid loading large unused assets at boot.
-- Test browser audio activation requirements.
-- Test memory and WebGL behavior on actual target devices.
-- Test mobile touch controls and viewport resizing.
+1. Update `packages/shared-types/src/bridge.ts` and the API/bootstrap types if needed.
+2. Update `useGameBridge.ts`, `world.vue`, Godot `Bridge.gd`, and the Canvas fallback for relevant directions.
+3. Keep origin/source and payload validation on the host; keep backend authorization authoritative.
+4. Verify ready/init plus the changed event in both Godot Web and fallback mode, as applicable.
+5. Update this file and `apps/game/README.md` when runtime behavior or event coverage changes.

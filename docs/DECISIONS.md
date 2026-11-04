@@ -2,6 +2,10 @@
 
 This document records architectural decisions, prototype findings, browser compatibility notes, and open questions across development phases.
 
+## How to read this log
+
+Entries below preserve the decision record as originally written; their “implemented” status and claims are historical assertions, not a fresh audit of current behavior. For current behavior, inspect source and use `docs/ARCHITECTURE.md`, `docs/API.md`, and `docs/GAME_BRIDGE.md`. In particular, current auth middleware has a demo-user fallback, bridge declarations/runtime payloads are not fully aligned, and `.gitignore` excludes `database/prisma/migrations/`. Treat these as current implementation caveats until resolved in code and verified.
+
 ---
 
 ## ADR-001: Monorepo Structure & Package Boundaries (Phase 0)
