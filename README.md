@@ -40,13 +40,17 @@ npm run db:studio
 ## Cloudflare Pages
 
 The Nuxt server build imports Prisma clients from the ignored
-`database/prisma/generated/` directory. Configure Cloudflare Pages to use the
-repository root as its build directory and run this build command so those
-clients are generated before Nitro bundles the server:
+`database/prisma/generated/` directory. This is an npm workspace, so configure
+Cloudflare Pages with `apps/web` as its root directory. Run the build from that
+project directory so Cloudflare detects Nuxt in the app rather than the
+workspace root:
 
 ```sh
 npm run build:cloudflare-pages
 ```
+
+Set the build output directory to `dist`. The workspace-local build command
+generates the Prisma clients from the repository root before building Nuxt.
 
 Set `DATABASE_URL` and the other server secrets in Cloudflare Pages settings;
 do not commit production credentials. The build command generates both
