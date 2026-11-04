@@ -35,6 +35,7 @@ database/prisma/migrations/
 database/prisma/generated/
 database/prisma/schema.sqlite.prisma
 database/prisma/schema.postgres.prisma
+database/prisma/schema.worker.prisma
 *.db-journal
 *.db-wal
 *.db-shm

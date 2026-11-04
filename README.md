@@ -46,12 +46,13 @@ from that project directory so Wrangler targets the Nuxt app rather than the
 workspace root:
 
 ```sh
-npm run build:cloudflare-pages
+npm run build:cloudflare-worker
 ```
 
 The `wrangler.jsonc` configuration points to the Nuxt Worker entry point and
-static assets. The workspace-local build command generates Prisma clients
-from the repository root before building Nuxt.
+static assets. The build generates a Workers-specific Prisma client using
+Prisma's `workerd` runtime and the Neon adapter; the Node.js SQLite client is
+excluded from the Worker bundle.
 
 Set `DATABASE_URL` and the other server secrets in Cloudflare settings;
 do not commit production credentials. The build command generates both

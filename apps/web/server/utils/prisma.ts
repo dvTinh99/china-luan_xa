@@ -11,6 +11,7 @@
 import type { PrismaClient } from '@prisma/client';
 import { PrismaClient as SqliteClient } from '@linguaworld/database/sqlite';
 import { PrismaClient as PostgresClient } from '@linguaworld/database/postgresql';
+import { PrismaNeon } from '@prisma/adapter-neon';
 import path from 'path';
 import fs from 'fs';
 
@@ -162,14 +163,21 @@ export function getActivePrismaClient(): PrismaClient {
 
     let newInstance: PrismaClient;
     if (activeDriver === 'postgresql') {
-      newInstance = new PostgresClient({
-        datasources: {
-          db: {
-            url: resolvedUrl,
+      if (process.env.CLOUDFLARE_WORKERS_BUILD === '1') {
+        newInstance = new PostgresClient({
+          adapter: new PrismaNeon({ connectionString: resolvedUrl }),
+          log: ['warn', 'error'],
+        } as never) as unknown as PrismaClient;
+      } else {
+        newInstance = new PostgresClient({
+          datasources: {
+            db: {
+              url: resolvedUrl,
+            },
           },
-        },
-        log: ['warn', 'error'],
-      }) as unknown as PrismaClient;
+          log: ['warn', 'error'],
+        }) as unknown as PrismaClient;
+      }
     } else {
       newInstance = new SqliteClient({
         datasources: {

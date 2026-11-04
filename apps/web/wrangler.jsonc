@@ -3,8 +3,12 @@
   "name": "linguaworld",
   "main": ".output/server/index.mjs",
   "compatibility_date": "2025-01-01",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": ["nodejs_compat", "nodejs_compat_populate_process_env"],
   "workers_dev": true,
+  "vars": {
+    "CLOUDFLARE_WORKERS_BUILD": "1",
+    "DB_DRIVER": "postgresql"
+  },
   "assets": {
     "directory": ".output/public",
     "binding": "ASSETS"

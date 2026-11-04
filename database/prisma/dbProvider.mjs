@@ -106,20 +106,24 @@ export function syncSchemaProvider(driver) {
   }
 
   // Create/update dedicated schemas for dual-client generation
-  function makeSchema(targetP, output) {
+  function makeSchema(targetP, output, engineType) {
     let s = schema.replace(
       /(datasource\s+db\s*\{[\s\S]*?provider\s*=\s*")[^"]+("\s*[\s\S]*?\})/,
       `$1${targetP}$2`
     );
     s = s.replace(
       /(generator\s+client\s*\{[\s\S]*?provider\s*=\s*"prisma-client-js"[\s\S]*?)(\})/,
-      `$1  output   = "${output}"\n$2`
+      `$1  output   = "${output}"\n${engineType ? `  engineType = "${engineType}"\n` : ''}$2`
     );
     return s;
   }
 
   fs.writeFileSync(path.resolve(__dirname, 'schema.sqlite.prisma'), makeSchema('sqlite', './generated/sqlite'), 'utf8');
   fs.writeFileSync(path.resolve(__dirname, 'schema.postgres.prisma'), makeSchema('postgresql', './generated/postgresql'), 'utf8');
+  const workerSchema = makeSchema('postgresql', './generated/worker', 'client')
+    .replace('provider      = "prisma-client-js"', 'provider      = "prisma-client"')
+    .replace('engineType = "client"', 'engineType = "client"\n  runtime    = "workerd"');
+  fs.writeFileSync(path.resolve(__dirname, 'schema.worker.prisma'), workerSchema, 'utf8');
 }
 
 /**
@@ -163,6 +167,7 @@ export function generateClients(driver) {
   console.log(`[dbProvider] Generating Prisma Clients for SQLite & PostgreSQL...`);
   const sqliteSchema = path.resolve(__dirname, 'schema.sqlite.prisma');
   const pgSchema = path.resolve(__dirname, 'schema.postgres.prisma');
+  const workerSchema = path.resolve(__dirname, 'schema.worker.prisma');
 
   execSync(`DATABASE_URL="file:./dev.db" npx prisma generate --schema="${sqliteSchema}"`, {
     stdio: 'inherit',
@@ -170,6 +175,11 @@ export function generateClients(driver) {
   });
 
   execSync(`DATABASE_URL="postgresql://postgres:password@localhost:5432/linguaworld?schema=public" npx prisma generate --schema="${pgSchema}"`, {
+    stdio: 'inherit',
+    cwd: rootDir,
+  });
+
+  execSync(`DATABASE_URL="postgresql://postgres:password@localhost:5432/linguaworld?schema=public" npx prisma generate --schema="${workerSchema}"`, {
     stdio: 'inherit',
     cwd: rootDir,
   });
@@ -185,25 +195,6 @@ export function generateClients(driver) {
     },
   });
 
-  // Patch generated clients to prevent '__dirname is not defined in ES module scope'
-  const generatedClients = [
-    path.resolve(__dirname, 'generated/sqlite/index.js'),
-    path.resolve(__dirname, 'generated/postgresql/index.js'),
-  ];
-  for (const clientFile of generatedClients) {
-    if (fs.existsSync(clientFile)) {
-      let code = fs.readFileSync(clientFile, 'utf8');
-      if (code.includes('config.dirname = __dirname')) {
-        code = code.replace(
-          'config.dirname = __dirname',
-          'const __prisma_dirname = typeof __dirname !== "undefined" ? __dirname : process.cwd();\nconfig.dirname = __prisma_dirname'
-        );
-        code = code.replaceAll('path.join(__dirname,', 'path.join(config.dirname,');
-        fs.writeFileSync(clientFile, code, 'utf8');
-        console.log(`[dbProvider] ✓ Patched ${path.basename(path.dirname(clientFile))} for ES module __dirname safety`);
-      }
-    }
-  }
 }
 
 /**

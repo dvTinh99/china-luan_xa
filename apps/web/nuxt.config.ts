@@ -1,10 +1,18 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { fileURLToPath } from 'url';
 
+const cloudflareWorkersBuild = process.env.CLOUDFLARE_WORKERS_BUILD === '1';
+
 export default defineNuxtConfig({
   alias: {
-    '@linguaworld/database/sqlite': fileURLToPath(new URL('../../database/prisma/generated/sqlite', import.meta.url)),
-    '@linguaworld/database/postgresql': fileURLToPath(new URL('../../database/prisma/generated/postgresql', import.meta.url)),
+    '@linguaworld/database/sqlite': fileURLToPath(new URL(
+      cloudflareWorkersBuild ? './server/utils/sqlite-worker-unavailable.ts' : '../../database/prisma/generated/sqlite',
+      import.meta.url,
+    )),
+    '@linguaworld/database/postgresql': fileURLToPath(new URL(
+      cloudflareWorkersBuild ? '../../database/prisma/generated/worker/client.ts' : '../../database/prisma/generated/postgresql',
+      import.meta.url,
+    )),
   },
   // ---------------------------------------------------------------------------
   // Nuxt 4 compatibility
@@ -20,6 +28,9 @@ export default defineNuxtConfig({
   // ---------------------------------------------------------------------------
   nitro: {
     preset: 'cloudflare-module',
+    experimental: {
+      wasm: true,
+    },
     externals: {
       inline: ['@vue/server-renderer', 'vue'],
     },
