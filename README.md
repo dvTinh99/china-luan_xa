@@ -37,6 +37,22 @@ npm run db:seed
 npm run db:studio
 ```
 
+## Cloudflare Pages
+
+The Nuxt server build imports Prisma clients from the ignored
+`database/prisma/generated/` directory. Configure Cloudflare Pages to use the
+repository root as its build directory and run this build command so those
+clients are generated before Nitro bundles the server:
+
+```sh
+npm run build:cloudflare-pages
+```
+
+Set `DATABASE_URL` and the other server secrets in Cloudflare Pages settings;
+do not commit production credentials. The build command generates both
+SQLite and PostgreSQL Prisma clients and does not connect to the production
+database.
+
 See root `package.json` and `database/prisma/package.json` for the exact scripts. `npm run lint` is currently a placeholder in the web workspace, not a configured lint check. For Godot, open `apps/game/project.godot`; export settings are in `apps/game/export_presets.cfg`.
 
 ## Repository map

@@ -11,6 +11,7 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "build:vercel": "npm run db:generate && npm run build --workspace=@linguaworld/web && node scripts/prepare-vercel.mjs",
+    "build:cloudflare-pages": "npm run db:generate && npm run build --workspace=@linguaworld/web",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "docker:up": "docker compose up -d",
