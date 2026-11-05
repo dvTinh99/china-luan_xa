@@ -5,6 +5,9 @@ const cloudflareWorkersBuild = process.env.CLOUDFLARE_WORKERS_BUILD === '1';
 
 export default defineNuxtConfig({
   alias: {
+    // Avoid resolving lucide-vue-next's all-icons barrel (1,500+ modules) in
+    // constrained CI environments. The facade exports only icons used by app.
+    'lucide-vue-next': fileURLToPath(new URL('./app/utils/lucide-icons.ts', import.meta.url)),
     '@linguaworld/database/sqlite': fileURLToPath(new URL(
       cloudflareWorkersBuild ? './server/utils/sqlite-worker-unavailable.ts' : '../../database/prisma/generated/sqlite',
       import.meta.url,
