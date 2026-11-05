@@ -16,6 +16,7 @@
 | Area | Methods and paths |
 | --- | --- |
 | Auth | `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/logout`, `GET /api/auth/me` |
+| Settings | `PUT /api/settings/pinyin` (authenticated; updates the current user's Pinyin visibility preference) |
 | Database / chakra status | `GET /api/db/status`, `GET /api/chakra/status` |
 | Game | `GET /api/game/bootstrap` |
 | Learning | `GET /api/learning/courses`, `GET /api/learning/lessons/:lessonId`, `GET /api/learning/radicals`, `POST /api/learning/sessions`, `POST /api/learning/sessions/:sessionId/answers`, `POST /api/learning/sessions/:sessionId/complete`; Pinyin: `GET /api/learning/pinyin`, `GET /api/learning/pinyin/progress`, `POST /api/learning/pinyin/:stageId/attempt` |

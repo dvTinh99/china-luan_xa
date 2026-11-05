@@ -38,10 +38,23 @@ export default defineI18nLocale(async () => ({
     inventory: 'Túi đồ & Nhân vật',
     characterStats: 'Chỉ số nhân vật',
     shop: 'Cửa hàng',
+    settings: 'Cài đặt',
     gold: 'Vàng',
     profile: 'Tiểu Long',
     level: 'Cấp',
     footerDesc: 'Hành trình học tiếng Trung nhập vai kết hợp thế giới RPG 2D, thuật toán FSRS và chuẩn mới HSK 3.0.'
+  },
+  settings: {
+    eyebrow: 'Tùy chỉnh trải nghiệm',
+    title: 'Cài đặt',
+    description: 'Điều chỉnh cách hiển thị nội dung học tập của bạn.',
+    pinyinTitle: 'Hiển thị Pinyin',
+    pinyinDescription: 'Hiện phiên âm Pinyin trong bài học, thẻ từ vựng, ôn tập và chiến đấu.',
+    displayPinyin: 'Pinyin trên giao diện',
+    on: 'Đang bật',
+    off: 'Đang tắt',
+    saved: 'Đã lưu cài đặt.',
+    saveError: 'Không thể lưu cài đặt. Vui lòng thử lại.',
   },
   hero: {
     tag: 'HSK 3.0 Chuẩn Mới • Sơ Cấp Band 1',

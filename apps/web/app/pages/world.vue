@@ -208,7 +208,7 @@
               />
             </div>
 
-            <div class="text-sm font-bold text-gold-400 font-heading">
+            <div v-if="pinyinDisplay" class="text-sm font-bold text-gold-400 font-heading">
               {{ combatSession?.question?.pinyin }}
             </div>
           </div>
@@ -350,6 +350,7 @@
 </template>
 
 <script setup lang="ts">
+const { pinyinDisplay } = usePinyinDisplay();
 import {
   Gamepad2,
   AlertTriangle,

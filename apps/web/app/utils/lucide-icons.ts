@@ -57,6 +57,7 @@ export { default as RotateCcw } from '../../../../node_modules/lucide-vue-next/d
 export { default as Save } from '../../../../node_modules/lucide-vue-next/dist/esm/icons/save.js';
 export { default as Scroll } from '../../../../node_modules/lucide-vue-next/dist/esm/icons/scroll.js';
 export { default as Shield } from '../../../../node_modules/lucide-vue-next/dist/esm/icons/shield.js';
+export { default as Settings } from '../../../../node_modules/lucide-vue-next/dist/esm/icons/settings.js';
 export { default as ShieldAlert } from '../../../../node_modules/lucide-vue-next/dist/esm/icons/shield-alert.js';
 export { default as Shirt } from '../../../../node_modules/lucide-vue-next/dist/esm/icons/shirt.js';
 export { default as ShoppingBag } from '../../../../node_modules/lucide-vue-next/dist/esm/icons/shopping-bag.js';

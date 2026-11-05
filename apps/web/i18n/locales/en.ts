@@ -38,10 +38,23 @@ export default defineI18nLocale(async () => ({
     inventory: 'Inventory & Character',
     characterStats: 'Hero Stats',
     shop: 'Shop',
+    settings: 'Settings',
     gold: 'Gold',
     profile: 'Xiao Long',
     level: 'Lv.',
     footerDesc: 'Immersive fantasy RPG Mandarin learning powered by FSRS spaced repetition and New HSK 3.0.'
+  },
+  settings: {
+    eyebrow: 'Personalize your experience',
+    title: 'Settings',
+    description: 'Adjust how learning content appears across LinguaWorld.',
+    pinyinTitle: 'Show Pinyin',
+    pinyinDescription: 'Show Pinyin in lessons, vocabulary cards, reviews, and combat.',
+    displayPinyin: 'Pinyin on interface',
+    on: 'On',
+    off: 'Off',
+    saved: 'Settings saved.',
+    saveError: 'Could not save this setting. Please try again.',
   },
   hero: {
     tag: 'New HSK 3.0 • Beginner Band 1',

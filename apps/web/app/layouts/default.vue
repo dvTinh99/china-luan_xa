@@ -73,10 +73,16 @@
           </NuxtLink>
 
           <!-- RPG Menu Dropdown (Character, Shop, Inventory) -->
-          <div class="relative group" ref="rpgDropdownRef">
+          <div
+            class="relative group"
+            ref="rpgDropdownRef"
+            @mouseenter="isRpgMenuOpen = true"
+            @mouseleave="isRpgMenuOpen = false"
+            @keydown.esc.prevent="closeRpgMenu"
+          >
             <button
               type="button"
-              @click="isRpgMenuOpen = !isRpgMenuOpen"
+              @click="isRpgMenuOpen = true"
               class="px-3 py-2 rounded-2xl text-xs font-bold text-amber-100/70 hover:text-white hover:bg-wood-850 transition-all flex items-center gap-1.5 border border-transparent cursor-pointer"
               :class="isRpgRouteActive ? 'bg-wood-850 text-gold-300 border-wood-700 shadow-sm' : ''"
               aria-haspopup="true"
@@ -89,10 +95,13 @@
 
             <!-- Dropdown Menu -->
             <div
-              class="absolute top-full left-0 mt-2 w-52 bg-wood-900 border border-wood-750 rounded-2xl p-2 shadow-card-elevated backdrop-blur-xl z-50 hidden group-hover:block transition-all"
+              v-show="isRpgMenuOpen"
+              class="absolute top-full left-0 z-50 w-52 pt-2"
             >
+              <div class="rounded-2xl border border-wood-750 bg-wood-900 p-2 shadow-card-elevated backdrop-blur-xl">
               <NuxtLink
                 to="/character"
+                @click="isRpgMenuOpen = false"
                 class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-wood-800 transition-colors"
                 active-class="bg-wood-800 text-gold-300"
               >
@@ -102,6 +111,7 @@
 
               <NuxtLink
                 to="/inventory"
+                @click="isRpgMenuOpen = false"
                 class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-wood-800 transition-colors"
                 active-class="bg-wood-800 text-gold-300"
               >
@@ -111,12 +121,24 @@
 
               <NuxtLink
                 to="/shop"
+                @click="isRpgMenuOpen = false"
                 class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-wood-800 transition-colors"
                 active-class="bg-wood-800 text-gold-300"
               >
                 <Store :size="14" class="text-amber-400" />
                 <span>{{ tDual('nav.shop', '珍宝商行') }}</span>
               </NuxtLink>
+              <NuxtLink
+                v-if="user"
+                to="/settings"
+                @click="isRpgMenuOpen = false"
+                class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-wood-800 transition-colors"
+                active-class="bg-wood-800 text-gold-300"
+              >
+                <Settings :size="14" class="text-gold-400" aria-hidden="true" />
+                <span>{{ tDual('nav.settings', '设置') }}</span>
+              </NuxtLink>
+              </div>
             </div>
           </div>
         </nav>
@@ -226,6 +248,10 @@
           <Scroll :size="18" class="text-gold-400" aria-hidden="true" />
           <span class="font-rpg">{{ tDual('nav.quests', '宗门任务') }}</span>
         </NuxtLink>
+        <NuxtLink v-if="user" to="/settings" @click="isMobileMenuOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-200 hover:bg-wood-850" active-class="bg-wood-850 text-gold-300">
+          <Settings :size="18" class="text-gold-400" aria-hidden="true" />
+          <span class="font-rpg">{{ tDual('nav.settings', '设置') }}</span>
+        </NuxtLink>
 
         <!-- RPG Hub Accordion in Mobile -->
         <div class="pt-2 border-t border-wood-850">
@@ -331,6 +357,7 @@ import {
   Shield,
   Coins,
   Store,
+  Settings,
   Briefcase,
   Scroll,
   LogIn,
@@ -348,6 +375,12 @@ const { t, tDual, dual, sub, ui } = useOriginLanguage();
 const route = useRoute();
 const isMobileMenuOpen = ref(false);
 const isRpgMenuOpen = ref(false);
+const rpgDropdownRef = ref<HTMLElement | null>(null);
+
+function closeRpgMenu() {
+  isRpgMenuOpen.value = false;
+  nextTick(() => rpgDropdownRef.value?.querySelector<HTMLButtonElement>('button')?.focus());
+}
 
 const isRpgRouteActive = computed(() => {
   return ['/character', '/inventory', '/shop'].includes(route.path);
@@ -355,6 +388,10 @@ const isRpgRouteActive = computed(() => {
 
 const { data: authData, refresh: refreshAuth } = await useFetch<any>('/api/auth/me');
 const user = computed(() => authData.value?.data?.user);
+const { pinyinDisplay } = usePinyinDisplay();
+watch(() => user.value?.settings?.pinyinDisplay, (value) => {
+  if (typeof value === 'boolean') pinyinDisplay.value = value;
+}, { immediate: true });
 const characterName = computed(() => user.value?.character?.name || '');
 const characterLevel = computed(() => user.value?.character?.level || 1);
 const walletGold = computed(() => user.value?.wallet?.balanceGold ?? user.value?.wallet?.goldBalance ?? 0);

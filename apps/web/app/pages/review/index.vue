@@ -99,7 +99,7 @@
 
         <!-- Hidden / Revealed Content -->
         <div v-if="revealed" class="animate-fade-in pt-5 border-t border-surface-750">
-          <div class="text-2xl font-extrabold font-heading text-gold-400 mb-1">
+          <div v-if="pinyinDisplay" class="text-2xl font-extrabold font-heading text-gold-400 mb-1">
             {{ currentCard.pinyin }}
           </div>
           <div class="text-xl font-bold text-white mb-4">
@@ -112,7 +112,7 @@
               <div class="text-slate-200 font-bold font-hanzi text-sm">{{ currentCard.example.sentenceZh }}</div>
               <SpeakerButton :text="currentCard.example.sentenceZh" size="sm" class="shrink-0" />
             </div>
-            <div class="text-gold-400 text-xs mt-0.5">{{ currentCard.example.sentencePinyin }}</div>
+            <div v-if="pinyinDisplay" class="text-gold-400 text-xs mt-0.5">{{ currentCard.example.sentencePinyin }}</div>
             <div class="text-slate-400 text-xs mt-0.5">{{ currentCard.example.translationVi }}</div>
           </div>
         </div>
@@ -189,6 +189,7 @@ import {
 import { useOriginLanguage } from '~/composables/useOriginLanguage';
 
 const { t, tDual } = useOriginLanguage();
+const { pinyinDisplay } = usePinyinDisplay();
 
 definePageMeta({
   layout: 'default',

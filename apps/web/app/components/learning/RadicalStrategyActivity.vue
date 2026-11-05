@@ -31,7 +31,7 @@
           </div>
 
           <div>
-            <div class="text-2xl font-extrabold font-heading text-gold-400">
+            <div v-if="pinyinDisplay" class="text-2xl font-extrabold font-heading text-gold-400">
               {{ currentItem.pinyin }}
             </div>
             <div class="text-lg font-bold text-white mt-0.5">
@@ -138,6 +138,7 @@
 </template>
 
 <script setup lang="ts">
+const { pinyinDisplay } = usePinyinDisplay();
 import { Sparkles, Layers, BookOpen, CheckCircle2, AlertCircle, ArrowRight } from 'lucide-vue-next';
 
 const props = defineProps<{

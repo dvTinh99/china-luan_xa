@@ -41,7 +41,7 @@
       <div class="w-full flex items-center justify-between border-b border-surface-800 pb-4 mb-6">
         <div>
           <div class="flex items-center gap-2">
-            <span class="text-2xl font-extrabold font-heading text-gold-400">{{ currentWord.pinyin }}</span>
+            <span v-if="pinyinDisplay" class="text-2xl font-extrabold font-heading text-gold-400">{{ currentWord.pinyin }}</span>
             <SpeakerButton :text="currentWord.simplified" :audio-url="currentWord.audioUrl" size="sm" />
           </div>
           <div class="text-sm font-bold text-slate-200 mt-0.5">{{ currentWord.meaning }}</div>
@@ -257,6 +257,7 @@
 </template>
 
 <script setup lang="ts">
+const { pinyinDisplay } = usePinyinDisplay();
 import { ref, computed, watch, onMounted, nextTick } from 'vue';
 import { PenTool, Play, RotateCcw, CheckCircle2, ArrowRight, Sparkles } from 'lucide-vue-next';
 import { useOriginLanguage } from '~/composables/useOriginLanguage';

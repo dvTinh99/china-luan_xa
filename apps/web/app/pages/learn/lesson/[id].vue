@@ -119,7 +119,7 @@
           <!-- Back Face -->
           <div v-else class="flex flex-col items-center justify-center animate-fade-in w-full">
             <div class="flex items-center gap-3 mb-2">
-              <div class="text-2xl font-extrabold font-heading text-gold-400 tracking-wide">
+              <div v-if="pinyinDisplay" class="text-2xl font-extrabold font-heading text-gold-400 tracking-wide">
                 {{ currentCard.pinyin }}
               </div>
               <SpeakerButton :text="currentCard.simplified" :audio-url="currentCard.audioUrl" size="sm" />
@@ -134,7 +134,7 @@
                 <div class="text-slate-200 font-bold font-hanzi text-sm">{{ currentCard.example.sentenceZh }}</div>
                 <SpeakerButton :text="currentCard.example.sentenceZh" size="sm" class="shrink-0" />
               </div>
-              <div class="text-gold-400 text-xs mt-0.5">{{ currentCard.example.sentencePinyin }}</div>
+              <div v-if="pinyinDisplay" class="text-gold-400 text-xs mt-0.5">{{ currentCard.example.sentencePinyin }}</div>
               <div class="text-slate-400 text-xs mt-0.5">{{ currentCard.example.translationVi }}</div>
             </div>
           </div>
@@ -411,6 +411,7 @@ import HanziWritingActivity from '~/components/learning/HanziWritingActivity.vue
 import { useOriginLanguage } from '~/composables/useOriginLanguage';
 
 const { t, tDual } = useOriginLanguage();
+const { pinyinDisplay } = usePinyinDisplay();
 
 definePageMeta({
   layout: 'default',
