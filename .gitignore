@@ -32,6 +32,11 @@ npm-debug.log*
 
 # Prisma
 database/prisma/migrations/
+!database/prisma/migrations/
+database/prisma/migrations/*
+!database/prisma/migrations/20261105_add_pinyin_stage_progress/
+!database/prisma/migrations/20261105_add_pinyin_stage_progress/migration.sql
+!database/prisma/migrations/migration_lock.toml
 database/prisma/generated/
 database/prisma/schema.sqlite.prisma
 database/prisma/schema.postgres.prisma

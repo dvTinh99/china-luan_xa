@@ -18,7 +18,7 @@
 | Auth | `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/logout`, `GET /api/auth/me` |
 | Database / chakra status | `GET /api/db/status`, `GET /api/chakra/status` |
 | Game | `GET /api/game/bootstrap` |
-| Learning | `GET /api/learning/courses`, `GET /api/learning/lessons/:lessonId`, `GET /api/learning/radicals`, `POST /api/learning/sessions`, `POST /api/learning/sessions/:sessionId/answers`, `POST /api/learning/sessions/:sessionId/complete` |
+| Learning | `GET /api/learning/courses`, `GET /api/learning/lessons/:lessonId`, `GET /api/learning/radicals`, `POST /api/learning/sessions`, `POST /api/learning/sessions/:sessionId/answers`, `POST /api/learning/sessions/:sessionId/complete`; Pinyin: `GET /api/learning/pinyin`, `GET /api/learning/pinyin/progress`, `POST /api/learning/pinyin/:stageId/attempt` |
 | SRS | `GET /api/srs/due`, `POST /api/srs/reviews`, `GET /api/srs/statistics` |
 | Character | `GET /api/character`, `POST /api/character`, `GET /api/character/profile`, `POST /api/character/appearance` |
 | Wallet | `GET /api/wallet`, `GET /api/wallet/transactions` |
@@ -35,6 +35,7 @@ The inventory above is generated from current route filenames. Confirm semantics
 - Authenticate private operations and scope database reads/writes to the current user.
 - Use server-side catalog values for shop pricing. Use transactions for wallet/inventory mutations.
 - Learning answers are evaluated on the server. Completion must validate session state and prevent duplicate reward grants.
+- Pinyin content is public, but progress reads and quiz submissions require a valid session cookie; these routes deliberately bypass the API demo-user fallback. Submit exactly ten distinct `{ questionId, optionId }` answers. The server owns answer keys, returns score and explanations, and marks a stage complete at 80% or higher. Repeated passes preserve one row per user/stage and the best score; no EXP or rewards are granted.
 - SRS scheduling and due dates are computed on the server through the SRS domain helper.
 - Game and combat inputs are requests; verify access and allowed state transitions server-side.
 - Audio generation, approval, and publishing are privileged content operations; inspect route-specific authorization before use.

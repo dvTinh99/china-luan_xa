@@ -1,15 +1,15 @@
 # Database and Prisma
 
-**Status:** Describes the Prisma schema as inspected on 2026-11-04. `database/prisma/schema.prisma` is authoritative. Note that `.gitignore` currently excludes `database/prisma/migrations/`, so local migration files may not be versioned; do not assume migration history is reproducible from a clean checkout.
+**Status:** Describes the Prisma schema as inspected on 2026-11-05. `database/prisma/schema.prisma` is authoritative. The Pinyin progress migration is versioned; the older local migration directory remains ignored and is not a complete baseline.
 
 ## Provider and workflow
 
 - The schema datasource is PostgreSQL (`DATABASE_URL`). `database/prisma/dbProvider.mjs` prepares provider configuration for the repository scripts; inspect it and `.env` before switching providers or running data-changing commands.
 - Prisma schema: `database/prisma/schema.prisma`.
-- Local migration files, if present: `database/prisma/migrations/` (currently ignored by `.gitignore`).
+- Pinyin progress migration: `database/prisma/migrations/20261105_add_pinyin_stage_progress/` (tracked). Older migration files remain ignored by `.gitignore`; do not assume that history is reproducible from a clean checkout.
 - Prisma client setup: `database/prisma/client.mjs`; generated output under `database/prisma/generated/` is not hand-edited source.
 - Root scripts: `npm run db:generate`, `npm run db:push`, `npm run db:migrate`, `npm run db:seed`, and `npm run db:studio`.
-- Resolve the migration tracking policy before shared schema evolution. `db:push` is useful for local iteration but does not create migration history.
+- New shared schema changes must include a tracked SQL migration. `.gitignore` currently allows the Pinyin migration and migration lock while continuing to ignore unrelated legacy migration files. `db:push` is useful for local iteration but does not create migration history.
 
 ## Current model groups
 
@@ -19,6 +19,7 @@ The schema currently defines:
 - Character/progression: `Character`, `UserChakraProgress`.
 - Curriculum/content: `Curriculum`, `CurriculumLevel`, `Course`, `Unit`, `Lesson`, `Vocabulary`, `VocabularyReading`, `VocabularyMeaning`, `VocabularyExample`, `CurriculumVocabulary`, `Radical`, `VocabularyRadical`.
 - Learning/SRS: `LearningSession`, `LearningAnswer`, `VocabularyProgress`, `ReviewHistory`.
+- Pinyin study progress: `PinyinStageProgress` stores a user's best passing score and completion timestamp for each stage; `(userId, stageId)` is unique.
 - Economy/collection: `Wallet`, `WalletTransaction`, `Item`, `InventoryItem`.
 - Quests/world/combat: `Quest`, `UserQuest`, `Region`, `CombatSession`.
 - Audio operations: `VoiceProfile`, `AudioAsset`, `AudioGenerationJob`.

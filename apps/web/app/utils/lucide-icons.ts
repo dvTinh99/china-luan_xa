@@ -3,12 +3,16 @@
  * resolve every icon module, which can exhaust file descriptors in CI.
  * Keep this list aligned with the icons imported by app components.
  */
+// lucide-vue-next ships types for its barrel, but not for individual icon files.
+// The import set is curated and the build validates that every path exists.
+// @ts-nocheck
 export { default as AlertCircle } from '../../../../node_modules/lucide-vue-next/dist/esm/icons/circle-alert.js';
 export { default as AlertTriangle } from '../../../../node_modules/lucide-vue-next/dist/esm/icons/triangle-alert.js';
 export { default as ArrowDownLeft } from '../../../../node_modules/lucide-vue-next/dist/esm/icons/arrow-down-left.js';
 export { default as ArrowLeft } from '../../../../node_modules/lucide-vue-next/dist/esm/icons/arrow-left.js';
 export { default as ArrowRight } from '../../../../node_modules/lucide-vue-next/dist/esm/icons/arrow-right.js';
 export { default as ArrowUpRight } from '../../../../node_modules/lucide-vue-next/dist/esm/icons/arrow-up-right.js';
+export { default as AudioLines } from '../../../../node_modules/lucide-vue-next/dist/esm/icons/audio-lines.js';
 export { default as Award } from '../../../../node_modules/lucide-vue-next/dist/esm/icons/award.js';
 export { default as BookOpen } from '../../../../node_modules/lucide-vue-next/dist/esm/icons/book-open.js';
 export { default as Briefcase } from '../../../../node_modules/lucide-vue-next/dist/esm/icons/briefcase.js';

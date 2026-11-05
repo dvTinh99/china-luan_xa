@@ -152,6 +152,20 @@
 
     </div>
 
+    <NuxtLink to="/learn/pinyin" class="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-3xl bg-gradient-to-r from-sky-950/80 via-wood-900 to-wood-900 border-2 border-sky-800/70 hover:border-sky-500/60 p-5 sm:p-6 transition-colors shadow-rpg-panel">
+      <div class="flex items-start gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-sky-500/15 border border-sky-400/30 flex items-center justify-center text-sky-300 shrink-0">
+          <AudioLines :size="22" aria-hidden="true" />
+        </div>
+        <div>
+          <div class="text-[10px] uppercase tracking-wider text-sky-300 font-black">Pinyin · 拼音</div>
+          <h2 class="text-lg font-black text-white mt-0.5">{{ sub('Học nền tảng phát âm tiếng Trung', 'Build your Mandarin pronunciation foundations') }}</h2>
+          <p class="text-xs text-amber-100/55 mt-1">{{ sub('Ba chặng: thanh mẫu, vận mẫu, thanh điệu và biến điệu.', 'Three stages: initials, finals, tones and tone changes.') }}</p>
+        </div>
+      </div>
+      <span class="inline-flex items-center gap-2 text-xs font-bold text-sky-200 group-hover:text-white shrink-0">{{ sub('Vào chuyên đề', 'Open course') }} <ArrowRight :size="15" /></span>
+    </NuxtLink>
+
     <!-- ===================================================================== -->
     <!-- 2. QUICK STATS ROW                                                    -->
     <!-- ===================================================================== -->
@@ -372,6 +386,7 @@
 import { ref, computed, onMounted, nextTick, watch } from 'vue';
 import {
   Sparkles,
+  AudioLines,
   BookOpen,
   RotateCcw,
   CheckCircle2,

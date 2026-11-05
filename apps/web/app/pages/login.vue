@@ -86,6 +86,12 @@ definePageMeta({
 const { t, tDual } = useOriginLanguage();
 
 const router = useRouter();
+const route = useRoute();
+const redirectTarget = typeof route.query.redirect === 'string' &&
+  route.query.redirect.startsWith('/') &&
+  !route.query.redirect.startsWith('//')
+  ? route.query.redirect
+  : '/learn';
 
 const form = reactive({
   identifier: '',
@@ -104,7 +110,7 @@ async function handleLogin() {
       method: 'POST',
       body: form,
     });
-    router.push('/learn');
+    router.push(redirectTarget);
   } catch (err: any) {
     errorMessage.value = err?.data?.message || t('authDetail.loginFail');
   } finally {

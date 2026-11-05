@@ -36,6 +36,7 @@ model User {
   userQuests         UserQuest[]
   combatSessions     CombatSession[]
   chakraProgress     UserChakraProgress[]
+  pinyinStageProgress PinyinStageProgress[]
 
   @@map("users")
 }
@@ -329,6 +330,22 @@ model LearningAnswer {
   @@index([sessionId])
   @@index([userId, vocabularyId])
   @@map("learning_answers")
+}
+
+model PinyinStageProgress {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  stageId     String   @map("stage_id")
+  bestScore   Int      @default(0) @map("best_score")
+  completedAt DateTime @default(now()) @map("completed_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, stageId])
+  @@index([userId])
+  @@map("pinyin_stage_progress")
 }
 
 // ---------------------------------------------------------------------------
