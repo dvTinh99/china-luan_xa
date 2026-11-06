@@ -156,10 +156,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, onUnmounted } from 'vue';
 import { Sparkles, Loader2, AlertTriangle, Palette, Layers } from 'lucide-vue-next';
 import type { CharacterAppearanceState, CharacterEmote } from '../../types/character';
-import { PixiChibiCharacterEngine } from '../../services/character/pixi-character-engine.client';
+import type { PixiChibiCharacterEngine } from '../../services/character/pixi-character-engine.client';
 import { useOriginLanguage } from '~/composables/useOriginLanguage';
 
 const { t, tDual } = useOriginLanguage();
@@ -175,7 +175,7 @@ const emit = defineEmits<{
 
 const stageMode = ref<'art' | 'rig'>('art');
 const canvasContainerRef = ref<HTMLDivElement | null>(null);
-const isInitializing = ref(true);
+const isInitializing = ref(false);
 const hasError = ref(false);
 
 let engine: PixiChibiCharacterEngine | null = null;
@@ -252,25 +252,41 @@ function handleEmote(emote: CharacterEmote) {
   }
 }
 
-onMounted(async () => {
-  if (!canvasContainerRef.value) return;
-
+async function initializeEngine() {
+  if (engine || isInitializing.value || !canvasContainerRef.value) return;
+  if (!import.meta.client) return;
+  isInitializing.value = true;
+  hasError.value = false;
   try {
+    const { PixiChibiCharacterEngine } = await import('../../services/character/pixi-character-engine.client');
+    // The user may switch back to the artwork view while the WebGL chunk loads.
+    if (stageMode.value !== 'rig' || !canvasContainerRef.value) return;
     engine = new PixiChibiCharacterEngine(props.appearance);
     await engine.init(canvasContainerRef.value);
-    isInitializing.value = false;
   } catch (err) {
     console.error('[CharacterStage] Failed to initialize PixiJS engine:', err);
     hasError.value = true;
+  } finally {
     isInitializing.value = false;
+  }
+}
+
+function destroyEngine() {
+  if (!engine) return;
+  engine.destroy();
+  engine = null;
+}
+
+watch(stageMode, (mode) => {
+  if (mode === 'rig') {
+    void initializeEngine();
+  } else {
+    destroyEngine();
   }
 });
 
 onUnmounted(() => {
-  if (engine) {
-    engine.destroy();
-    engine = null;
-  }
+  destroyEngine();
 });
 
 watch(

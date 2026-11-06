@@ -181,53 +181,54 @@ export default defineEventHandler(async (event) => {
   const user = event.context.user;
 
   try {
-    const courses = await prisma.course.findMany({
-      orderBy: { orderIndex: 'asc' },
-      include: {
-        curriculumLevel: {
-          include: {
-            curriculum: true,
+    const [courses, completedSessions] = await Promise.all([
+      prisma.course.findMany({
+        orderBy: { orderIndex: 'asc' },
+        include: {
+          curriculumLevel: {
+            include: {
+              curriculum: true,
+            },
           },
-        },
-        units: {
-          orderBy: { orderIndex: 'asc' },
-          include: {
-            lessons: {
-              orderBy: { orderIndex: 'asc' },
-              select: {
-                id: true,
-                title: true,
-                description: true,
-                orderIndex: true,
-                expReward: true,
-                goldReward: true,
-                _count: {
-                  select: { vocabulary: true },
+          units: {
+            orderBy: { orderIndex: 'asc' },
+            include: {
+              lessons: {
+                orderBy: { orderIndex: 'asc' },
+                select: {
+                  id: true,
+                  title: true,
+                  description: true,
+                  orderIndex: true,
+                  expReward: true,
+                  goldReward: true,
+                  _count: {
+                    select: { vocabulary: true },
+                  },
                 },
               },
             },
           },
         },
-      },
-    });
+      }),
+      user
+        ? prisma.learningSession.findMany({
+            where: {
+              userId: user.id,
+              status: 'completed',
+              lessonId: { not: null },
+            },
+            select: { lessonId: true },
+          })
+        : Promise.resolve([]),
+    ]);
 
     if (!courses || courses.length === 0) {
       return sendApiSuccess(event, { courses: FALLBACK_COURSES });
     }
 
-    // If user is authenticated, compute lesson completion status from learning_sessions
-    let completedLessonIds = new Set<string>();
-    if (user) {
-      const completedSessions = await prisma.learningSession.findMany({
-        where: {
-          userId: user.id,
-          status: 'completed',
-          lessonId: { not: null },
-        },
-        select: { lessonId: true },
-      });
-      completedLessonIds = new Set(completedSessions.map((s) => s.lessonId!));
-    }
+    // Course structure and user completion state load concurrently.
+    const completedLessonIds = new Set(completedSessions.map((s) => s.lessonId!));
 
     const coursesWithStatus = courses.map((course) => ({
       id: course.id,

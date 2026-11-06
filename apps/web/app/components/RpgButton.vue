@@ -2,6 +2,7 @@
   <component
     :is="to ? NuxtLink : 'button'"
     :to="to"
+    :prefetch="to ? prefetch : undefined"
     :type="to ? undefined : type"
     :disabled="disabled"
     class="inline-flex items-center justify-center font-bold select-none cursor-pointer text-center relative group transition-all duration-150 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
@@ -29,12 +30,14 @@ const props = withDefaults(
     to?: string;
     type?: 'button' | 'submit' | 'reset';
     disabled?: boolean;
+    prefetch?: boolean;
   }>(),
   {
     variant: 'gold',
     size: 'md',
     type: 'button',
     disabled: false,
+    prefetch: false,
   },
 );
 

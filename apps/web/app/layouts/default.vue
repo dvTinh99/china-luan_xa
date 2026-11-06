@@ -31,6 +31,7 @@
         <nav class="hidden md:flex items-center gap-1.5" :aria-label="t('common.menu')">
           <NuxtLink
             to="/learn"
+            :prefetch="false"
             class="px-3 py-2 rounded-2xl text-xs font-bold text-amber-100/70 hover:text-white hover:bg-wood-850 transition-all flex items-center gap-1.5 border border-transparent"
             active-class="bg-wood-850 text-gold-300 border-wood-700 shadow-sm"
           >
@@ -40,6 +41,7 @@
 
           <NuxtLink
             to="/review"
+            :prefetch="false"
             class="px-3 py-2 rounded-2xl text-xs font-bold text-amber-100/70 hover:text-white hover:bg-wood-850 transition-all flex items-center gap-1.5 border border-transparent relative"
             active-class="bg-wood-850 text-gold-300 border-wood-700 shadow-sm"
           >
@@ -56,6 +58,7 @@
 
           <NuxtLink
             to="/world"
+            :prefetch="false"
             class="px-3 py-2 rounded-2xl text-xs font-bold text-amber-100/70 hover:text-white hover:bg-wood-850 transition-all flex items-center gap-1.5 border border-transparent"
             active-class="bg-wood-850 text-gold-300 border-wood-700 shadow-sm"
           >
@@ -65,6 +68,7 @@
 
           <NuxtLink
             to="/quests"
+            :prefetch="false"
             class="px-3 py-2 rounded-2xl text-xs font-bold text-amber-100/70 hover:text-white hover:bg-wood-850 transition-all flex items-center gap-1.5 border border-transparent"
             active-class="bg-wood-850 text-gold-300 border-wood-700 shadow-sm"
           >
@@ -101,6 +105,7 @@
               <div class="rounded-2xl border border-wood-750 bg-wood-900 p-2 shadow-card-elevated backdrop-blur-xl">
               <NuxtLink
                 to="/character"
+                :prefetch="false"
                 @click="isRpgMenuOpen = false"
                 class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-wood-800 transition-colors"
                 active-class="bg-wood-800 text-gold-300"
@@ -111,6 +116,7 @@
 
               <NuxtLink
                 to="/inventory"
+                :prefetch="false"
                 @click="isRpgMenuOpen = false"
                 class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-wood-800 transition-colors"
                 active-class="bg-wood-800 text-gold-300"
@@ -121,6 +127,7 @@
 
               <NuxtLink
                 to="/shop"
+                :prefetch="false"
                 @click="isRpgMenuOpen = false"
                 class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-wood-800 transition-colors"
                 active-class="bg-wood-800 text-gold-300"
@@ -131,6 +138,7 @@
               <NuxtLink
                 v-if="user"
                 to="/settings"
+                :prefetch="false"
                 @click="isRpgMenuOpen = false"
                 class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-wood-800 transition-colors"
                 active-class="bg-wood-800 text-gold-300"
@@ -151,6 +159,7 @@
           <!-- Gold Coin Pouch -->
           <NuxtLink
             to="/character"
+            :prefetch="false"
             class="flex items-center gap-1.5 sm:gap-2 bg-wood-850 hover:bg-wood-800 border-2 border-wood-700 hover:border-gold-500/60 px-2.5 sm:px-3.5 py-1.5 rounded-2xl transition-all shadow-sm group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
             :title="`${t('common.gold')}: ${walletGold}`"
           >
@@ -163,6 +172,7 @@
           <NuxtLink
             v-if="user"
             to="/character"
+            :prefetch="false"
             class="flex items-center gap-2.5 bg-wood-850 border border-wood-700 hover:border-wood-600 px-2.5 py-1.5 rounded-2xl transition-all group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
             :title="t('nav.characterStats')"
           >
@@ -209,6 +219,7 @@
       >
         <NuxtLink
           to="/learn"
+          :prefetch="false"
           @click="isMobileMenuOpen = false"
           class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-200 hover:bg-wood-850"
           active-class="bg-wood-850 text-gold-300"
@@ -218,6 +229,7 @@
         </NuxtLink>
         <NuxtLink
           to="/review"
+          :prefetch="false"
           @click="isMobileMenuOpen = false"
           class="flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold text-slate-200 hover:bg-wood-850"
           active-class="bg-wood-850 text-gold-300"
@@ -232,6 +244,7 @@
         </NuxtLink>
         <NuxtLink
           to="/world"
+          :prefetch="false"
           @click="isMobileMenuOpen = false"
           class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-200 hover:bg-wood-850"
           active-class="bg-wood-850 text-gold-300"
@@ -241,6 +254,7 @@
         </NuxtLink>
         <NuxtLink
           to="/quests"
+          :prefetch="false"
           @click="isMobileMenuOpen = false"
           class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-200 hover:bg-wood-850"
           active-class="bg-wood-850 text-gold-300"
@@ -248,7 +262,7 @@
           <Scroll :size="18" class="text-gold-400" aria-hidden="true" />
           <span class="font-rpg">{{ tDual('nav.quests', '宗门任务') }}</span>
         </NuxtLink>
-        <NuxtLink v-if="user" to="/settings" @click="isMobileMenuOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-200 hover:bg-wood-850" active-class="bg-wood-850 text-gold-300">
+        <NuxtLink v-if="user" to="/settings" :prefetch="false" @click="isMobileMenuOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-200 hover:bg-wood-850" active-class="bg-wood-850 text-gold-300">
           <Settings :size="18" class="text-gold-400" aria-hidden="true" />
           <span class="font-rpg">{{ tDual('nav.settings', '设置') }}</span>
         </NuxtLink>
@@ -261,6 +275,7 @@
           <div class="grid grid-cols-3 gap-2">
             <NuxtLink
               to="/character"
+              :prefetch="false"
               @click="isMobileMenuOpen = false"
               class="flex flex-col items-center gap-1.5 p-2.5 rounded-xl text-center bg-wood-900 border border-wood-800 text-slate-200 hover:text-white"
               active-class="border-gold-500/50 text-gold-300"
@@ -270,6 +285,7 @@
             </NuxtLink>
             <NuxtLink
               to="/inventory"
+              :prefetch="false"
               @click="isMobileMenuOpen = false"
               class="flex flex-col items-center gap-1.5 p-2.5 rounded-xl text-center bg-wood-900 border border-wood-800 text-slate-200 hover:text-white"
               active-class="border-gold-500/50 text-gold-300"
@@ -279,6 +295,7 @@
             </NuxtLink>
             <NuxtLink
               to="/shop"
+              :prefetch="false"
               @click="isMobileMenuOpen = false"
               class="flex flex-col items-center gap-1.5 p-2.5 rounded-xl text-center bg-wood-900 border border-wood-800 text-slate-200 hover:text-white"
               active-class="border-gold-500/50 text-gold-300"
